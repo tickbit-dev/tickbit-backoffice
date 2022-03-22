@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Flex, Box, Text } from '@chakra-ui/react';
+import Button from '@mui/material/Button';
+import { ChakraProvider } from '@chakra-ui/react'
+import CustomTable from './CustomTable';
 
 export default function App({...props}) {
 
@@ -9,9 +12,19 @@ export default function App({...props}) {
 	}, []);
 
 	return (
-		<Flex>
-			<Text>Joseppe</Text>
-		</Flex>
+		<div>
+			<ChakraProvider>
+				<Flex>
+					<Text>Hola</Text>
+				</Flex>
+			</ChakraProvider>
+
+			<CustomTable/>
+
+			<ChakraProvider>
+				<Flex><Text>Hola</Text></Flex>
+			</ChakraProvider>
+		</div>
 	);
 };
 
