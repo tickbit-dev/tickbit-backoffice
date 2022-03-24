@@ -7,7 +7,7 @@ export default function TextInput({...props}) {
                 {props.icon ?? null}
                 <Text fontWeight={500} ml={"10px"}>{props.title} {props.required ? <Text as={"span"} color={"gray.400"}>*</Text> : null}</Text>
             </Flex>
-            { props.textArea ?
+            { props.textarea ?
                 <Textarea
                     borderWidth={1}
                     h={"100px"}
@@ -20,7 +20,7 @@ export default function TextInput({...props}) {
                     _focus={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}}
                     onChange={(event) => props.onChange(event)}
                 />
-            : props.numberInput ?
+            : props.numberinput ?
                 <NumberInput min={1}>
                     <NumberInputField
                         h={"50px"}
@@ -28,6 +28,7 @@ export default function TextInput({...props}) {
                         borderRadius={"10px"}
                         placeholder={props.placeholder}
                         _focus={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}}
+                        onChange={(event) => props.onChange(event)}
                     />
                     <NumberInputStepper>
                         <NumberIncrementStepper/>
