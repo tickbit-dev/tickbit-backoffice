@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, Input, Center, Stack, Image } from '@chakra-ui/react';
+import { Flex, Box, Text, Center, Stack, Image, useDisclosure } from '@chakra-ui/react';
 
 //Components
-import FormButton from './components/Button';
-import TextInput from './components/TextInput';
+import Button from './components/Button';
+import Input from './components/Input';
 
 //Images & Icons
 import { FiUser, FiMapPin, FiMessageSquare, FiTwitter, FiImage } from "react-icons/fi"
@@ -33,7 +33,6 @@ export default function FormularioPruebas({...props}) {
     const [loadingState, setLoadingState] = useState('not-loaded');
 
     useEffect(() => {
-        //listItems()
     }, []);
 
     async function loadEvent(eventId) {
@@ -58,35 +57,19 @@ export default function FormularioPruebas({...props}) {
         setLoadingState('loaded') 
     }
 
-    /*async function listItems() {
-        // needs the user to sign the transaction, so will use Web3Provider and sign it
-        const web3Modal = new Web3Modal()
-        const connection = await web3Modal.connect()
-        const provider = new ethers.providers.Web3Provider(connection)
-        const signer = provider.getSigner()
-        //const contract = new ethers.Contract(contractAddress, NFTMarketplace.abi, signer)
     
-        // user will be prompted to pay the asking proces to complete the transaction
-        const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
-        const transaction = await contract.createMarketSale(nft.tokenId, {
-          value: price
-        })
-        await transaction.wait()
-        loadNFTs()
-    }*/
-
     return (
         <Center w={'100vw'} p={'16px'}>
             <Stack direction={'row'} spacing={'10px'}>
                 <Flex flex={1} minW={'600px'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'}>
-                    <TextInput
+                    <Input
                         icon={<MdTitle/>}
                         title={'Título'}
                         required={true}
                         placeholder={"Escribe el título del evento..."}
                         onChange={(event) => setTitle(event.target.value)}
                     />
-                    <TextInput
+                    <Input
                         mt={'16px'}
                         icon={<FiMapPin/>}
                         title={'Ciudad'}
@@ -94,7 +77,7 @@ export default function FormularioPruebas({...props}) {
                         placeholder={"Escribe la ciudad en que se realizará el evento..."}
                         onChange={(event) => setCity(event.target.value)}
                     />
-                    <TextInput
+                    <Input
                         mt={'16px'}
                         icon={<BiCategoryAlt/>}
                         title={'Categoría'}
@@ -102,7 +85,7 @@ export default function FormularioPruebas({...props}) {
                         placeholder={"Indica la categoría del evento..."}
                         onChange={(event) => setCategory(event.target.value)}
                     />
-                    <TextInput
+                    <Input
                         mt={'16px'}
                         icon={<FaRegUser/>}
                         title={'Artista'}
@@ -110,7 +93,7 @@ export default function FormularioPruebas({...props}) {
                         placeholder={"Escribe el nombre del artista..."}
                         onChange={(event) => setArtist(event.target.value)}
                     />
-                    <TextInput
+                    <Input
                         mt={'16px'}
                         icon={<FiImage/>}
                         title={'Imagen de portada'}
@@ -118,7 +101,7 @@ export default function FormularioPruebas({...props}) {
                         placeholder={"Indica la URL de la imagen..."}
                         onChange={(event) => setImageURL(event.target.value)}
                     />
-                    <TextInput
+                    <Input
                         mt={'16px'}
                         textarea={"true"}
                         icon={<BsTextLeft/>}
@@ -127,7 +110,7 @@ export default function FormularioPruebas({...props}) {
                         placeholder={"Escribe una descripción para el evento..."}
                         onChange={(event) => setDescription(event.target.value)}
                     />
-                    <FormButton
+                    <Button
                         text={'Registrar evento'}
                     />
                     <Center mt={"10px"}>
@@ -135,14 +118,14 @@ export default function FormularioPruebas({...props}) {
                     </Center>
                 </Flex>
                 <Flex flex={1} direction={'column'} w={'400px'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'}>
-                    <TextInput
+                    <Input
                         icon={<FiImage/>}
                         title={'Id del evento'}
                         required={true}
                         placeholder={1}
                         onChange={(event) => setSearchedId(event.target.value)}
                     />
-                    <FormButton 
+                    <Button 
                         text={'Consultar evento'}
                         onClick={() => loadEvent(searchedId)}
                     />
@@ -176,3 +159,25 @@ export default function FormularioPruebas({...props}) {
         </Center>
     );
 };
+
+function CitiesBox({...props}) {
+    const { isOpen, onToggle } = useDisclosure();
+
+    return(
+        <Center
+            as={"button"}
+            role={"group"}
+            h={"50px"}
+            bg={isOpen ? "black" : "white"}
+            borderRadius={"10px"}
+            borderWidth={1}
+            px={"16px"}
+            transition="all .3s ease"
+            style={{WebkitTapHighlightColor: "transparent"}}
+            _hover={{transform: "scale(1.02)"}}
+            onClick={() => (onToggle(), isOpen ? props.quitCity(', ' + props.text) : props.quitCity(', ' + props.text))}
+        >
+            <Text fontWeight={isOpen ? "bold" : 500} color={isOpen ? "white" : "undefined"} fontSize={isOpen ? "15.27px" : "undefined"} _groupHover={{fontWeight: 'bold', fontSize: "15.27px"}}>{props.text}</Text>
+        </Center>
+    )
+}

@@ -4,28 +4,29 @@ import Button from '@mui/material/Button';
 import { ChakraProvider } from '@chakra-ui/react'
 import CustomTable from './CustomTable';
 import FormularioPruebas from './FormularioPruebas';
+import HomePage from './HomePage';
+import SearchEvent from './tabs/SearchEvent';
+import CreatePlan from './tabs/CreatePlan';
 
 export default function App({...props}) {
 
-	const [state, setState] = useState();
+	const [activeTab, setActiveTab] = useState('search');
 
 	useEffect(() => {
 	}, []);
 
+
+
 	return (
-		<div>
-			<ChakraProvider>
-				<Flex>
-					<FormularioPruebas/>
-				</Flex>
-			</ChakraProvider>
-
-			{/*<CustomTable/>
-
-			<ChakraProvider>
-				<Flex><Text>Hola</Text></Flex>
-			</ChakraProvider>*/}
-		</div>
+		<ChakraProvider>
+			<HomePage activetab={(tab) => setActiveTab(tab)}>
+				{activeTab == 'search' ?
+					<SearchEvent/>
+				: activeTab == 'create' ?
+					<CreatePlan/>
+				: null}
+			</HomePage>
+		</ChakraProvider>
 	);
 };
 

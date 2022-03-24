@@ -1,6 +1,6 @@
-import { Center, Flex, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Text, Textarea } from '@chakra-ui/react';
+import { Center, Flex, Input as TextInput, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Text, Textarea } from '@chakra-ui/react';
 
-export default function TextInput({...props}) {
+export default function Input({...props}) {
     return (
         <Flex direction={"column"} {...props}>
             <Flex alignItems={"center"} mb={"10px"} px={"6px"}>
@@ -36,7 +36,7 @@ export default function TextInput({...props}) {
                     </NumberInputStepper>
                 </NumberInput>
             : 
-                <Input
+                <TextInput
                     borderWidth={1}
                     h={"50px"}
                     borderRadius={"10px"}
