@@ -7,15 +7,14 @@ import FormularioPruebas from './FormularioPruebas';
 import HomePage from './HomePage';
 import SearchEvent from './tabs/SearchEvent';
 import CreatePlan from './tabs/CreatePlan';
+import Settings from './tabs/Settings';
 
 export default function App({...props}) {
 
-	const [activeTab, setActiveTab] = useState('search');
+	const [activeTab, setActiveTab] = useState('create');
 
 	useEffect(() => {
 	}, []);
-
-
 
 	return (
 		<ChakraProvider>
@@ -24,6 +23,8 @@ export default function App({...props}) {
 					<SearchEvent/>
 				: activeTab == 'create' ?
 					<CreatePlan/>
+				: activeTab == 'settings' ?
+					<Settings/>
 				: null}
 			</HomePage>
 		</ChakraProvider>
