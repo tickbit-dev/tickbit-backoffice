@@ -9,7 +9,6 @@ import {
   VStack,
   Icon,
   useColorModeValue,
-  Link,
   Drawer,
   DrawerContent,
   Text,
@@ -37,16 +36,18 @@ import {
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
+import { Link } from "react-router-dom";
+
 import Logo from "./assets/logo.webp"
 import Button from './components/Button';
 import { IoIosAdd } from 'react-icons/io';
 import SearchEvent from './tabs/SearchEvent';
 
 const LinkItems = [
-    { name: 'Listado de eventos', icon: FiList },
-    { name: 'Buscar evento', icon: FiSearch },
-    { name: 'Eventos destacados', icon: FiStar },
-    { name: 'Ajustes', icon: FiSettings },
+    { name: 'Listado de eventos', icon: FiList, to: 'list' },
+    { name: 'Buscar evento', icon: FiSearch, to: 'search' },
+    { name: 'Eventos destacados', icon: FiStar, to: 'relevant' },
+    { name: 'Ajustes', icon: FiSettings, to: 'settings' },
 ];
 
 export default function HomePage({
@@ -98,11 +99,14 @@ const SidebarContent = ({ onClose, ...rest }) => {
         </Box>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      <Flex px={'16px'} mb={'16px'} mt={'16px'}>
-        <Button text={'Crear evento'} icon={<IoIosAdd color={'black'} size={'24px'}/>} bg={'gray.100'} bghover={'gray.200'} color={"black"}/>
-      </Flex>
+      <Link to={'create'}>
+        <Flex px={'16px'} mb={'16px'} mt={'16px'}>
+          <Button text={'Crear evento'} icon={<IoIosAdd color={'black'} size={'24px'}/>} bg={'gray.100'} bghover={'gray.200'} color={"black"}/>
+        </Flex>
+      </Link>
+
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} to={link.to}>
           {link.name}
         </NavItem>
       ))}
@@ -110,9 +114,9 @@ const SidebarContent = ({ onClose, ...rest }) => {
   );
 };
 
-const NavItem = ({ icon, children, ...rest }) => {
+const NavItem = ({ icon, children, to, ...rest }) => {
   return (
-    <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link to={to} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"
