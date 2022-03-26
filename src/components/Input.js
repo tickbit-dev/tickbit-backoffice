@@ -14,6 +14,7 @@ export default function Input({...props}) {
                     borderRadius={"10px"}
                     placeholder={props.placeholder}
                     zIndex={1}
+                    value={props.value ?? null}
                     fontWeight={500}
                     _hover={{ bg: "gray.50", /*transform: 'scale(1.01)'*/ }}
                     transition="all .6s ease"
@@ -26,6 +27,7 @@ export default function Input({...props}) {
                         h={"50px"}
                         _hover={{ bg: "gray.50", /*transform: 'scale(1.01)'*/ }}
                         borderRadius={"10px"}
+                        value={props.value ?? null}
                         placeholder={props.placeholder}
                         _focus={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}}
                         onChange={(event) => props.onChange(event)}
@@ -42,6 +44,7 @@ export default function Input({...props}) {
                     borderRadius={"10px"}
                     placeholder={props.placeholder}
                     zIndex={1}
+                    value={props.value ?? null}
                     fontWeight={500}
                     _hover={{ bg: "gray.50", /*transform: 'scale(1.01)'*/ }}
                     transition="all .6s ease"
