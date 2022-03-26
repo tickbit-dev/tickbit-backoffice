@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/albertgranados/Desktop/solidity/contracts/Tickbit.sol": {
-      "lastModificationDate": 1648134632477,
-      "contentHash": "a2b40c70de596fd05fae89e810d7abae",
+      "lastModificationDate": 1648302028971,
+      "contentHash": "020aa2589dd8179668375869b9f70cba",
       "sourceName": "contracts/Tickbit.sol",
       "solcConfig": {
         "version": "0.8.4",

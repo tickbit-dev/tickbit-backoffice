@@ -12,10 +12,10 @@ import { BsTextLeft, BsImage } from "react-icons/bs"
 import { FaRegUser } from "react-icons/fa"
 import { IoImageOutline } from "react-icons/io5"
 
-//Ether
+//Solidity
 import { ethers, BigNumber } from 'ethers'
-import { contractAddress } from '../config';
-import Tickbit from '../artifacts/contracts/Tickbit.sol/Tickbit.json'
+import { contractAddress } from '../solidity/config';
+import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 
 export default function SearchEvent({...props}) {
     const [events, setEvents] = useState([]);
@@ -31,8 +31,8 @@ export default function SearchEvent({...props}) {
         const item_data = await Promise.all(data);
 
         let item = {
-            id: item_data[0].toNumber(),
-            contractAddress: item_data[1],
+            _owner: item_data[0],
+            _id: item_data[1].toNumber(),
             title: item_data[2],
             city: item_data[3],
             description: item_data[4],

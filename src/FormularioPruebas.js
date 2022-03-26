@@ -17,8 +17,8 @@ import { IoImageOutline } from "react-icons/io5"
 import { ethers, BigNumber } from 'ethers'
 import axios from 'axios'
 import Web3Modal from 'web3modal'
-import { contractAddress } from './config';
-import Tickbit from './artifacts/contracts/Tickbit.sol/Tickbit.json'
+import { contractAddress } from './solidity/config';
+import Tickbit from './solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 
 export default function FormularioPruebas({...props}) {
     const [title, setTitle] = useState("");
