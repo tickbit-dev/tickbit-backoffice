@@ -52,7 +52,7 @@ export default function Input({...props}) {
                     onChange={(event) => props.onChange(event)}
                 />
             }
-            {props.indication ? <Text color={"gray.400"} fontSize={"12px"} fontWeight={400} mt={'4px'}>Los campos marcados con * son obligatorios</Text> : null}
+            {props.indication ? <Text color={"gray.400"} fontSize={"12px"} fontWeight={400} mt={'4px'}>{props.indication}</Text> : null}
         </Flex>
     );
 };
