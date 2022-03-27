@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Flex, Box, Text } from '@chakra-ui/react';
 import Button from '@mui/material/Button';
 import { ChakraProvider } from '@chakra-ui/react'
-import CustomTable from './CustomTable';
 import FormularioPruebas from './FormularioPruebas';
 import HomePage from './HomePage';
 import SearchEvent from './tabs/SearchEvent';

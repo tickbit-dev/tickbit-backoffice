@@ -101,7 +101,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
       </Flex>
       <Link to={'create'}>
         <Flex px={'16px'} mb={'16px'} mt={'16px'}>
-          <Button text={'Crear evento'} icon={<IoIosAdd color={'black'} size={'24px'}/>} bg={'gray.100'} bghover={'gray.200'} color={"black"}/>
+          <Button onClick={() => null} text={'Crear evento'} icon={<IoIosAdd color={'black'} size={'24px'}/>} bg={'gray.100'} bghover={'gray.200'} color={"black"}/>
         </Flex>
       </Link>
 

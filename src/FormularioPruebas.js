@@ -112,6 +112,7 @@ export default function FormularioPruebas({...props}) {
                     />
                     <Button
                         text={'Registrar evento'}
+                        onClick={() => null}
                     />
                     <Center mt={"10px"}>
                         <Text color={"gray.400"} fontSize={"12px"} fontWeight={400}>Los campos marcados con * son obligatorios</Text>
@@ -137,10 +138,10 @@ export default function FormularioPruebas({...props}) {
                                     src={events.coverImageUrl}
                                     mb={'10px'}
                                 />
-                                <Text fontWeight={400} color={'gray.300'}>id:</Text>
-                                <Text>{events.id}</Text>
-                                <Text fontWeight={400} color={'gray.300'}>contractAddress:</Text>
-                                <Text>{events.contractAddress}</Text>
+                                <Text fontWeight={400} color={'gray.300'}>_id:</Text>
+                                <Text>{events._id}</Text>
+                                <Text fontWeight={400} color={'gray.300'}>_owner:</Text>
+                                <Text>{events._owner}</Text>
                                 <Text fontWeight={400} color={'gray.300'}>title:</Text>
                                 <Text>{events.title}</Text>
                                 <Text fontWeight={400} color={'gray.300'}>artist:</Text>
