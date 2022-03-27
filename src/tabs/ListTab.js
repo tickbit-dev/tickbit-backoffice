@@ -54,7 +54,7 @@ export default function ListTab({...props}) {
                 _owner: item_data[i][0],
                 _id: item_data[i][1].toNumber(),
                 title: item_data[i][2],
-                city: item_data[i][3],
+                city: item_data[i][3].toNumber(),
                 description: item_data[i][4],
                 artist: item_data[i][5],
                 coverImageUrl: item_data[i][6],

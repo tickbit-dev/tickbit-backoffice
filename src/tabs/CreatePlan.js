@@ -47,42 +47,14 @@ export default function CreatePlan({...props}) {
         
         /* user will be prompted to pay the asking proces to complete the transaction */
         //const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
-        const transaction = await contract.createEvent('0x57c62211C4711d4526298eB5D817345d602B4FC3', title, city, description, artist, imageURL, category);
+        const transaction = await contract.createEvent(title, city, description, artist, imageURL, category);
         console.log('hola7')
 
         await transaction.wait()
     }
 
-    /*async function loadEvents() {
-        const provider = new ethers.providers.JsonRpcProvider()
-        const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
-        const data = await contract.readAllEvents();
-
-        const item_data = await Promise.all(data);
-
-        let itemsArray = [];
-
-        for(let i = 0; i < item_data.length; ++i){
-            let item = {
-                _owner: item_data[i][0],
-                _id: item_data[i][1].toNumber(),
-                title: item_data[i][2],
-                city: item_data[i][3],
-                description: item_data[i][4],
-                artist: item_data[i][5],
-                coverImageUrl: item_data[i][6],
-                category: item_data[i][7].toNumber()
-            }
-
-            itemsArray.push(item);
-        }
-
-        setEvents(itemsArray)
-        setLoadingState('loaded')
-    }*/
-
     return (
-        <Flex flex={1} minW={'600px'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
+        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
             <Stack direction={'row'} spacing={'16px'} mt={'16px'}>
                 <Input
                     icon={<MdTitle/>}

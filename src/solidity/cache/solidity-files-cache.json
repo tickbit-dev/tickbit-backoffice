@@ -1,9 +1,9 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\User\\Desktop\\solidity\\contracts\\Tickbit.sol": {
-      "lastModificationDate": 1648303811273,
-      "contentHash": "020aa2589dd8179668375869b9f70cba",
+    "/Users/albertgranados/Desktop/solidity/contracts/Tickbit.sol": {
+      "lastModificationDate": 1648395624372,
+      "contentHash": "8658a3373c88953982417150826efb33",
       "sourceName": "contracts/Tickbit.sol",
       "solcConfig": {
         "version": "0.8.4",
@@ -39,8 +39,8 @@
         "Tickbit"
       ]
     },
-    "C:\\Users\\User\\Desktop\\solidity\\node_modules\\@openzeppelin\\contracts\\utils\\Counters.sol": {
-      "lastModificationDate": 1648303950407,
+    "/Users/albertgranados/Desktop/solidity/node_modules/@openzeppelin/contracts/utils/Counters.sol": {
+      "lastModificationDate": 1648309861987,
       "contentHash": "74654e3ae5d7f39555055dfe244dab7a",
       "sourceName": "@openzeppelin/contracts/utils/Counters.sol",
       "solcConfig": {
@@ -74,8 +74,8 @@
         "Counters"
       ]
     },
-    "C:\\Users\\User\\Desktop\\solidity\\node_modules\\@openzeppelin\\contracts\\access\\Ownable.sol": {
-      "lastModificationDate": 1648303956112,
+    "/Users/albertgranados/Desktop/solidity/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1648309862694,
       "contentHash": "8398972af73b4e9e5ff3b31cad86234f",
       "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
       "solcConfig": {
@@ -111,8 +111,8 @@
         "Ownable"
       ]
     },
-    "C:\\Users\\User\\Desktop\\solidity\\node_modules\\@openzeppelin\\contracts\\utils\\Context.sol": {
-      "lastModificationDate": 1648303950373,
+    "/Users/albertgranados/Desktop/solidity/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1648309861982,
       "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
       "solcConfig": {

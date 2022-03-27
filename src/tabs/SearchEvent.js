@@ -21,7 +21,11 @@ export default function SearchEvent({...props}) {
     const [events, setEvents] = useState([]);
     const [loadingState, setLoadingState] = useState('not-loaded');
 
-    const [searchedId, setSearchedId] = useState("");
+    const [searchedId, setSearchedId] = useState(1);
+
+    useEffect(() => {
+        loadEvent(searchedId);
+    }, []);
 
     async function loadEvent(eventId) {
         const provider = new ethers.providers.JsonRpcProvider()
@@ -34,11 +38,12 @@ export default function SearchEvent({...props}) {
             _owner: item_data[0],
             _id: item_data[1].toNumber(),
             title: item_data[2],
-            city: item_data[3],
+            city: item_data[3].toNumber(),
             description: item_data[4],
             artist: item_data[5],
             coverImageUrl: item_data[6],
-            category: item_data[7].toNumber()
+            category: item_data[7].toNumber(),
+            visibility: item_data[8]
         }
 
         setEvents(item)
@@ -53,6 +58,7 @@ export default function SearchEvent({...props}) {
                     title={'Id del evento'}
                     required={true}
                     placeholder={1}
+                    value={1}
                     onChange={(event) => setSearchedId(event.target.value)}
                 />
                 <Button 
@@ -72,10 +78,10 @@ export default function SearchEvent({...props}) {
                         />
                     </AspectRatio>
                     <Flex direction={'column'} mt={'16px'}>
-                        <Text fontWeight={400} color={'gray.300'}>id:</Text>
-                        <Text>{events.id}</Text>
-                        <Text fontWeight={400} color={'gray.300'}>contractAddress:</Text>
-                        <Text>{events.contractAddress}</Text>
+                        <Text fontWeight={400} color={'gray.300'}>_id:</Text>
+                        <Text>{events._id}</Text>
+                        <Text fontWeight={400} color={'gray.300'}>_owner:</Text>
+                        <Text>{events._owner}</Text>
                         <Text fontWeight={400} color={'gray.300'}>title:</Text>
                         <Text>{events.title}</Text>
                         <Text fontWeight={400} color={'gray.300'}>artist:</Text>
@@ -86,6 +92,8 @@ export default function SearchEvent({...props}) {
                         <Text>{events.city}</Text>
                         <Text fontWeight={400} color={'gray.300'}>description:</Text>
                         <Text>{events.description}</Text>
+                        <Text fontWeight={400} color={'gray.300'}>visibility:</Text>
+                        <Text>{events.visibility == false ? 'false' : events.visibility == true ? 'true' : null}</Text>
                     </Flex>
                 </Flex>
             </Flex>
