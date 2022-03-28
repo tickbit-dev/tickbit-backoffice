@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text,Table,Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption, Heading,Button,Link,Image,useDisclosure, FormControl  } from '@chakra-ui/react';
+import { Flex, Box, Text,Table,Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption, Heading,Button,Link,Image,useDisclosure, FormControl,Stack  } from '@chakra-ui/react';
 import { Popover,PopoverTrigger,PopoverContent,PopoverArrow,PopoverCloseButton,PopoverHeader,PopoverBody } from '@chakra-ui/react';
 import {  Modal,ModalOverlay,ModalContent,ModalHeader,ModalCloseButton,ModalBody,ModalFooter,FormLabel,Form,Textarea } from '@chakra-ui/react';
 import { BiEdit,BiX,BiCategoryAlt } from "react-icons/bi";
@@ -177,7 +177,7 @@ export default function ListTab({...props}) {
             </ModalContent>
             </Modal>
 
-            <Table variant='striped' colorScheme='gray' size='lg' boxShadow='base' >
+            <Table variant='striped' colorScheme='gray' size='md' boxShadow='base' >
                 <Thead backgroundColor={'#3C3C39'} h={50} >
                 <Tr >
                     <Th  color={'white'}>Id</Th>
@@ -222,8 +222,12 @@ export default function ListTab({...props}) {
                                         </Popover>
                                     </Td>
                                     <Td>{item.category}</Td>
-                                    <Td><Button  colorScheme={'yellow'} bgColor={'#E3DC54 '} textColor={'white'} _focus={{outline:'none'}} ><BiEdit fontSize={20} onClick={()=>{onOpenUpdate(); handleUpdate(item);}}/></Button>
-                                        <Button  colorScheme={'red'} bgColor={'#EF3C0E '} textColor={'white'} _focus={{outline:'none'}}ml={2} ><BiX fontSize={20}onClick={()=>{onOpenDelete();}} /></Button></Td>
+                                    <Td>
+                                        <Stack direction={'row'}>
+                                            <Button  colorScheme={'yellow'} bgColor={'#E3DC54 '} textColor={'white'} _focus={{outline:'none'}} ><BiEdit fontSize={20} onClick={()=>{onOpenUpdate(); handleUpdate(item);}}/></Button>
+                                            <Button  colorScheme={'red'} bgColor={'#EF3C0E '} textColor={'white'} _focus={{outline:'none'}}ml={2} ><BiX fontSize={20}onClick={()=>{onOpenDelete();}} /></Button>
+                                        </Stack>
+                                    </Td>
                                 </Tr>
                                 
                                 );
