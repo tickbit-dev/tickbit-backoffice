@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Flex, Box, Text } from '@chakra-ui/react';
 import Button from '@mui/material/Button';
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import FormularioPruebas from './FormularioPruebas';
 import HomePage from './HomePage';
 import SearchEvent from './tabs/SearchEvent';
@@ -17,21 +17,22 @@ import {
 import ListTab from './tabs/ListTab';
 import RelevantTab from './tabs/RelevantTab';
 
+const theme = extendTheme();
+
 export default function App({...props}) {
 
-	const [activeTab, setActiveTab] = useState('create');
+	const [activeTab, setActiveTab] = useState('list');
 
 	useEffect(() => {
 	}, []);
 
 	return (
-		<ChakraProvider>
+		<ChakraProvider theme={theme} resetCSS>
 			<BrowserRouter>
-				<HomePage activetab={(tab) => setActiveTab(tab)}>
+				<HomePage activetab={activeTab} changeactivetab={(tab) => setActiveTab(tab)}>
 					<Routes>
-						<Route path="/" element={<SearchEvent/>} />
+						<Route path="/" element={<ListTab/>} />
 						<Route path="list" element={<ListTab/>} />
-						<Route path="create" element={<CreatePlan/>} />
 						<Route path="search" element={<SearchEvent/>} />
 						<Route path="relevant" element={<RelevantTab/>} />
 						<Route path="settings" element={<Settings/>} />

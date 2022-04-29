@@ -20,6 +20,14 @@ import { ethers, BigNumber } from 'ethers'
 import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 
+//MUI
+/*import TextField from "@material-ui/core/TextField";
+import { ThemeProvider } from "@material-ui/core/styles";*/
+import { createMuiTheme, ThemeProvider } from "@mui/material/styles";
+import EnhancedTable from '../components/Table';
+
+const muiTheme = createMuiTheme();
+
 export default function ListTab({...props}) {
     const [events, setEvents] = useState([]);
     const [loadingState, setLoadingState] = useState('not-loaded');
@@ -196,7 +204,7 @@ export default function ListTab({...props}) {
                 </ModalBody>
                 <ModalFooter>
                     <Stack w={'full'} direction={'row'} spacing={'16px'}>
-                        <Button w={'full'} color={'white'} _focus={{outline:'none'}} colorScheme={'black'} bgColor={'black'} onClick={function(event){onCloseUpdate();}} >Editar</Button>
+                        <Button w={'full'} color={'white'} _focus={{outline:'none'}} colorScheme={'black'} bgColor={'black'} onClick={function(event){onCloseUpdate();}} >Guardar cambios</Button>
                         <Button  colorScheme={'red'} /*bgColor={'#e3524b'}*/ textColor={'white'} _focus={{outline:'none'}} onClick={()=>{onOpenDelete();}} ><FiTrash2 size={'35px'}/> <Text color={'white'} ml={'10px'}>Eliminar</Text></Button>
                     </Stack>
                 </ModalFooter>
@@ -218,118 +226,122 @@ export default function ListTab({...props}) {
             </ModalContent>
             </Modal>
 
-
-            <Flex flex={1} maxW={'full'} borderRadius={'10px'} overflow={'hidden'} borderWidth={'1px'} overflowX={'scroll'}>
-                <Table colorScheme='gray'>
-                    <Thead backgroundColor={'black'}>
-                        <Tr>
-                            <Th color={'white'}>id</Th>
-                            <Th color={'white'}>Imagen</Th>
-                            <Th color={'white'}>Título</Th>
-                            <Th color={'white'}>Artísta</Th>
-                            <Th color={'white'}>Ciudad</Th>
-                            <Th color={'white'} /*isNumeric*/>Estado</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {events.map((item, index) => {
-                            return(
-                                <Tr style={{cursor: 'pointer'}} w={'full'} _hover={{bg: 'gray.100'}} onClick={() => {onOpenUpdate(); handleUpdate(item);}}>
-                                    <Td w={'30px'}>{item._id}</Td>
-                                    <Td w={'50px'}>
-                                        <Popover>
-                                            <Popover>
-                                                <PopoverTrigger>
-                                                    <Image src={item.coverImageUrl} _hover={{cursor:'pointer'}} w={20} h={50} fit={'cover'} borderRadius={'10px'}/>
-                                                </PopoverTrigger>
-                                                <PopoverContent  _focus={{outline:'none'}} >
-                                                    <PopoverArrow />
-                                                    <PopoverCloseButton />
-                                                    <PopoverBody p={8}><Link  _focus={{outline:'none'}}  href={item.coverImageUrl} isExternal>{item.coverImageUrl}</Link></PopoverBody>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </Popover>
-                                    </Td>
-                                    <Td>{item.title}</Td>
-                                    <Td>{item.artist}</Td>
-                                    <Td w={'30px'}>{getCiudadPorId(item.city)}</Td>
-                                    <Td w={'30px'}>{getEstado(3)}</Td>
-                                </Tr>
-                            )
-                        })}
-                        <Tr/> 
-                        {/*<Tr>
-                        <Td>inches</Td>
-                        <Td>millimetres (mm)</Td>
-                        <Td isNumeric>25.4</Td>
-                        </Tr>
-                        <Tr>
-                        <Td>feet</Td>
-                        <Td>centimetres (cm)</Td>
-                        <Td isNumeric>30.48</Td>
-                        </Tr>
-                        <Tr>
-                        <Td>yards</Td>
-                        <Td>metres (m)</Td>
-                        <Td isNumeric>0.91444</Td>
-                        </Tr>*/}
-                    </Tbody>
-                </Table>
-                {/*<Table variant='striped' colorScheme='gray' size='md'>
-                    <Thead backgroundColor={'black'} h={50}>
-                        <Tr>
-                            <Th  color={'white'}>Id</Th>
-                            <Th   color={'white'}>Título</Th>
-                            <Th  color={'white'}>Ciudad</Th>
-                            <Th  color={'white'}>Descripción</Th>
-                            <Th  color={'white'}> Artista</Th>
-                            <Th  color={'white'}> Imagen</Th>
-                            <Th  color={'white'}> Categoria</Th>
-                            <Th  color={'white'}> Acciones</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody >
-                        {events.map((item, index) => {
-                            return( <Tr >
-                                        <Td>{item._id}</Td>
-                                        <Td>{item.title}</Td>
-                                        <Td>{item.city}</Td>
-                                        <Td>
-                                            <Popover>
-                                                <PopoverTrigger>
-                                                    <Text  _hover={{cursor:'pointer'}} >Ver descripción...</Text>
-                                                </PopoverTrigger>
-                                                <PopoverContent  _focus={{outline:'none'}} >
-                                                    <PopoverArrow />
-                                                    <PopoverCloseButton />
-                                                    <PopoverBody p={8}>{item.description}</PopoverBody>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </Td>
-                                        <Td >{item.artist}</Td>
-                                        <Td>
-                                            <Popover>
-                                                <PopoverTrigger>
-                                                    <Image src={item.coverImageUrl} _hover={{cursor:'pointer'}} w={20} h={50} />
-                                                </PopoverTrigger>
-                                                <PopoverContent  _focus={{outline:'none'}} >
-                                                    <PopoverArrow />
-                                                    <PopoverCloseButton />
-                                                    <PopoverBody p={8}><Link  _focus={{outline:'none'}}  href={item.coverImageUrl} isExternal>{item.coverImageUrl}</Link></PopoverBody>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </Td>
-                                        <Td>{item.category}</Td>
-                                        <Td><Button  colorScheme={'yellow'} bgColor={'#E3DC54 '} textColor={'white'} _focus={{outline:'none'}} ><BiEdit fontSize={20} onClick={()=>{onOpenUpdate(); handleUpdate(item);}}/></Button>
-                                            <Button  colorScheme={'red'} bgColor={'#EF3C0E '} textColor={'white'} _focus={{outline:'none'}}ml={2} ><BiX fontSize={20}onClick={()=>{onOpenDelete();}} /></Button></Td>
-                                    </Tr>
-                                    
-                                    );
-                            })}
-                    </Tbody>
-                </Table>*/}
-            </Flex>
-
+            <ThemeProvider theme={muiTheme}>
+                <EnhancedTable items={events} openModal={(item) => {onOpenUpdate(); handleUpdate(item)}}/>
+            </ThemeProvider>
         </Flex>
     );
  };
+
+function table_sc(events) {
+    <Flex flex={1} maxW={'full'} borderRadius={'10px'} overflow={'hidden'} borderWidth={'1px'} overflowX={'scroll'}>
+        <Table colorScheme='gray'>
+            <Thead backgroundColor={'black'}>
+                <Tr>
+                    <Th color={'white'}>id</Th>
+                    <Th color={'white'}>Imagen</Th>
+                    <Th color={'white'}>Título</Th>
+                    <Th color={'white'}>Artísta</Th>
+                    <Th color={'white'}>Ciudad</Th>
+                    <Th color={'white'} /*isNumeric*/>Estado</Th>
+                </Tr>
+            </Thead>
+            <Tbody>
+                {events.map((item, index) => {
+                    return(
+                        <Tr style={{cursor: 'pointer'}} w={'full'} _hover={{bg: 'gray.100'}} onClick={() => /*{onOpenUpdate(); handleUpdate(item);}*/null}>
+                            <Td w={'30px'}>{item._id}</Td>
+                            <Td w={'50px'}>
+                                <Popover>
+                                    <Popover>
+                                        <PopoverTrigger>
+                                            <Image src={item.coverImageUrl} _hover={{cursor:'pointer'}} w={20} h={50} fit={'cover'} borderRadius={'10px'}/>
+                                        </PopoverTrigger>
+                                        <PopoverContent  _focus={{outline:'none'}} >
+                                            <PopoverArrow />
+                                            <PopoverCloseButton />
+                                            <PopoverBody p={8}><Link  _focus={{outline:'none'}}  href={item.coverImageUrl} isExternal>{item.coverImageUrl}</Link></PopoverBody>
+                                        </PopoverContent>
+                                    </Popover>
+                                </Popover>
+                            </Td>
+                            <Td>{item.title}</Td>
+                            <Td>{item.artist}</Td>
+                            <Td w={'30px'}>{getCiudadPorId(item.city)}</Td>
+                            <Td w={'30px'}>{getEstado(3)}</Td>
+                        </Tr>
+                    )
+                })}
+                <Tr/> 
+                {/*<Tr>
+                <Td>inches</Td>
+                <Td>millimetres (mm)</Td>
+                <Td isNumeric>25.4</Td>
+                </Tr>
+                <Tr>
+                <Td>feet</Td>
+                <Td>centimetres (cm)</Td>
+                <Td isNumeric>30.48</Td>
+                </Tr>
+                <Tr>
+                <Td>yards</Td>
+                <Td>metres (m)</Td>
+                <Td isNumeric>0.91444</Td>
+                </Tr>*/}
+            </Tbody>
+        </Table>
+        {/*<Table variant='striped' colorScheme='gray' size='md'>
+            <Thead backgroundColor={'black'} h={50}>
+                <Tr>
+                    <Th  color={'white'}>Id</Th>
+                    <Th   color={'white'}>Título</Th>
+                    <Th  color={'white'}>Ciudad</Th>
+                    <Th  color={'white'}>Descripción</Th>
+                    <Th  color={'white'}> Artista</Th>
+                    <Th  color={'white'}> Imagen</Th>
+                    <Th  color={'white'}> Categoria</Th>
+                    <Th  color={'white'}> Acciones</Th>
+                </Tr>
+            </Thead>
+            <Tbody >
+                {events.map((item, index) => {
+                    return( <Tr >
+                                <Td>{item._id}</Td>
+                                <Td>{item.title}</Td>
+                                <Td>{item.city}</Td>
+                                <Td>
+                                    <Popover>
+                                        <PopoverTrigger>
+                                            <Text  _hover={{cursor:'pointer'}} >Ver descripción...</Text>
+                                        </PopoverTrigger>
+                                        <PopoverContent  _focus={{outline:'none'}} >
+                                            <PopoverArrow />
+                                            <PopoverCloseButton />
+                                            <PopoverBody p={8}>{item.description}</PopoverBody>
+                                        </PopoverContent>
+                                    </Popover>
+                                </Td>
+                                <Td >{item.artist}</Td>
+                                <Td>
+                                    <Popover>
+                                        <PopoverTrigger>
+                                            <Image src={item.coverImageUrl} _hover={{cursor:'pointer'}} w={20} h={50} />
+                                        </PopoverTrigger>
+                                        <PopoverContent  _focus={{outline:'none'}} >
+                                            <PopoverArrow />
+                                            <PopoverCloseButton />
+                                            <PopoverBody p={8}><Link  _focus={{outline:'none'}}  href={item.coverImageUrl} isExternal>{item.coverImageUrl}</Link></PopoverBody>
+                                        </PopoverContent>
+                                    </Popover>
+                                </Td>
+                                <Td>{item.category}</Td>
+                                <Td><Button  colorScheme={'yellow'} bgColor={'#E3DC54 '} textColor={'white'} _focus={{outline:'none'}} ><BiEdit fontSize={20} onClick={()=>{onOpenUpdate(); handleUpdate(item);}}/></Button>
+                                    <Button  colorScheme={'red'} bgColor={'#EF3C0E '} textColor={'white'} _focus={{outline:'none'}}ml={2} ><BiX fontSize={20}onClick={()=>{onOpenDelete();}} /></Button></Td>
+                            </Tr>
+                            
+                            );
+                    })}
+            </Tbody>
+        </Table>*/}
+    </Flex>
+}

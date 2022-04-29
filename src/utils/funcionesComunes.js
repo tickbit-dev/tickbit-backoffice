@@ -1,4 +1,4 @@
-import { Badge } from '@chakra-ui/react'
+import { Badge, ChakraProvider } from '@chakra-ui/react'
 
 export function getCiudadPorId(id){
     if(id === 1){
@@ -12,10 +12,10 @@ export function getCiudadPorId(id){
 
 export function getEstado(id){
     if(id === 1){
-        return <Badge colorScheme='green'>Activo</Badge>
+        return <ChakraProvider><Badge colorScheme='green'>Activo</Badge></ChakraProvider>
     } else if(id === 2){
-        return <Badge>Caducado</Badge>
+        return <ChakraProvider><Badge>Caducado</Badge></ChakraProvider>
     } else{
-        return <Badge colorScheme='red'>Eliminado</Badge>
+        return <ChakraProvider><Badge colorScheme='red'>Eliminado</Badge></ChakraProvider>
     }
 }

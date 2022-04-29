@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   IconButton,
   Avatar,
@@ -42,6 +42,7 @@ import Logo from "./assets/logo.webp"
 import Button from './components/Button';
 import { IoIosAdd } from 'react-icons/io';
 import SearchEvent from './tabs/SearchEvent';
+import CreateEventModal from './components/CreateEventModal';
 
 const LinkItems = [
     { name: 'Listado de eventos', icon: FiList, to: 'list' },
@@ -50,14 +51,18 @@ const LinkItems = [
     { name: 'Ajustes', icon: FiSettings, to: 'settings' },
 ];
 
-export default function HomePage({
-children,
-}) {
+const SIDE_MENU_WIDTH = '245px';
+
+export default function HomePage({...props}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure();
+
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+      <CreateEventModal isOpen={isOpenForm} onOpen={onOpenForm} onClose={onCloseForm}/>
       <SidebarContent
         onClose={() => onClose}
+        onOpenForm={() => onOpenForm()}
         display={{ base: 'none', md: 'block' }}
       />
       <Drawer
@@ -69,26 +74,27 @@ children,
         onOverlayClick={onClose}
         size="full">
         <DrawerContent>
-          <SidebarContent onClose={onClose} />
+          <SidebarContent onClose={onClose} onOpenForm={() => onOpenForm()}/>
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
-        {children}
+      <Box ml={{ base: 0, md: SIDE_MENU_WIDTH }} p="4">
+        {props.children}
       </Box>
     </Box>
   );
 }
 
-const SidebarContent = ({ onClose, ...rest }) => {
+const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
+  const [activeTab, setActiveTab] = useState('list');
   return (
     <Box
       transition="3s ease"
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: '245px' }}
+      w={{ base: 'full', md: SIDE_MENU_WIDTH }}
       pos="fixed"
       h="full"
       {...rest}>
@@ -99,15 +105,13 @@ const SidebarContent = ({ onClose, ...rest }) => {
         </Box>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      <Link to={'create'}>
-        <Flex px={'16px'} mb={'16px'} mt={'16px'}>
-          <Button onClick={() => null} text={'Crear evento'} icon={<IoIosAdd color={'black'} size={'24px'}/>} bg={'gray.100'} bghover={'gray.200'} color={"black"}/>
-        </Flex>
-      </Link>
+      <Flex px={'16px'} mb={'16px'} mt={'16px'}>
+        <Button onClick={() => onOpenForm()} text={'Crear evento'} icon={<IoIosAdd color={'white'} size={'24px'}/>} bg={'black'} color={"white"}/>
+      </Flex>
 
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} to={link.to}>
-          {link.name}
+        <NavItem onClick={() => setActiveTab(link.to)} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
+          <Text>{link.name}</Text>
         </NavItem>
       ))}
     </Box>
@@ -148,7 +152,7 @@ const NavItem = ({ icon, children, to, ...rest }) => {
 const MobileNav = ({ onOpen, ...rest }) => {
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
+      ml={{ base: 0, md: SIDE_MENU_WIDTH }}
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
