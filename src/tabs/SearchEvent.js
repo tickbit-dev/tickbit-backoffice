@@ -16,6 +16,7 @@ import { IoImageOutline } from "react-icons/io5"
 import { ethers, BigNumber } from 'ethers'
 import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
+import { format } from 'date-fns';
 
 export default function SearchEvent({...props}) {
     const [events, setEvents] = useState([]);
@@ -37,13 +38,16 @@ export default function SearchEvent({...props}) {
         let item = {
             _owner: item_data[0],
             _id: item_data[1].toNumber(),
-            title: item_data[2],
-            city: item_data[3].toNumber(),
-            description: item_data[4],
-            artist: item_data[5],
-            coverImageUrl: item_data[6],
-            category: item_data[7].toNumber(),
-            visibility: item_data[8]
+            _insertionDate: item_data[2].toNumber(),
+            title: item_data[3],
+            city: item_data[4].toNumber(),
+            description: item_data[5],
+            artist: item_data[6],
+            coverImageUrl: item_data[7],
+            category: item_data[8].toNumber(),
+            initialDate: item_data[9].toNumber(),
+            finalDate: item_data[10].toNumber(),
+            visibility: item_data[11]
         }
 
         setEvents(item)
@@ -82,6 +86,8 @@ export default function SearchEvent({...props}) {
                         <Text>{events._id}</Text>
                         <Text fontWeight={400} color={'gray.300'}>_owner:</Text>
                         <Text>{events._owner}</Text>
+                        <Text fontWeight={400} color={'gray.300'}>_insertionDate:</Text>
+                        <Text>{events._insertionDate ? format(new Date(events._insertionDate * 1000), "dd/MM/yyyy - HH:mm:ss") : null}</Text>
                         <Text fontWeight={400} color={'gray.300'}>title:</Text>
                         <Text>{events.title}</Text>
                         <Text fontWeight={400} color={'gray.300'}>artist:</Text>
@@ -92,6 +98,10 @@ export default function SearchEvent({...props}) {
                         <Text>{events.city}</Text>
                         <Text fontWeight={400} color={'gray.300'}>description:</Text>
                         <Text>{events.description}</Text>
+                        <Text fontWeight={400} color={'gray.300'}>initialDate:</Text>
+                        <Text>{events.initialDate ? format(new Date(events.initialDate * 1000), "dd/MM/yyyy"/*'T'HH:mm:ss.SSSxxx"*/) : null}</Text>
+                        <Text fontWeight={400} color={'gray.300'}>finalDate:</Text>
+                        <Text>{events.finalDate ?format(new Date(events.finalDate * 1000), "dd/MM/yyyy"/*'T'HH:mm:ss.SSSxxx"*/) : null}</Text>
                         <Text fontWeight={400} color={'gray.300'}>visibility:</Text>
                         <Text>{events.visibility == false ? 'false' : events.visibility == true ? 'true' : null}</Text>
                     </Flex>

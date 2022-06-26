@@ -5,12 +5,12 @@ import { Flex, Box, Text, Modal, ModalOverlay, ModalContent, ModalHeader, ModalC
 import { FiUser, FiMapPin, FiMessageSquare, FiTwitter, FiImage } from "react-icons/fi"
 import { BiCategoryAlt } from "react-icons/bi"
 import { MdTitle } from "react-icons/md"
-import { BsTextLeft, BsImage } from "react-icons/bs"
+import { BsTextLeft, BsImage, BsCalendar4Week } from "react-icons/bs"
 import { FaRegUser } from "react-icons/fa"
 import { MdTheaters  } from "react-icons/md";
 import { HiStar } from "react-icons/hi"
 import { FaTheaterMasks } from "react-icons/fa"
-import { IoMusicalNotes } from "react-icons/io5"
+import { IoCalendarOutline, IoMusicalNotes } from "react-icons/io5"
 
 //Solidity
 import { ethers, BigNumber } from 'ethers'
@@ -21,6 +21,12 @@ import Web3Modal from 'web3modal'
 import Input from './Input';
 import Button from './Button';
 
+//Calendar
+import { Input as TextInput } from '@chakra-ui/react'
+import { es } from 'date-fns/locale'
+import { DatePicker } from 'react-nice-dates'
+import 'react-nice-dates/build/style.css'
+
 export default function CreateEventModal({...props}) {
     const [title, setTitle] = useState("");
     const [city, setCity] = useState("");
@@ -28,6 +34,8 @@ export default function CreateEventModal({...props}) {
     const [artist, setArtist] = useState("");
     const [imageURL, setImageURL] = useState("");
     const [description, setDescription] = useState("");
+    const [initialDate, setInitialDate] = useState(new Date() / 1000);
+    const [finalDate, setFinalDate] = useState(new Date() / 1000);
 
     const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
 
@@ -48,7 +56,7 @@ export default function CreateEventModal({...props}) {
         
         /* user will be prompted to pay the asking proces to complete the transaction */
         //const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
-        const transaction = await contract.createEvent(title, city, description, artist, imageURL, category);
+        const transaction = await contract.createEvent(Math.round(new Date() / 1000), title, city, description, artist, imageURL, category, initialDate, finalDate);
         console.log('hola7')
 
         await transaction.wait()
@@ -106,6 +114,30 @@ export default function CreateEventModal({...props}) {
                                 placeholder={"Selecciona una ciudad..."}
                                 onChange={(value) => setCity(value)}
                             />
+                        </Stack>
+                        <Stack direction={'row'} spacing={{base: '10px', md: '16px'}} mt={'16px'}>
+                            <Flex flex={1} direction={"column"}>
+                                <Flex alignItems={"center"} mb={"10px"} px={"6px"}>
+                                    <BsCalendar4Week/>
+                                    <Text fontWeight={400} ml={"10px"}>Fecha inicio <Text as={"span"} color={"gray.400"}>*</Text></Text>
+                                </Flex>
+                                <DatePicker date={new Date(initialDate * 1000)} onDateChange={(date) => setInitialDate(Math.round(date.getTime() / 1000))} locale={es} format='dd/MM/yyyy'>
+                                    {({ inputProps, focused }) => (
+                                        <TextInput className={'input' + (focused ? ' -focused' : '')} {...inputProps} placeholder='DD/MM/YYYY' />
+                                    )}
+                                </DatePicker>
+                            </Flex>
+                            <Flex flex={1} direction={"column"}>
+                                <Flex alignItems={"center"} mb={"10px"} px={"6px"}>
+                                    <BsCalendar4Week/>
+                                    <Text fontWeight={400} ml={"10px"}>Fecha final <Text as={"span"} color={"gray.400"}>*</Text></Text>
+                                </Flex>
+                                <DatePicker date={new Date(finalDate * 1000)} onDateChange={(date) => setFinalDate(Math.round(date.getTime() / 1000))} locale={es} format='dd/MM/yyyy'>
+                                    {({ inputProps, focused }) => (
+                                        <TextInput className={'input' + (focused ? ' -focused' : '')} {...inputProps} placeholder='DD/MM/YYYY' />
+                                    )}
+                                </DatePicker>
+                            </Flex>
                         </Stack>
                         <Input
                             mt={'16px'}

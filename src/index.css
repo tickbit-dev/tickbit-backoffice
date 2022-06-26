@@ -11,3 +11,31 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', 
 		monospace;
 }
+
+.nice-dates-popover {
+	width: 300px !important;
+	padding-left: 16px !important;
+	padding-top: 16px !important;
+	padding-bottom: 16px !important;
+	padding-right: 16px !important;
+  }
+  
+  .nice-dates-day_month {
+	display: none;
+  }
+  
+  .nice-dates-week-header {
+	margin-bottom: 10px !important;
+  }
+  
+  .nice-dates-day.-selected:before {
+	background-color: rgba(66, 153, 225, 0.7);
+  }
+  
+  .slick-next:before {
+	content: '' !important
+  }
+  
+  .slick-prev:before {
+	content: '' !important
+  }

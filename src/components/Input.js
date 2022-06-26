@@ -10,6 +10,7 @@ import { IoIosArrowForward } from "react-icons/io"
 import { FaAngleRight } from "react-icons/fa";
 
 import { useState } from 'react';
+import MyCalendar from './MyCalendar';
 
 export default function Input({...props}) {
     const [selectorValue, setselectorValue] = useState(null);
@@ -62,6 +63,10 @@ export default function Input({...props}) {
                         ))}
                     </MenuList>
                 </Menu>
+            : props.calendar ?
+                <MyCalendar
+                    onChange={(event) => props.onChange(event)}
+                />
             : 
                 <TextInput
                     borderWidth={1}
