@@ -16,6 +16,7 @@ import {
 } from "react-router-dom";
 import ListTab from './tabs/ListTab';
 import RelevantTab from './tabs/RelevantTab';
+import Ticketing from './tabs/Ticketing';
 
 const theme = extendTheme();
 
@@ -33,6 +34,7 @@ export default function App({...props}) {
 					<Routes>
 						<Route path="/" element={<ListTab/>} />
 						<Route path="list" element={<ListTab/>} />
+						<Route path="ticketing" element={<Ticketing/>} />
 						<Route path="search" element={<SearchEvent/>} />
 						<Route path="relevant" element={<RelevantTab/>} />
 						<Route path="settings" element={<Settings/>} />

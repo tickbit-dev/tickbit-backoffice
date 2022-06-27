@@ -43,11 +43,14 @@ import Button from './components/Button';
 import { IoIosAdd } from 'react-icons/io';
 import SearchEvent from './tabs/SearchEvent';
 import CreateEventModal from './components/CreateEventModal';
+import { HiOutlineTicket } from 'react-icons/hi';
 
 const LinkItems = [
-    { name: 'Listado de eventos', icon: FiList, to: 'list' },
-    { name: 'Buscar evento', icon: FiSearch, to: 'search' },
-    { name: 'Eventos destacados', icon: FiStar, to: 'relevant' },
+    { name: 'Eventos', icon: FiList, to: 'list' },
+    { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
+    { name: 'Ingresos', icon: FiTrendingUp, to: 'ticketing' },
+    //{ name: 'Buscar evento', icon: FiSearch, to: 'search' },
+    { name: 'Campañas', icon: FiStar, to: 'relevant' },
     { name: 'Ajustes', icon: FiSettings, to: 'settings' },
 ];
 
