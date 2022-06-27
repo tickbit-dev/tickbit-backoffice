@@ -25,6 +25,7 @@ import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 import { ThemeProvider } from "@material-ui/core/styles";*/
 import { createMuiTheme, ThemeProvider } from "@mui/material/styles";
 import EnhancedTable from '../components/Table';
+import EventsTable from '../components/EventsTable';
 
 const muiTheme = createMuiTheme();
 
@@ -226,9 +227,8 @@ export default function ListTab({...props}) {
             </ModalContent>
             </Modal>
 
-            <ThemeProvider theme={muiTheme}>
-                <EnhancedTable items={events} openModal={(item) => {onOpenUpdate(); handleUpdate(item)}}/>
-            </ThemeProvider>
+
+            <EventsTable openModal={(item) => {onOpenUpdate(); handleUpdate(item)}}/>
         </Flex>
     );
  };
