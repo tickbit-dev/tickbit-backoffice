@@ -5,7 +5,7 @@ function createData(id, title, city, description, artist, coverImageUrl, categor
 export function getTestItems() {return [
     createData(
         1,
-        "1 El Nano Tour",
+        "El Nano Tour",
         1,
         "Ramon Melendi Espina, conocido artisticamente como Melendi, es un cantautor y compositor espanol de musica pop y rumba. De joven sentia atraccion por el futbol, deporte que lo condujo por una corta carrera de futbolista, debutando en varias categorias inferiores en el equipo de su ciudad, el Real Oviedo.",
         "Melendi",
@@ -146,7 +146,7 @@ export function getTestItems() {return [
     ),
     createData(
         17,
-        "11 razones tour", 
+        "4 razones tour", 
         2, 
         "Aitana se ha convertido en un fenomeno musical y social tras su paso por Operacion Triunfo en esta primera edicion de la nueva etapa del programa.", 
         "Aitana", 

@@ -5,25 +5,53 @@ import EventsTable from '../components/EventsTable';
 
 import { getTestItems } from '../utils/testEventsData';
 
+const INITIAL_ITEMS = getTestItems();
+
 export default function EventsTab({...props}) {
-    const [events, setEvents] = useState([]);
+    const [items, setItems] = useState([]);
 
     useEffect(() => {
-        
+        setItems(INITIAL_ITEMS)
     }, []);
+
+    function filterList(word){
+        if(word.length == 0){
+            console.log("EMPTY")
+            setItems(INITIAL_ITEMS)
+            return
+        }
+
+        setItems(INITIAL_ITEMS)
+        let newItems = [];
+
+        for(let item of INITIAL_ITEMS){
+            if(item.id == parseInt(word)){
+                newItems.push(item);
+            }
+            if(item.title.includes(word)){
+                newItems.push(item);
+            }
+            if(item.artist.includes(word)){
+                newItems.push(item);
+            }
+        }
+
+        setItems(newItems);
+    }
 
     return (
         <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >        
             <Flex mb={"10px"}>
                 <Input
-                    w={"300px"}
+                    w={"400px"}
                     maxW={"100%"}
-                    placeholder={"Busca un evento"}
-                    onChange={() => null}
+                    placeholder={"Busca por id, título o artísta del evento"}
+                    onChange={(event) => filterList(event.target.value)}
+                    noOfLines={1}
                 />
             </Flex>
 
-            <EventsTable items={[]}/>
+            <EventsTable items={items}/>
         </Flex>
     );
  };

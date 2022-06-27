@@ -8,7 +8,7 @@ import '../table.css'
 const ITEMS_PER_PAGE = 10;
 
 export default function EventsTable({...props}) {
-    const [items, setItems] = useState(props.items ?? []);
+    const [items, setItems] = useState(props.items ?? getTestItems());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
 
@@ -27,8 +27,10 @@ export default function EventsTable({...props}) {
     };
 
     useEffect(() => {
-        
-    }, []);
+        //console.log("table")
+        //console.log(props.items)
+        setItems(props.items)
+    }, [props.items]);
 
     return (
         <Flex flex={1} direction={'column'} maxW={'full'} borderRadius={'10px'} overflow={'hidden'} borderWidth={'1px'} overflowX={'scroll'}>
