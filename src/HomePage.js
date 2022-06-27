@@ -46,7 +46,7 @@ import CreateEventModal from './components/CreateEventModal';
 import { HiOutlineTicket } from 'react-icons/hi';
 
 const LinkItems = [
-    { name: 'Eventos', icon: FiList, to: 'list' },
+    { name: 'Eventos', icon: FiList, to: 'events' },
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
     { name: 'Ingresos', icon: FiTrendingUp, to: 'ticketing' },
     //{ name: 'Buscar evento', icon: FiSearch, to: 'search' },

@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon } from '@chakra-ui/react';
+import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
 import { getCiudadPorId, getEstado } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { getTestItems } from '../utils/testEventsData'
+import '../table.css'
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 
 export default function EventsTable({...props}) {
-    const [items, setItems] = useState(props.items ?? getTestItems());
+    const [items, setItems] = useState(props.items ?? []);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
 
@@ -32,38 +33,63 @@ export default function EventsTable({...props}) {
     return (
         <Flex flex={1} direction={'column'} maxW={'full'} borderRadius={'10px'} overflow={'hidden'} borderWidth={'1px'} overflowX={'scroll'}>
             <Table sx={{minWidth: 650}} /*variant='striped'*/ colorScheme='gray' size='md'>
-                <Thead backgroundColor={'gray.50'} h={"50px"}>
+                <Thead backgroundColor={'gray.100'}>
                     <Tr>
-                        <Th color={'black'}>Id</Th>
+                        <Th color={'black'} textAlign={'center'} minW={'62px'} w={0}>Id</Th>
                         <Th color={'black'}>Portada</Th>
-                        <Th color={'black'}>Título</Th>
-                        <Th color={'black'}>Artista</Th>
-                        <Th color={'black'}>Ciudad</Th>
-                        <Th color={'black'}>Estado</Th>
+                        <Th color={'black'} minW={'300px'}>Título</Th>
+                        <Th color={'black'} w={0} minW={'200px'}>Artista</Th>
+                        <Th color={'black'} w={0} minW={'130px'}>Ciudad</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
                     {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row) => (
-                        <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.100" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
-                            <Td style={{width:'3%'}}>{row.id}</Td>
-                            <Td style={{width:'3%', paddingTop: 10, paddingBottom: 10}}>
+                        <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
+                            <Td 
+                                bg={'gray.50'}
+                                borderRightWidth={1}
+                                minW={'62px'}
+                                textAlign={'center'}
+                            >
+                                {row.id}
+                            </Td>
+                            <Td 
+                                style={{width:'3%', paddingTop: 10, paddingBottom: 10}}
+                                borderRightWidth={1}
+                            >
                                 <Popover trigger={'hover'}>
                                     <PopoverTrigger>
                                         <Image src={row.coverImageUrl} borderRadius={'10px'} fit={'cover'} h={"50px"}/>
                                     </PopoverTrigger>
                                     <PopoverContent _focus={{outline:'none'}} >
                                         <PopoverArrow />
-                                        <PopoverCloseButton />
                                         <PopoverBody p={4}>
                                             <Link _focus={{outline:'none'}} href={row.coverImageUrl} isExternal>{row.coverImageUrl}</Link>
                                         </PopoverBody>
                                     </PopoverContent>
                                 </Popover>
                             </Td>
-                            <Td><Text noOfLines={1}>{row.title}</Text></Td>
-                            <Td>{row.artist}</Td>
-                            <Td>{getCiudadPorId(row.city)}</Td>
-                            <Td style={{width:'3%'}}>{row.id == 2 ? getEstado(2) : row.id == 3 ? getEstado(3) : row.id == 4 ? getEstado(4) : getEstado(1)}</Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'300px'}
+                            >   
+                                <Flex direction={"column"}>
+                                    {row.id == 2 ? getEstado(2) : row.id == 3 ? getEstado(3) : row.id == 4 ? getEstado(4) : getEstado(1)}
+                                    <Text noOfLines={1}>{row.title}</Text>
+                                </Flex>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'200px'}
+                            >
+                                <Text noOfLines={1}>{row.artist}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'130px'}
+                            >
+                                <Text noOfLines={1}>{getCiudadPorId(row.city)}</Text>
+                            </Td>
                         </Tr>
                     ))}
                     {emptyItems > 0 && (
@@ -77,7 +103,7 @@ export default function EventsTable({...props}) {
 
 
             {/* PAGER */}
-            <Flex padding={"10px"} alignItems={'center'} justifyContent={{base: 'start', lg: 'end'}}>
+            <Flex padding={"10px"} alignItems={'center'} justifyContent={{base: 'start', xl: 'end'}}>
                 <Flex 
                     style={{cursor: currentPage != 0 ? 'pointer' : 'default', userSelect: "none"}}
                     transition="0.3s ease"
@@ -89,7 +115,7 @@ export default function EventsTable({...props}) {
                     borderLeftRadius={'6px'}
                     borderWidth={1}
                     borderRightWidth={0}
-                    _hover={currentPage != 0 && {bg: "gray.100"}}
+                    _hover={currentPage != 0 && {bg: "gray.50"}}
                     onClick={() => currentPage > 0 ? handleChangePage(0) : null}
                 >
                     {/*<Text color={currentPage == 0 && "gray.400"} transition="0.3s ease">Previo</Text>*/}
@@ -110,7 +136,7 @@ export default function EventsTable({...props}) {
                     paddingLeft={'10px'}
                     borderWidth={1}
                     borderRightWidth={0}
-                    _hover={currentPage != 0 && {bg: "gray.100"}}
+                    _hover={currentPage != 0 && {bg: "gray.50"}}
                     onClick={() => currentPage > 0 ? handleChangePage(currentPage - 1) : null}
                 >
                     <Text color={currentPage == 0 && "gray.400"} transition="0.3s ease">Anterior</Text>
@@ -129,8 +155,8 @@ export default function EventsTable({...props}) {
                         transition="0.1s ease"
                         h={'40px'}
                         w={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? '40px' : '0px'}
-                        backgroundColor={value == currentPage ? 'gray.100' : 'none'}
-                        _hover={{bg: "gray.100"}}
+                        backgroundColor={value == currentPage ? 'gray.50' : 'none'}
+                        _hover={{bg: "gray.50"}}
                         borderTopWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
                         borderBottomWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
                         borderLeftWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
@@ -140,7 +166,7 @@ export default function EventsTable({...props}) {
                     </Center>
                 ))}
                 <Flex 
-                    style={{cursor: currentPage != (pagesCount - 1) ? 'pointer' : 'default', userSelect: "none"}}
+                    style={{cursor: !(currentPage == (pagesCount - 1) || items.length == 0) ? 'pointer' : 'default', userSelect: "none"}}
                     transition="0.3s ease"
                     alignItems={'center'}
                     justifyContent={'center'}
@@ -149,10 +175,10 @@ export default function EventsTable({...props}) {
                     paddingLeft={'10px'}
                     borderWidth={1}
                     borderRightWidth={0}
-                    _hover={currentPage != (pagesCount - 1) && {bg: "gray.100"}}
-                    onClick={() => currentPage < (pagesCount - 1) ? handleChangePage(currentPage + 1) : null}
+                    _hover={!(currentPage == (pagesCount - 1) || items.length == 0) && {bg: "gray.50"}}
+                    onClick={() => !(currentPage == (pagesCount - 1) || items.length == 0) && handleChangePage(currentPage + 1)}
                 >
-                    <Text color={currentPage == (pagesCount - 1) && "gray.400"} transition="0.3s ease">Siguiente</Text>
+                    <Text color={currentPage == (pagesCount - 1) || items.length == 0 ? "gray.400" : null} transition="0.3s ease">Siguiente</Text>
                     {/*<Icon
                         style={{ userSelect: "none" }}
                         fontSize="16"
@@ -162,7 +188,7 @@ export default function EventsTable({...props}) {
                     />*/}
                 </Flex>
                 <Flex 
-                    style={{cursor: currentPage != (pagesCount - 1) ? 'pointer' : 'default', userSelect: "none"}}
+                    style={{cursor: !(currentPage == (pagesCount - 1) || items.length == 0) ? 'pointer' : 'default', userSelect: "none"}}
                     transition="0.3s ease"
                     alignItems={'center'}
                     justifyContent={'center'}
@@ -171,14 +197,14 @@ export default function EventsTable({...props}) {
                     paddingLeft={'10px'}
                     borderRightRadius={'6px'}
                     borderWidth={1}
-                    _hover={currentPage != (pagesCount - 1) && {bg: "gray.100"}}
-                    onClick={() => currentPage < (pagesCount - 1) ? handleChangePage(pagesCount - 1) : null}
+                    _hover={!(currentPage == (pagesCount - 1) || items.length == 0) && {bg: "gray.50"}}
+                    onClick={() => !(currentPage == (pagesCount - 1) || items.length == 0) && handleChangePage(pagesCount - 1)}
                 >
                     {/*<Text color={currentPage == (pagesCount - 1) && "gray.400"} transition="0.3s ease">Siguiente</Text>*/}
                     <Icon
                         style={{ userSelect: "none" }}
                         fontSize="16"
-                        color={currentPage == (pagesCount - 1) && "gray.300"}
+                        color={currentPage == (pagesCount - 1) || items.length == 0 ? "gray.300" : null}
                         transition="0.3s ease"
                         as={FiChevronsRight}
                     />

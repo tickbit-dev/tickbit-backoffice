@@ -202,7 +202,7 @@ export function getTestItems() {return [
         "El Nano Tour",
         1,
         "Ramon Melendi Espina, conocido artisticamente como Melendi, es un cantautor y compositor espanol de musica pop y rumba. De joven sentia atraccion por el futbol, deporte que lo condujo por una corta carrera de futbolista, debutando en varias categorias inferiores en el equipo de su ciudad, el Real Oviedo.",
-        "Melendi",
+        "Melendi en concierto tour nuevo",
         "https://www.lavanguardia.com/files/image_948_465/uploads/2015/12/13/5fa30833aa1e4.jpeg",
         1
     ),

@@ -14,7 +14,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import ListTab from './tabs/ListTab';
+import EventsTab from './tabs/EventsTab2';
 import RelevantTab from './tabs/RelevantTab';
 import Ticketing from './tabs/Ticketing';
 
@@ -32,8 +32,8 @@ export default function App({...props}) {
 			<BrowserRouter>
 				<HomePage activetab={activeTab} changeactivetab={(tab) => setActiveTab(tab)}>
 					<Routes>
-						<Route path="/" element={<ListTab/>} />
-						<Route path="list" element={<ListTab/>} />
+						<Route path="/" element={<EventsTab/>} />
+						<Route path="events" element={<EventsTab/>} />
 						<Route path="ticketing" element={<Ticketing/>} />
 						<Route path="search" element={<SearchEvent/>} />
 						<Route path="relevant" element={<RelevantTab/>} />

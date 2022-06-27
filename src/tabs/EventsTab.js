@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text,Table,Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption, Heading,Button,Link,Image,useDisclosure, FormControl, Stack  } from '@chakra-ui/react';
+import { Flex, Box, Text,Table,Thead,Tbody,Tfoot,Tr,Th,Td,TableCaption, Heading,Button,Link,Image,useDisclosure, FormControl, Stack, Input  } from '@chakra-ui/react';
 import { Popover,PopoverTrigger,PopoverContent,PopoverArrow,PopoverCloseButton,PopoverHeader,PopoverBody } from '@chakra-ui/react';
 import {  Modal,ModalOverlay,ModalContent,ModalHeader,ModalCloseButton,ModalBody,ModalFooter,FormLabel,Form,Textarea } from '@chakra-ui/react';
 import { BiEdit,BiX,BiCategoryAlt } from "react-icons/bi";
@@ -7,7 +7,6 @@ import { MdTitle } from "react-icons/md";
 import { BsTextLeft, BsImage, BsEye } from "react-icons/bs";
 import { FiUser, FiMapPin, FiMessageSquare, FiTwitter, FiImage, FiEye, FiTrash2 } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
-import Input from '../components/Input';
 import { MdTheaters  } from "react-icons/md";
 import { HiStar } from "react-icons/hi"
 import { FaTheaterMasks } from "react-icons/fa"
@@ -26,10 +25,11 @@ import { ThemeProvider } from "@material-ui/core/styles";*/
 import { createMuiTheme, ThemeProvider } from "@mui/material/styles";
 import EnhancedTable from '../components/Table';
 import EventsTable from '../components/EventsTable';
+import { getTestItems } from '../utils/testEventsData';
 
 const muiTheme = createMuiTheme();
 
-export default function ListTab({...props}) {
+export default function EventsTab({...props}) {
     const [events, setEvents] = useState([]);
     const [loadingState, setLoadingState] = useState('not-loaded');
     const [updatedata, setUpdatedata] = useState([]);
@@ -53,6 +53,7 @@ export default function ListTab({...props}) {
 
     useEffect(() => {
         loadEvents();
+        
     }, []);
 
     async function loadEvents() {
@@ -228,7 +229,30 @@ export default function ListTab({...props}) {
             </Modal>
 
 
-            <EventsTable openModal={(item) => {onOpenUpdate(); handleUpdate(item)}}/>
+
+
+
+
+            {/*<Input
+                //icon={null<FiImage/>}
+                style={{marginBottom: 10}}
+                title={'Id del evento'}
+                required={true}
+                placeholder={"Busca por un evento"}
+                value={1}
+                onChange={(event) =>  null}
+            />*/}
+
+            <Flex mb={"10px"}>
+                <Input
+                    w={"300px"}
+                    maxW={"100%"}
+                    placeholder={"Busca un evento"}
+                    onChange={() => null}
+                />
+            </Flex>
+
+            <EventsTable items={[]} openModal={(item) => {onOpenUpdate(); handleUpdate(item)}}/>
         </Flex>
     );
  };
