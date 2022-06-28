@@ -24,8 +24,8 @@ import Button from './Button';
 //Calendar
 import { Input as TextInput } from '@chakra-ui/react'
 import { es } from 'date-fns/locale'
-import { DatePicker } from 'react-nice-dates'
-import 'react-nice-dates/build/style.css'
+//import { DatePicker } from 'react-nice-dates'
+//import 'react-nice-dates/build/style.css'
 
 export default function CreateEventModal({...props}) {
     const [title, setTitle] = useState("");
@@ -121,22 +121,22 @@ export default function CreateEventModal({...props}) {
                                     <BsCalendar4Week/>
                                     <Text fontWeight={400} ml={"10px"}>Fecha inicio <Text as={"span"} color={"gray.400"}>*</Text></Text>
                                 </Flex>
-                                <DatePicker date={new Date(initialDate * 1000)} onDateChange={(date) => setInitialDate(Math.round(date.getTime() / 1000))} locale={es} format='dd/MM/yyyy'>
+                                {/*<DatePicker date={new Date(initialDate * 1000)} onDateChange={(date) => setInitialDate(Math.round(date.getTime() / 1000))} locale={es} format='dd/MM/yyyy'>
                                     {({ inputProps, focused }) => (
                                         <TextInput className={'input' + (focused ? ' -focused' : '')} {...inputProps} placeholder='DD/MM/YYYY' />
                                     )}
-                                </DatePicker>
+                                </DatePicker>*/}
                             </Flex>
                             <Flex flex={1} direction={"column"}>
                                 <Flex alignItems={"center"} mb={"10px"} px={"6px"}>
                                     <BsCalendar4Week/>
                                     <Text fontWeight={400} ml={"10px"}>Fecha final <Text as={"span"} color={"gray.400"}>*</Text></Text>
                                 </Flex>
-                                <DatePicker date={new Date(finalDate * 1000)} onDateChange={(date) => setFinalDate(Math.round(date.getTime() / 1000))} locale={es} format='dd/MM/yyyy'>
+                                {/*<DatePicker date={new Date(finalDate * 1000)} onDateChange={(date) => setFinalDate(Math.round(date.getTime() / 1000))} locale={es} format='dd/MM/yyyy'>
                                     {({ inputProps, focused }) => (
                                         <TextInput className={'input' + (focused ? ' -focused' : '')} {...inputProps} placeholder='DD/MM/YYYY' />
                                     )}
-                                </DatePicker>
+                                </DatePicker>*/}
                             </Flex>
                         </Stack>
                         <Input
