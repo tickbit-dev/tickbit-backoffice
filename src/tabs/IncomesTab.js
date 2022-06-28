@@ -20,15 +20,36 @@ export default function IncomesTab({...props}) {
         income: 5600
     }]);
 
+    const [tickets, setTickets] = useState(props.items ?? getTestTickets());
+
+
     function getNumTicketsByMonth(month, year){
-
-        return 0;
+        var numtickets = 0;
+   
+        for(let i=0; i < tickets.length; i++){
+            let d = new Date(tickets[i].purchaseDate * 1000)
+            let month2 = d.getMonth() + 1;
+            let year2 = d.getFullYear();
+            if(month === month2 && year === year2){
+                numtickets++;
+            }
+        }
+        return numtickets ;
     }
-
+  
     function getIncomeByMonth(month, year){
+        var income = 0;
+        for(let i=0; i < tickets.length; i++){
+            let d = new Date(tickets[i].purchaseDate * 1000)
+            let month2 = d.getMonth() + 1;
+            let year2 = d.getFullYear();
+            if(month === month2 && year === year2){
+                income += tickets[i].price;
+            }
+        }
+        return income;
         
-        return 0;
-    }
+    }   
 
     useEffect(() => {
         var startDate = moment(initialDate);
@@ -42,6 +63,7 @@ export default function IncomesTab({...props}) {
 
             result.push({month: startDate.month() + 1, year: startDate.year(), num_tickets: numtickets, income: incomes});
             startDate.add(1, 'month');
+            
         }
         setData(result.reverse());
         

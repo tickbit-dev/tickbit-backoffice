@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { getCiudadPorId, getEstado } from '../utils/funcionesComunes';
+import { changeNumberforNameMonth, getCiudadPorId, getEstado } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { getTestItems } from '../utils/testEventsData'
 import '../table.css'
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 6;
 
 export default function IncomesTable({...props}) {
     const [items, setItems] = useState(props.items ?? getTestItems());
@@ -50,8 +50,8 @@ export default function IncomesTable({...props}) {
                                 minW={'300px'}
                             >   
                                 <Flex direction={"row"}>
-                                    <Text noOfLines={1}>{row.month}</Text>
-                                    <Text noOfLines={1}>{row.year}</Text>
+                                    <Text noOfLines={1}>{changeNumberforNameMonth(row.month)+'\u00A0' + 'de'+ '\u00A0' } </Text>
+                                    <Text noOfLines={1}>{ ' ' + row.year}</Text>
                                 </Flex>
                             </Td>
                             <Td

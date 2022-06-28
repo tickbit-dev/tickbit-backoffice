@@ -7,6 +7,33 @@ import { TbCalendarOff } from 'react-icons/tb';
 
 //Hacer funcion que te cambie numero por nombre mes
 
+export function changeNumberforNameMonth(value){
+    if(value === 1){
+        return 'Enero'
+    } else if(value === 2){
+        return 'Febrero'
+    } else if(value === 3){
+        return 'Marzo'
+    } else if(value === 4){
+        return 'Abril'
+    } else if(value === 5){
+        return 'Mayo'
+    } else if(value === 6){
+        return 'Junio'
+    } else if(value === 7){
+        return 'Julio'
+    } else if(value === 8){
+        return 'Agosto'
+    } else if(value === 9){
+        return 'Septiembre'
+    } else if(value === 10){
+        return 'Octubre'
+    } else if(value === 11){
+        return 'Noviembre'
+    } else if(value === 12){
+        return 'Diciembre'
+    }
+}
 
 export function getCiudadPorId(id){
     if(id === 1){
