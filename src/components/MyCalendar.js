@@ -1,4 +1,4 @@
-import { Input } from '@chakra-ui/react'
+import { Flex, Input } from '@chakra-ui/react'
 import { es,  } from 'date-fns/locale'
 import { useState } from 'react'
 //import { DatePicker } from 'react-nice-dates'
