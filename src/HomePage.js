@@ -48,7 +48,7 @@ import { HiOutlineTicket } from 'react-icons/hi';
 const LinkItems = [
     { name: 'Eventos', icon: FiList, to: 'events' },
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
-    { name: 'Ingresos', icon: FiTrendingUp, to: 'ticketing' },
+    { name: 'Ingresos', icon: FiTrendingUp, to: 'incomes' },
     //{ name: 'Buscar evento', icon: FiSearch, to: 'search' },
     { name: 'Campañas', icon: FiStar, to: 'relevant' },
     { name: 'Ajustes', icon: FiSettings, to: 'settings' },

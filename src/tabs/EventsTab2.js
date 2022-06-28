@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Flex, Input } from '@chakra-ui/react';
+import { Flex, Input, Spacer, Text } from '@chakra-ui/react';
 
 import EventsTable from '../components/EventsTable';
 
 import { getTestItems } from '../utils/testEventsData';
+import { FiMapPin } from 'react-icons/fi';
+import InputSelector from '../components/InputSelector';
 
 const INITIAL_ITEMS = getTestItems();
 
@@ -49,9 +51,36 @@ export default function EventsTab({...props}) {
                     onChange={(event) => filterList(event.target.value)}
                     noOfLines={1}
                 />
+                <Spacer/>
+                {/*<InputSelector
+                    icon={<FiMapPin/>}
+                    title={'Ciudad'}
+                    required={true}
+                    selectoritems={[
+                        <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
+                        <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
+                        <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
+                    ]}
+                    placeholder={"Selecciona una ciudad"}
+                    onChange={(value) => null}
+                />*/}
+                {/*<InputSelector
+                    icon={<FiMapPin/>}
+                    title={'Ciudad'}
+                    required={true}
+                    selectoritems={[
+                        <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
+                        <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
+                        <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
+                    ]}
+                    placeholder={"Filtrar por estados"}
+                    onChange={(value) => null}
+                />*/}
             </Flex>
 
-            <EventsTable items={items}/>
+            <EventsTable
+                items={items}
+            />
         </Flex>
     );
  };

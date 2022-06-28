@@ -17,12 +17,12 @@ import {
 import EventsTab from './tabs/EventsTab2';
 import RelevantTab from './tabs/RelevantTab';
 import Ticketing from './tabs/Ticketing';
+import IncomesTab from './tabs/IncomesTab';
 
 const theme = extendTheme();
 
 export default function App({...props}) {
-
-	const [activeTab, setActiveTab] = useState('list');
+	const [activeTab, setActiveTab] = useState('events');
 
 	useEffect(() => {
 	}, []);
@@ -35,7 +35,7 @@ export default function App({...props}) {
 						<Route path="/" element={<EventsTab/>} />
 						<Route path="events" element={<EventsTab/>} />
 						<Route path="ticketing" element={<Ticketing/>} />
-						<Route path="search" element={<SearchEvent/>} />
+						<Route path="incomes" element={<IncomesTab/>} />
 						<Route path="relevant" element={<RelevantTab/>} />
 						<Route path="settings" element={<Settings/>} />
 					</Routes>
