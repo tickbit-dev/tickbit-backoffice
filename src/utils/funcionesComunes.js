@@ -3,6 +3,11 @@ import { FiArchive, FiChevronLeft, FiClock, FiDollarSign, FiFlag, FiStar, FiTren
 import { HiOutlineTicket } from 'react-icons/hi';
 import { TbCalendarOff } from 'react-icons/tb';
 
+
+
+//Hacer funcion que te cambie numero por nombre mes
+
+
 export function getCiudadPorId(id){
     if(id === 1){
         return 'Barcelona'

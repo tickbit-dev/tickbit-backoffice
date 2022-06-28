@@ -1,0 +1,62 @@
+function createTickets(owner, idTicket, purchaseDate, idVenue, idEvent, price) {
+    return { owner, idTicket, purchaseDate, idVenue, idEvent, price};
+}
+
+export function getTestTickets() {return [
+    createTickets(
+        "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+        1,
+        1642845567,
+        1,
+        1,
+        20
+    ),
+    createTickets(
+        "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+        1,
+        1642845567,
+        1,
+        1,
+        50
+    ),
+    createTickets(
+        "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+        1,
+        1644573567,
+        1,
+        1,
+        10
+    ),
+    createTickets(
+        "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+        1,
+        1645091967,
+        1,
+        1,
+        30
+    ),
+    createTickets(
+        "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+        1,
+        1647511167,
+        1,
+        1,
+        15
+    ),
+    createTickets(
+        "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+        1,
+        1647511167,
+        1,
+        1,
+        30
+    ),
+    createTickets(
+        "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+        1,
+        1653037167,
+        1,
+        1,
+        22
+    ),
+]}

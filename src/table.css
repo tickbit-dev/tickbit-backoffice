@@ -5,3 +5,7 @@ td{
 th{
 	padding-inline: 16px!important;
 }
+
+div::-webkit-scrollbar {
+	display: none;
+  }
