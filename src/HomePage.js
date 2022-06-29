@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import {
   IconButton,
   Avatar,
@@ -32,11 +32,12 @@ import {
   FiBell,
   FiChevronDown,
   FiList,
-  FiSearch
+  FiSearch,
+  FiDollarSign
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useInRouterContext, useLocation } from "react-router-dom";
 
 import Logo from "./assets/logo.webp"
 import Button from './components/Button';
@@ -47,11 +48,10 @@ import { HiOutlineTicket } from 'react-icons/hi';
 import { createEventOnBlockchain } from './utils/funcionesComunes';
 
 const LinkItems = [
-    { name: 'Eventos', icon: FiList, to: 'events' },
+    { name: 'Eventos', icon: FiList, to: 'events', default: true },
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
-    { name: 'Ingresos', icon: FiTrendingUp, to: 'incomes' },
-    //{ name: 'Buscar evento', icon: FiSearch, to: 'search' },
-    { name: 'Campañas', icon: FiStar, to: 'relevant' },
+    { name: 'Ingresos', icon: FiDollarSign, to: 'incomes' },
+    { name: 'Campañas', icon: FiTrendingUp, to: 'relevant' },
     { name: 'Ajustes', icon: FiSettings, to: 'settings' },
 ];
 
@@ -91,7 +91,14 @@ export default function HomePage({...props}) {
 }
 
 const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
-  const [activeTab, setActiveTab] = useState('list');
+  const [activeTab, setActiveTab] = useState();
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log(location.pathname.replace("/",""))
+    console.log(activeTab)
+  }, []);
+
   return (
     <Box
       transition="3s ease"
@@ -114,7 +121,7 @@ const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
       </Flex>
 
       {LinkItems.map((link) => (
-        <NavItem onClick={() => setActiveTab(link.to)} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
+        <NavItem onClick={() => setActiveTab(link.to)} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to || link.to == location.pathname.replace("/","") || (link.default == true && (location.pathname.replace("/","") == "")) ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
           <Text>{link.name}</Text>
         </NavItem>
       ))}

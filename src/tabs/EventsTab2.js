@@ -50,47 +50,49 @@ export default function EventsTab({...props}) {
     }, []);
 
     return (
-        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >        
-            <Flex mb={"10px"}>
-                <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >    
-                    <Input
-                        w={"400px"}
-                        maxW={"100%"}
-                        placeholder={"Busca por id, título o artísta del evento"}
-                        onChange={(event) => applySearchFilter(event.target.value)}
-                        noOfLines={1}
-                    />
-                    <Spacer/>
-                </Flex>
-                {/*<InputSelector
-                    icon={<FiMapPin/>}
-                    title={'Ciudad'}
-                    required={true}
-                    selectoritems={[
-                        <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
-                        <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
-                        <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
-                    ]}
-                    placeholder={"Selecciona una ciudad"}
-                    onChange={(value) => null}
-                />*/}
-                {/*<InputSelector
-                    icon={<FiMapPin/>}
-                    title={'Ciudad'}
-                    required={true}
-                    selectoritems={[
-                        <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
-                        <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
-                        <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
-                    ]}
-                    placeholder={"Filtrar por estados"}
-                    onChange={(value) => null}
-                />*/}
+        <Flex direction={"column"}>
+            <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
+                <Input
+                    w={"400px"}
+                    maxW={"100%"}
+                    placeholder={"Busca por id, título o artísta del evento"}
+                    onChange={(event) => applySearchFilter(event.target.value)}
+                    noOfLines={1}
+                />
+                <Spacer/>
             </Flex>
+            <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >        
+                <Flex mb={"10px"}>
+                    {/*<InputSelector
+                        icon={<FiMapPin/>}
+                        title={'Ciudad'}
+                        required={true}
+                        selectoritems={[
+                            <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
+                            <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
+                            <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
+                        ]}
+                        placeholder={"Selecciona una ciudad"}
+                        onChange={(value) => null}
+                    />*/}
+                    {/*<InputSelector
+                        icon={<FiMapPin/>}
+                        title={'Ciudad'}
+                        required={true}
+                        selectoritems={[
+                            <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
+                            <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
+                            <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
+                        ]}
+                        placeholder={"Filtrar por estados"}
+                        onChange={(value) => null}
+                    />*/}
+                </Flex>
 
-            <EventsTable
-                items={items}
-            />
+                <EventsTable
+                    items={items}
+                />
+            </Flex>
         </Flex>
     );
  };
