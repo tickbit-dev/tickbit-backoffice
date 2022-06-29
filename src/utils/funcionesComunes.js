@@ -245,3 +245,114 @@ export async function createEventOnBlockchain(){
 
     await transaction.wait()
 }
+
+///////// TICKETS /////////
+
+function newTicket(_owner, _id, _purchaseDate, idVenue, idEvent, idZona, price) {
+    return { _owner, _id, _purchaseDate, idVenue, idEvent, idZona, price };
+}
+
+function createTicketItem(idVenue, idEvent, idZona, price) {
+    return { idVenue, idEvent, idZona, price };
+}
+
+export async function getTicketsListFromBlockchain(){
+    /*
+    [0] address _owner;
+    [1] uint _id;
+    [2] uint256 _purchaseDate;
+    [3] string idVenue;
+    [4] uint256 idEvent;
+    [5] uint256 idZona;
+    [6] uint256 price;
+    */
+
+    return []
+}
+
+export async function getTicketsListFromTest(){
+    /*
+    [0] address _owner;
+    [1] uint _id;
+    [2] uint256 _purchaseDate;
+    [3] string idVenue;
+    [4] uint256 idEvent;
+    [5] uint256 idZona;
+    [6] uint256 price;
+    */
+    
+    return ([
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1609586801,
+            1,
+            1,
+            1,
+            20
+        ),
+        //2021 - 1 
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1609586801,
+            1,
+            1,
+            1,
+            20
+        ),
+        //2021 - 3
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1614684401,
+            1,
+            1,
+            1,
+            20
+        ),
+        //2021 - 3
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1614684401,
+            1,
+            1,
+            1,
+            20
+        ),
+        //2022- 3
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1648034801,
+            1,
+            1,
+            1,
+            20
+        ),
+        //2022- 3
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1648034801,
+            1,
+            1,
+            1,
+            20
+        ),
+        //2022- 5
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1653301601,
+            1,
+            1,
+            1,         
+            20
+        )
+    ])
+}
+
+export async function createTicketOnBlockchain(){
+}
