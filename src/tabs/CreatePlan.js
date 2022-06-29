@@ -20,6 +20,7 @@ import { ethers, BigNumber } from 'ethers'
 import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 import Web3Modal from 'web3modal'
+import Dimensions from '../constants/Dimensions';
 
 export default function CreatePlan({...props}) {
     const [address, setAddress] = useState("");
@@ -54,7 +55,7 @@ export default function CreatePlan({...props}) {
     }
 
     return (
-        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
+        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>
             <Stack direction={'row'} spacing={'16px'} mt={'16px'}>
                 <Input
                     icon={<MdTitle/>}

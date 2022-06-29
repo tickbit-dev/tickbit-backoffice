@@ -7,6 +7,7 @@ import InputSelector from '../components/InputSelector';
 
 //Funciones comunes
 import { getEventsListFromBlockchain, getEventsListFromTest } from '../utils/funcionesComunes';
+import Dimensions from '../constants/Dimensions';
 
 export default function EventsTab({...props}) {
     const [initialItems, setInitialItems] = useState([]);
@@ -50,7 +51,7 @@ export default function EventsTab({...props}) {
     }, []);
 
     return (
-        <Flex direction={"column"} mt={"80px"}>
+        <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>
             {/*<Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
                 <Input
                     w={"400px"}

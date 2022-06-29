@@ -6,6 +6,7 @@ import { getTestTickets } from '../utils/testIncomesData'
 import IncomesTable from '../components/IncomesTable';
 import moment from 'moment';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import Dimensions from '../constants/Dimensions';
 
 
 var initialDate = new Date(1609493634 * 1000);
@@ -95,7 +96,7 @@ export default function IncomesTab({...props}) {
 
     return (
         
-        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}> 
+        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}> 
             <Button w={100}  onClick={() => createTicketOnBlockchain()}> Crear Ticket</Button>
             {IS_ONLINE == false ? <Text mb={16}>PROBANDO CON DATOS EN LOCAL</Text> : <Text color={"red"} mb={16}>PROBANDO CON DATOS EN LA BLOCKCHAIN</Text>}
             <IncomesTable items={data}/>

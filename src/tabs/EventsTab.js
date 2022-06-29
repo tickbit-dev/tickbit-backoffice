@@ -25,6 +25,7 @@ import { ThemeProvider } from "@material-ui/core/styles";*/
 import { createMuiTheme, ThemeProvider } from "@mui/material/styles";
 import EnhancedTable from '../components/Table';
 import EventsTable from '../components/EventsTable';
+import Dimensions from '../constants/Dimensions';
 
 const muiTheme = createMuiTheme();
 
@@ -96,7 +97,7 @@ export default function EventsTab({...props}) {
     
 
     return (
-        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >        
+        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={Dimensions.navBar.TOP_MENU_HEIGHT} >        
             {/*Modal 2*/}
             <Modal _focus={{outline:'none'}}isOpen={isOpenUpdate} onClose={onCloseUpdate} >
                 <ModalOverlay />

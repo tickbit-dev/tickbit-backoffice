@@ -17,6 +17,7 @@ import { ethers, BigNumber } from 'ethers'
 import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 import { format } from 'date-fns';
+import Dimensions from '../constants/Dimensions';
 
 export default function SearchEvent({...props}) {
     const [events, setEvents] = useState([]);
@@ -55,7 +56,7 @@ export default function SearchEvent({...props}) {
     }
 
     return (
-        <Flex direction={'column'}>
+        <Flex direction={'column'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>
             <Flex flex={1} direction={'column'} borderWidth={'1px'} borderRadius={'10px'} p={'16px'} bg={'white'} overflow={'hidden'}>
                 <Input
                     icon={<FiImage/>}
