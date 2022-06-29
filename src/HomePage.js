@@ -44,6 +44,7 @@ import { IoIosAdd } from 'react-icons/io';
 import SearchEvent from './tabs/SearchEvent';
 import CreateEventModal from './components/CreateEventModal';
 import { HiOutlineTicket } from 'react-icons/hi';
+import { createEventOnBlockchain } from './utils/funcionesComunes';
 
 const LinkItems = [
     { name: 'Eventos', icon: FiList, to: 'events' },
@@ -109,7 +110,7 @@ const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       <Flex px={'16px'} mb={'16px'} mt={'16px'}>
-        <Button onClick={() => onOpenForm()} text={'Crear evento'} icon={<IoIosAdd color={'white'} size={'24px'}/>} bg={'black'} color={"white"}/>
+        <Button onClick={() => /*onOpenForm()*/createEventOnBlockchain()} text={'Crear evento'} icon={<IoIosAdd color={'white'} size={'24px'}/>} bg={'black'} color={"white"}/>
       </Flex>
 
       {LinkItems.map((link) => (

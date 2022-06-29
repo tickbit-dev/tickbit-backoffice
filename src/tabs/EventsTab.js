@@ -25,7 +25,6 @@ import { ThemeProvider } from "@material-ui/core/styles";*/
 import { createMuiTheme, ThemeProvider } from "@mui/material/styles";
 import EnhancedTable from '../components/Table';
 import EventsTable from '../components/EventsTable';
-import { getTestItems } from '../utils/testEventsData';
 
 const muiTheme = createMuiTheme();
 

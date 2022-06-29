@@ -42,7 +42,7 @@ export default function CreateEventModal({...props}) {
     useEffect(() => {
     }, []);
 
-    async function createEvent() {
+    async function newEvent() {
         /* needs the user to sign the transaction, so will use Web3Provider and sign it */
         await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
             
@@ -56,7 +56,7 @@ export default function CreateEventModal({...props}) {
         
         /* user will be prompted to pay the asking proces to complete the transaction */
         //const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
-        const transaction = await contract.createEvent(Math.round(new Date() / 1000), title, city, description, artist, imageURL, category, initialDate, finalDate);
+        const transaction = await contract.newEvent(Math.round(new Date() / 1000), title, city, description, artist, imageURL, category, initialDate, finalDate);
         console.log('hola7')
 
         await transaction.wait()
@@ -159,7 +159,7 @@ export default function CreateEventModal({...props}) {
                         <Button
                             text={'Registrar evento'}
                             mt={'16px'}
-                            onClick={() => createEvent()}
+                            onClick={() => newEvent()}
                         />
                         <Center mt={"10px"}>
                             <Text color={"gray.400"} fontSize={"12px"} fontWeight={400}>Los campos marcados con * son obligatorios</Text>

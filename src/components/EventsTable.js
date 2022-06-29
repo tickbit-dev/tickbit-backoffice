@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { getCiudadPorId, getEstado } from '../utils/funcionesComunes';
+import { getCiudadPorId, getEstado, getEventsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
-import { getTestItems } from '../utils/testEventsData'
 import '../table.css'
 
 const ITEMS_PER_PAGE = 10;
 
 export default function EventsTable({...props}) {
-    const [items, setItems] = useState(props.items ?? getTestItems());
+    const [items, setItems] = useState(props.items ?? getEventsListFromTest());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
 
@@ -53,7 +52,7 @@ export default function EventsTable({...props}) {
                                 minW={'62px'}
                                 textAlign={'center'}
                             >
-                                {row.id}
+                                {row._id}
                             </Td>
                             <Td 
                                 style={{width:'3%', paddingTop: 10, paddingBottom: 10}}
@@ -90,7 +89,7 @@ export default function EventsTable({...props}) {
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{getCiudadPorId(row.city)}</Text>
+                                <Text noOfLines={1}>{getCiudadPorId(row.idCity)}</Text>
                             </Td>
                         </Tr>
                     ))}

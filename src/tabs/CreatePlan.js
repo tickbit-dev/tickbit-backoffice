@@ -33,7 +33,7 @@ export default function CreatePlan({...props}) {
     const [events, setEvents] = useState([]);
     const [loadingState, setLoadingState] = useState('not-loaded');
 
-    async function createEvent() {
+    async function newEvent() {
         /* needs the user to sign the transaction, so will use Web3Provider and sign it */
         await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
             
@@ -47,7 +47,7 @@ export default function CreatePlan({...props}) {
         
         /* user will be prompted to pay the asking proces to complete the transaction */
         //const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
-        const transaction = await contract.createEvent(title, city, description, artist, imageURL, category);
+        const transaction = await contract.newEvent(title, city, description, artist, imageURL, category);
         console.log('hola7')
 
         await transaction.wait()
@@ -120,7 +120,7 @@ export default function CreatePlan({...props}) {
             <Button
                 text={'Registrar evento'}
                 mt={'16px'}
-                onClick={() => createEvent()}
+                onClick={() => newEvent()}
             />
             <Center mt={"10px"}>
                 <Text color={"gray.400"} fontSize={"12px"} fontWeight={400}>Los campos marcados con * son obligatorios</Text>

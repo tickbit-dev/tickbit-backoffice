@@ -1,32 +1,27 @@
 import { useState, useEffect } from 'react';
-import { Flex, Input, Spacer, Text } from '@chakra-ui/react';
+import { Flex, Input, Spacer } from '@chakra-ui/react';
 
+//Componentes
 import EventsTable from '../components/EventsTable';
-
-import { getTestItems } from '../utils/testEventsData';
-import { FiMapPin } from 'react-icons/fi';
 import InputSelector from '../components/InputSelector';
 
-const INITIAL_ITEMS = getTestItems();
+//Funciones comunes
+import { getEventsListFromBlockchain, getEventsListFromTest } from '../utils/funcionesComunes';
 
 export default function EventsTab({...props}) {
+    const [initialItems, setInitialItems] = useState([]);
     const [items, setItems] = useState([]);
 
-    useEffect(() => {
-        setItems(INITIAL_ITEMS)
-    }, []);
-
-    function filterList(word){
+    function applySearchFilter(word){
         if(word.length == 0){
-            console.log("EMPTY")
-            setItems(INITIAL_ITEMS)
+            setItems(initialItems)
             return
         }
 
-        setItems(INITIAL_ITEMS)
+        setItems(initialItems)
         let newItems = [];
 
-        for(let item of INITIAL_ITEMS){
+        for(let item of initialItems){
             if(item.id == parseInt(word)){
                 newItems.push(item);
             }
@@ -41,17 +36,32 @@ export default function EventsTab({...props}) {
         setItems(newItems);
     }
 
+    async function getData(online){
+        const items_list = online == true ? await getEventsListFromBlockchain() : getEventsListFromTest();
+
+        setItems(items_list)
+        setInitialItems(items_list);
+    }
+
+    useEffect(() => {
+        // True: BLOCKCHAIN
+        // False: LOCAL
+        getData(true);
+    }, []);
+
     return (
         <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >        
             <Flex mb={"10px"}>
-                <Input
-                    w={"400px"}
-                    maxW={"100%"}
-                    placeholder={"Busca por id, título o artísta del evento"}
-                    onChange={(event) => filterList(event.target.value)}
-                    noOfLines={1}
-                />
-                <Spacer/>
+                <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >    
+                    <Input
+                        w={"400px"}
+                        maxW={"100%"}
+                        placeholder={"Busca por id, título o artísta del evento"}
+                        onChange={(event) => applySearchFilter(event.target.value)}
+                        noOfLines={1}
+                    />
+                    <Spacer/>
+                </Flex>
                 {/*<InputSelector
                     icon={<FiMapPin/>}
                     title={'Ciudad'}

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { changeNumberforNameMonth, getCiudadPorId, getEstado } from '../utils/funcionesComunes';
+import { changeNumberforNameMonth, getCiudadPorId, getEstado, getEventsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
-import { getTestItems } from '../utils/testEventsData'
 import '../table.css'
 
 const ITEMS_PER_PAGE = 6;
 
 export default function IncomesTable({...props}) {
-    const [items, setItems] = useState(props.items ?? getTestItems());
+    const [items, setItems] = useState(props.items ?? getEventsListFromTest());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
 
