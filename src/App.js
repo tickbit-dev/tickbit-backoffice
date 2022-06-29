@@ -33,11 +33,11 @@ export default function App({...props}) {
 				<HomePage activetab={activeTab} changeactivetab={(tab) => setActiveTab(tab)}>
 					<Routes>
 						<Route path="/" element={<EventsTab/>} />
-						<Route path="events" element={<EventsTab/>} />
-						<Route path="ticketing" element={<Ticketing/>} />
-						<Route path="incomes" element={<IncomesTab/>} />
-						<Route path="relevant" element={<RelevantTab/>} />
-						<Route path="settings" element={<Settings/>} />
+						<Route path="/events" element={<EventsTab/>} />
+						<Route path="/ticketing" element={<Ticketing/>} />
+						<Route path="/incomes" element={<IncomesTab/>} />
+						<Route path="/relevant" element={<RelevantTab/>} />
+						<Route path="/settings" element={<Settings/>} />
 					</Routes>
 					{/*activeTab == 'search' ?
 						<SearchEvent/>
