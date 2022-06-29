@@ -166,7 +166,7 @@ export function getEventsListFromTest(){
             "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             1,
             new Date(),
-            "El Nano Tour",
+            "El Nano Tour (LOCAL)",
             1,
             1,
             1,
@@ -185,7 +185,7 @@ export function getEventsListFromTest(){
             "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
             2,
             new Date(),
-            "11 razones tour",
+            "11 razones tour (LOCAL)",
             1,
             1,
             1,
@@ -208,6 +208,30 @@ export async function createEventOnBlockchain(){
     await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
         
     });
+    /*if ( window.ethereum ) {
+        const web3 = new Web3( window.ethereum );
+    
+        try {
+            // Request account access if needed
+            let handleAccountsChanged;
+            await window.ethereum
+                .request( {
+                    method: 'eth_requestAccounts'
+                } )
+                .then( handleAccountsChanged )
+                .catch( ( error ) => {
+                    if ( error.code === 4001 ) {
+                        // EIP-1193 userRejectedRequest error
+                        console.log( 'Please connect to MetaMask.' );
+                    } else {
+                        console.error( error );
+                    }
+                } );
+        } catch ( error ) {
+            // handle error
+        }
+    }*/
+    
 
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
@@ -216,7 +240,6 @@ export async function createEventOnBlockchain(){
     const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
     
     /* user will be prompted to pay the asking proces to complete the transaction */
-    //const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
     const transaction = await contract.createEvent(createEventItem("Prueba", 1, 1, 1, "Esto es una prueba", "Albert Granados", 1500, 46, "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/aitana-11-razones-tour-fechas-ciudades-1618312520.jpg?crop=1.00xw:0.402xh;0,0.0448xh&resize=1200:*", new Date().getTime(), new Date().getTime(), new Date().getTime()));
     console.log('hola7')
 
