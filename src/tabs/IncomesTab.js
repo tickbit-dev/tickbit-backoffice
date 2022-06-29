@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon } from '@chakra-ui/react';
-import { getCiudadPorId, getEstado, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
+import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button } from '@chakra-ui/react';
+import { createTicketOnBlockchain, getCiudadPorId, getEstado, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesTable from '../components/IncomesTable';
@@ -11,9 +11,10 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 var initialDate = new Date(1609493634 * 1000);
 const endDate = new Date();
 
-//Mes-año, num tickets vendidos y ingresos
 
-const IS_ONLINE = false;
+// True: BLOCKCHAIN
+// False: LOCAL
+const IS_ONLINE = true;
 
 export default function IncomesTab({...props}) {
     const [tickets, setTickets] = useState([]);
@@ -95,7 +96,7 @@ export default function IncomesTab({...props}) {
     return (
         
         <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}> 
-         
+            <Button w={100}  onClick={() => createTicketOnBlockchain()}> Crear Ticket</Button>
             {IS_ONLINE == false ? <Text mb={16}>PROBANDO CON DATOS EN LOCAL</Text> : <Text color={"red"} mb={16}>PROBANDO CON DATOS EN LA BLOCKCHAIN</Text>}
             <IncomesTable items={data}/>
             <Box w={'100%'} h={'500px'} mt={10} d={'flex'}>

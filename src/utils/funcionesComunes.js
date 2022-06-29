@@ -252,11 +252,15 @@ function newTicket(_owner, _id, _purchaseDate, idVenue, idEvent, idZona, price) 
     return { _owner, _id, _purchaseDate, idVenue, idEvent, idZona, price };
 }
 
-function createTicketItem(idVenue, idEvent, idZona, price) {
-    return { idVenue, idEvent, idZona, price };
-}
-
 export async function getTicketsListFromBlockchain(){
+    const provider = new ethers.providers.JsonRpcProvider()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
+    const data = await contract.readAllTickets();
+
+    const item_data = await Promise.all(data);
+
+    let itemsArray = [];
+
     /*
     [0] address _owner;
     [1] uint _id;
@@ -267,7 +271,15 @@ export async function getTicketsListFromBlockchain(){
     [6] uint256 price;
     */
 
-    return []
+     for(let item of item_data){
+        itemsArray.push(
+            newTicket(
+                item[0], item[1].toNumber(), item[2].toNumber(), item[3], item[4].toNumber(), item[5].toNumber(), item[6].toNumber()
+            )
+        );
+    }
+
+    return itemsArray;
 }
 
 export async function getTicketsListFromTest(){
@@ -355,4 +367,22 @@ export async function getTicketsListFromTest(){
 }
 
 export async function createTicketOnBlockchain(){
+/* needs the user to sign the transaction, so will use Web3Provider and sign it */
+await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
+
+});
+
+const web3Modal = new Web3Modal()
+const connection = await web3Modal.connect()
+const provider = new ethers.providers.Web3Provider(connection)
+const signer = provider.getSigner()
+const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+
+const transaction = await contract.createTicket(
+    "MDR", 
+    1, 
+    1,
+    50);
+
+await transaction.wait()
 }
