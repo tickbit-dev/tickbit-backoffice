@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon } from '@chakra-ui/react';
+import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon } from '@chakra-ui/react';
 import { getCiudadPorId, getEstado } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
@@ -62,6 +62,7 @@ export default function IncomesTab({...props}) {
     const [data, setData] = useState([]);
 
     const [info, setInfo] = useState([]);
+    const [info2, setInfo2] = useState([]);
     
 
     const [tickets, setTickets] = useState(props.items ?? getTestTickets());
@@ -69,7 +70,7 @@ export default function IncomesTab({...props}) {
 
     function getNumTicketsByMonth(month, year){
         var numtickets = 0;
-   
+        var fechaCompleta = month.toString() + '-' + year.toString() ;
         for(let i=0; i < tickets.length; i++){
             let d = new Date(tickets[i].purchaseDate * 1000)
             let month2 = d.getMonth() + 1;
@@ -78,11 +79,13 @@ export default function IncomesTab({...props}) {
                 numtickets++;
             }
         }
+        info.push({Date: fechaCompleta, Num_tickets: numtickets});
         return numtickets ;
     }
   
     function getIncomeByMonth(month, year){
         var income = 0;
+        var fechaCompleta = month.toString() + '-' + year.toString() ;
         for(let i=0; i < tickets.length; i++){
             let d = new Date(tickets[i].purchaseDate * 1000)
             let month2 = d.getMonth() + 1;
@@ -91,10 +94,10 @@ export default function IncomesTab({...props}) {
                 income += tickets[i].price;
             }
         }
+        info2.push({Date: fechaCompleta, "Income in $": income});
         return income;
         
     }   
-    const demoUrl = 'https://codesandbox.io/s/simple-line-chart-kec3v';
     useEffect(() => {
         var startDate = moment(initialDate);
         var endDate = moment(endDate);
@@ -110,6 +113,7 @@ export default function IncomesTab({...props}) {
             
         }
         setData(result.reverse());
+        console.log(info2);
         
     }, []);
 
@@ -119,12 +123,12 @@ export default function IncomesTab({...props}) {
          
    
             <IncomesTable items={data}/>
-
-            <Flex width="100%" height="100%" mt={20} justifyContent={'center'}>
+            <Box w={'100%'} h={'500px'} mt={10} d={'flex'}>
+            <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                    width={1500}
-                    height={500}
-                    data={datas}
+                    width={500}
+                    height={300}
+                    data={info.slice(-6)}
                     margin={{
                         top: 5,
                         right: 30,
@@ -132,15 +136,36 @@ export default function IncomesTab({...props}) {
                         bottom: 5,
                     }}
                 >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="pv" fill="#8884d8" />
-                <Bar dataKey="uv" fill="#82ca9d" />
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="Date" />
+                    <YAxis />
+                    <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
+                    <Legend />
+                    <Bar dataKey="Num_tickets" fill="#8884d8" />
                 </BarChart>
-            </Flex>
+          </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                    width={500}
+                    height={300}
+                    data={info2.slice(-6)}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="Date" />
+                    <YAxis />
+               
+                    <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
+                    <Legend />
+                    <Bar dataKey="Income in $" fill="#8884d8" />
+                </BarChart>
+          </ResponsiveContainer>
+          </Box>
         </Flex>
     );
 };
