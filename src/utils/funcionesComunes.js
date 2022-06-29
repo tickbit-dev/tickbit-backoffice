@@ -9,6 +9,11 @@ import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 import Web3Modal from 'web3modal'
 
+
+function truncateAddress(address){
+    return address.length > 10 ? address.substring(0, 5) + "..." + address.substring(address.length - 4, address.length) : address
+}
+
 export function changeNumberforNameMonth(value){
     if(value === 1){
         return 'Enero'
