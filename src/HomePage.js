@@ -20,7 +20,8 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
-  Image
+  Image,
+  Spacer
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -46,6 +47,9 @@ import SearchEvent from './tabs/SearchEvent';
 import CreateEventModal from './components/CreateEventModal';
 import { HiOutlineTicket } from 'react-icons/hi';
 import { createEventOnBlockchain } from './utils/funcionesComunes';
+import MetamaskButton from './components/MetamaskButton';
+import Input from './components/Input';
+import { BsBoxArrowDownRight } from 'react-icons/bs';
 
 const LinkItems = [
     { name: 'Eventos', icon: FiList, to: 'events', default: true },
@@ -56,6 +60,7 @@ const LinkItems = [
 ];
 
 const SIDE_MENU_WIDTH = '245px';
+const TOP_MENU_HEIGHT = {base: '60px', md: '80px'};
 
 export default function HomePage({...props}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -108,6 +113,7 @@ const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
       w={{ base: 'full', md: SIDE_MENU_WIDTH }}
       pos="fixed"
       h="full"
+      zIndex={3}
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Box d="flex" alignItems={"center"} as="button" onClick={() => window.open("/","_self")} style={{WebkitTapHighlightColor: "transparent"}}>
@@ -116,8 +122,11 @@ const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
         </Box>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
+      {/*<Flex px={'16px'} mb={'16px'} mt={'16px'}>
+        <MetamaskButton/>
+      </Flex>*/}
       <Flex px={'16px'} mb={'16px'} mt={'16px'}>
-        <Button onClick={() => /*onOpenForm()*/createEventOnBlockchain()} text={'Crear evento'} icon={<IoIosAdd color={'white'} size={'24px'}/>} bg={'black'} color={"white"}/>
+        <Button onClick={() => /*onOpenForm()*/ createEventOnBlockchain()} text={'Crear evento'} icon={<IoIosAdd color={'white'} size={'24px'}/>} bg={'black'} color={"white"}/>
       </Flex>
 
       {LinkItems.map((link) => (
@@ -163,15 +172,28 @@ const NavItem = ({ icon, children, to, ...rest }) => {
 const MobileNav = ({ onOpen, ...rest }) => {
   return (
     <Flex
-      ml={{ base: 0, md: SIDE_MENU_WIDTH }}
+      ml={{ base: 0, md: 0 }}
       px={{ base: 4, md: 4 }}
-      height="20"
+      position={{base: 'unset', md: 'fixed'}}
+      w={'100%'}
+      height={TOP_MENU_HEIGHT}
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-      justifyContent={{ base: 'space-between', md: 'flex-end' }}
+      justifyContent={{ base: 'space-between', md: 'space-between' }}
+      zIndex={2}
       {...rest}>
+
+
+      <Box ml={SIDE_MENU_WIDTH} w={"100%"} pr={"16px"}>
+        <Input
+            mt={"-10px"}
+            placeholder={"Busca por id, título o artísta del evento"}
+            onChange={(event) => /*applySearchFilter(event.target.value)*/null}
+            noOfLines={1}
+        />
+      </Box>
 
       <IconButton
         display={{ base: 'flex', md: 'none' }}
@@ -187,13 +209,13 @@ const MobileNav = ({ onOpen, ...rest }) => {
       </Box>
 
       <HStack spacing={{ base: '0', md: '6' }}>
-        <IconButton
+        {/*<IconButton
           size="lg"
           variant="ghost"
           aria-label="open menu"
           icon={<FiBell />}
-        />
-        <Flex alignItems={'center'}>
+        />*/}
+        {/*<Flex alignItems={'center'}>
           <Menu>
             <MenuButton
               py={2}
@@ -231,7 +253,8 @@ const MobileNav = ({ onOpen, ...rest }) => {
               <MenuItem>Sign out</MenuItem>
             </MenuList>
           </Menu>
-        </Flex>
+        </Flex>*/}
+        <MetamaskButton/>
       </HStack>
     </Flex>
   );

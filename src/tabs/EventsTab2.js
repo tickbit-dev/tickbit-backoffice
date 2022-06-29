@@ -50,8 +50,8 @@ export default function EventsTab({...props}) {
     }, []);
 
     return (
-        <Flex direction={"column"}>
-            <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
+        <Flex direction={"column"} mt={"80px"}>
+            {/*<Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
                 <Input
                     w={"400px"}
                     maxW={"100%"}
@@ -60,7 +60,7 @@ export default function EventsTab({...props}) {
                     noOfLines={1}
                 />
                 <Spacer/>
-            </Flex>
+            </Flex>*/}
             <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >        
                 <Flex mb={"10px"}>
                     {/*<InputSelector
