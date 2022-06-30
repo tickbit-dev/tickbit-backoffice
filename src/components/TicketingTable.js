@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { changeNumberforNameMonth, getCiudadPorId, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
-import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
+import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input, useToast } from '@chakra-ui/react';
+import {truncateAddress, changeNumberforNameMonth, getCiudadPorId, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest, timestampToDate, openScan } from '../utils/funcionesComunes';
+import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiCopy, FiExternalLink } from 'react-icons/fi';
 import '../table.css'
 
 const ITEMS_PER_PAGE = 6;
@@ -10,7 +10,7 @@ export default function TicketingTable({...props}) {
     const [items, setItems] = useState(props.items ?? getTicketsListFromTest());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
-
+    const toast = useToast()
     // Avoid a layout jump when reaching the last page with empty items.
     const emptyItems = currentPage > 0 ? Math.max(0, (1 + currentPage) * itemsPerPage - items.length) : 0;
 
@@ -25,6 +25,19 @@ export default function TicketingTable({...props}) {
         setCurrentPage(0);
     };
 
+    function copyText(value){
+        navigator.clipboard.writeText(value);
+        toast({
+            position: 'bottom',
+            duration: 2000,
+            render: () => (
+              <Box color='white' p={3} bg='black' rounded={5} textAlign={'center'}>
+                Dirección copiada correctamente
+              </Box>
+            ),
+          })
+    }
+
     useEffect(() => {
         //console.log("table")
         //console.log(props.items)
@@ -37,9 +50,13 @@ export default function TicketingTable({...props}) {
             <Table sx={{minWidth: 650}} /*variant='striped'*/ colorScheme='gray' size='md'>
                 <Thead backgroundColor={'gray.100'}>
                     <Tr>
-                        <Th color={'black'} minW={'200px'}>Fecha</Th>
-                        <Th color={'black'} minW={'200px'}>Tickets vendidos</Th>
-                        <Th color={'black'} minW={'200px'}>Ingresos</Th>
+                        <Th color={'black'} minW={'200px'}>Propietario</Th>
+                        <Th color={'black'} minW={'200px'}>Id Ticket</Th>
+                        <Th color={'black'} minW={'200px'}>Fecha de compra</Th>
+                        <Th color={'black'} minW={'200px'}>Id Recinto</Th>
+                        <Th color={'black'} minW={'200px'}>Id Evento</Th>
+                        <Th color={'black'} minW={'200px'}>Id Zona</Th>
+                        <Th color={'black'} minW={'200px'}>Precio</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -47,9 +64,27 @@ export default function TicketingTable({...props}) {
                         <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
                             <Td
                                 borderRightWidth={1}
-                                minW={'300px'}
+                                minW={'200px'}
+                               
                             >   
-                                <Text noOfLines={1}>{row._owner}</Text>
+                            
+                            
+                            <Popover trigger={'hover'}>
+                                    <Box  d={'flex'}>
+                                        <PopoverTrigger>
+                                            <Text noOfLines={1} pr={5}>{truncateAddress(row._owner)}</Text>
+                                        </PopoverTrigger>
+                                            <FiExternalLink onClick={() => openScan(row._owner)} />
+                                    </Box>
+                                   
+                                    <PopoverContent _focus={{outline:'none'}} >
+                                        <PopoverArrow />
+                                        <PopoverBody p={4}>
+                                            <Link _focus={{outline:'none'}} onClick={() => copyText(row._owner)} >{row._owner} </Link>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </Popover>
+                               
                             </Td>
                             <Td
                                 borderRightWidth={1}
@@ -61,7 +96,32 @@ export default function TicketingTable({...props}) {
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row._purchaseDate} $</Text>
+                                
+                                <Text noOfLines={1}>{timestampToDate(row._purchaseDate)}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'130px'}
+                            >
+                                <Text noOfLines={1}>{row.idVenue}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'130px'}
+                            >
+                                <Text noOfLines={1}>{row.idEvent}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'130px'}
+                            >
+                                <Text noOfLines={1}>{row.idZona}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'130px'}
+                            >
+                                <Text noOfLines={1}>{row.price}</Text>
                             </Td>
                         </Tr>
                     ))}

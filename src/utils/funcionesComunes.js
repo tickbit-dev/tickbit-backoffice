@@ -10,8 +10,19 @@ import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
 import Web3Modal from 'web3modal'
 
 
-function truncateAddress(address){
+export function truncateAddress(address){
     return address.length > 10 ? address.substring(0, 5) + "..." + address.substring(address.length - 4, address.length) : address
+}
+
+export function timestampToDate(value){
+    var fecha = new Date(value * 1000);
+    var fechaFormateada = fecha.toLocaleDateString();
+    return fechaFormateada;
+}
+
+export function openScan(value){
+    var link = "https://etherscan.io/address/" + value;
+    window.open(link);
 }
 
 export function changeNumberforNameMonth(value){
