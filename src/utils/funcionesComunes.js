@@ -378,6 +378,41 @@ export async function getTicketsListFromTest(){
             1,
             1,         
             20
+        ), newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1656586489,
+            1,
+            1,
+            1,
+            20
+        ),
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1651316089,
+            1,
+            1,
+            1,
+            20
+        ),
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1645440889,
+            1,
+            1,
+            1,
+            20
+        ),
+        newTicket(
+            "0xE52d770EFD323897E4F86deCD87F78437c20Df89",
+            1,
+            1643540089,
+            1,
+            1,
+            1,
+            20
         )
     ])
 }

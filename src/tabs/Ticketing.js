@@ -7,7 +7,7 @@ import Dimensions from '../constants/Dimensions';
 
 // True: BLOCKCHAIN
 // False: LOCAL
-const IS_ONLINE = true;
+const IS_ONLINE = false;
 
 export default function Ticketing({...props}) {
     const [initialItems, setInitialItems] = useState([]);

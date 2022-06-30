@@ -56,7 +56,7 @@ const LinkItems = [
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
     { name: 'Ingresos', icon: FiDollarSign, to: 'incomes' },
     { name: 'Campañas', icon: FiTrendingUp, to: 'relevant' },
-    { name: 'Ajustes', icon: FiSettings, to: 'settings' },
+    { name: 'Ajustes', icon: FiSettings, to: 'settings'}
 ];
 
 const SIDE_MENU_WIDTH = '245px';
@@ -100,8 +100,7 @@ const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location.pathname.replace("/",""))
-    console.log(activeTab)
+
   }, []);
 
   return (
@@ -175,7 +174,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       ml={{ base: 0, md: 0 }}
       px={{ base: 4, md: 4 }}
       position={{base: 'unset', md: 'fixed'}}
-      w={'100%'}
+      w={{base: 'unset', md: "100%"}}
       height={TOP_MENU_HEIGHT}
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
@@ -186,14 +185,14 @@ const MobileNav = ({ onOpen, ...rest }) => {
       {...rest}>
 
 
-      <Box ml={SIDE_MENU_WIDTH} w={"100%"} pr={"16px"}>
+      {/*<Box ml={SIDE_MENU_WIDTH} w={{base: 'unset', md: "100%"}} pr={"16px"}>
         <Input
             mt={"-10px"}
             placeholder={"Busca por id, título o artísta del evento"}
-            onChange={(event) => /*applySearchFilter(event.target.value)*/null}
+            onChange={(event) => applySearchFilter(event.target.value)null}
             noOfLines={1}
         />
-      </Box>
+      </Box>*/}
 
       <IconButton
         display={{ base: 'flex', md: 'none' }}
@@ -254,7 +253,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
             </MenuList>
           </Menu>
         </Flex>*/}
-        <MetamaskButton/>
+        {/*<MetamaskButton/>*/}
       </HStack>
     </Flex>
   );

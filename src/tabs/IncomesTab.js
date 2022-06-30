@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button } from '@chakra-ui/react';
 import { createTicketOnBlockchain, getCiudadPorId, getEstado, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
@@ -15,7 +15,7 @@ const endDate = new Date();
 
 // True: BLOCKCHAIN
 // False: LOCAL
-const IS_ONLINE = true;
+const IS_ONLINE = false;
 
 export default function IncomesTab({...props}) {
     const [tickets, setTickets] = useState([]);
@@ -24,6 +24,9 @@ export default function IncomesTab({...props}) {
     //Informaciónd e los gráficos
     const [chartTicketsNumber, setChartTicketsNumber] = useState([]);
     const [chartIncome, setChartIncome] = useState([]);
+
+    const ref = useRef();
+    const [hidden, setHidden] = useState(false);
 
     function getNumTicketsByMonth(month, year){
         var numtickets = 0;
@@ -94,55 +97,71 @@ export default function IncomesTab({...props}) {
         getTicketItems(IS_ONLINE);
     }, []);
 
+    useEffect(() => {
+        window.addEventListener("resize", updateDimensions);
+    }, []);
+
+    const updateDimensions = () => {
+        if (ref.current) fakeRemake();
+    };
+
+    function fakeRemake(){
+        setHidden(true);
+        setTimeout(() => {
+            setHidden(false)
+        }, 100);
+    }
+
     return (
-        
-        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}> 
-            <Button w={100}  onClick={() => createTicketOnBlockchain()}> Crear Ticket</Button>
-            {IS_ONLINE == false ? <Text mb={16}>PROBANDO CON DATOS EN LOCAL</Text> : <Text color={"red"} mb={16}>PROBANDO CON DATOS EN LA BLOCKCHAIN</Text>}
-            <IncomesTable items={data}/>
-            <Box w={'100%'} h={'500px'} mt={10} d={'flex'}>
-            <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                    width={500}
-                    height={300}
-                    data={chartTicketsNumber.slice(-6)}
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="Date" />
-                    <YAxis />
-                    <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
-                    <Legend />
-                    <Bar dataKey="Número de tickets" fill="#8884d8" />
-                </BarChart>
-          </ResponsiveContainer>
-          <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                    width={500}
-                    height={300}
-                    data={chartIncome.slice(-6)}
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                    }}
-                >
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="Date" />
-                    <YAxis />
-               
-                    <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
-                    <Legend />
-                    <Bar dataKey="Ingresos en $" fill="#8884d8" />
-                </BarChart>
-          </ResponsiveContainer>
-          </Box>
+        <Flex direction={'column'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>
+            <Flex ref={ref} minH={'400px'} transition="all 1.3s ease" flex={1} direction={'column'} p={'16px'} mb={"16px"} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>                 
+                <Box hidden={hidden} h={'300px'} mt={10} d={'flex'}>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            width={100}
+                            data={chartTicketsNumber.slice(-6)}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 0,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="Date" />
+                            <YAxis />
+                            <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
+                            <Legend />
+                            <Bar dataKey="Número de tickets" fill="#8884d8" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                            width={500}
+                            height={300}
+                            data={chartIncome.slice(-6)}
+                            margin={{
+                                top: 5,
+                                right: 30,
+                                left: 0,
+                                bottom: 5,
+                            }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="Date" />
+                            <YAxis />
+                    
+                            <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
+                            <Legend />
+                            <Bar dataKey="Ingresos en $" fill="#40c6de" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </Box>
+                
+            </Flex>
+            <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}> 
+                <IncomesTable items={data}/>
+            </Flex>
         </Flex>
     );
 };
