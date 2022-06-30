@@ -47,7 +47,7 @@ export default function EventsTab({...props}) {
     useEffect(() => {
         // True: BLOCKCHAIN
         // False: LOCAL
-        getData(true);
+        getData(false);
     }, []);
 
     return (
