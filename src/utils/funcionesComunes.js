@@ -106,6 +106,34 @@ export function getEstado(id){
     }
 }
 
+export function getRecintos(id){
+    var RecintosMadrid = [
+        {
+            "id": 1,
+            "name": "Wizink Center",
+            "capacity": 17453,
+            "address": "Av. Felipe II, s/n, 28009 Madrid"
+        }
+    ]
+
+    var RecintosBarcelona = [
+        {
+            "id": 2,
+            "name": "Palau Sant Jordi",
+            "capacity":  17000,
+            "address": "Passeig Olímpic, 5-7, 08038 Barcelona"
+           }
+    ]
+
+    if(id == 1){
+        return RecintosMadrid;
+    }
+    else if(id == 2){
+        return RecintosBarcelona;
+    }
+    else return [];
+}
+
 ///////// EVENTS /////////
 
 function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted) {
