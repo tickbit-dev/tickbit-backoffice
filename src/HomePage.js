@@ -185,14 +185,14 @@ const MobileNav = ({ onOpen, ...rest }) => {
       {...rest}>
 
 
-      {/*<Box ml={SIDE_MENU_WIDTH} w={{base: 'unset', md: "100%"}} pr={"16px"}>
+      <Box display={{base: 'none', md: 'flex'}} ml={SIDE_MENU_WIDTH} w={{base: 'unset', md: "100%"}} pr={"16px"}>
         <Input
             mt={"-10px"}
             placeholder={"Busca por id, título o artísta del evento"}
-            onChange={(event) => applySearchFilter(event.target.value)null}
+            onChange={(event) => null/*applySearchFilter(event.target.value)*/}
             noOfLines={1}
         />
-      </Box>*/}
+      </Box>
 
       <IconButton
         display={{ base: 'flex', md: 'none' }}
@@ -253,7 +253,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
             </MenuList>
           </Menu>
         </Flex>*/}
-        {/*<MetamaskButton/>*/}
+        <MetamaskButton/>
       </HStack>
     </Flex>
   );
