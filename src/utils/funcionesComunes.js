@@ -134,6 +134,18 @@ export function getRecintos(id){
     else return [];
 }
 
+export function getCapacity(idciudad,idrecinto){
+    var recintos = getRecintos(idciudad);
+    var capacity;
+
+    for(let i=0; i<recintos.length; i++){
+        if(recintos[i].id == idrecinto){
+            capacity = recintos[i].capacity;
+        }
+    }
+    return capacity;
+}
+
 ///////// EVENTS /////////
 
 function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted) {

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, Image, Input, HStack, VStack, Textarea, Select  } from '@chakra-ui/react';
+import { Flex, Box, Text, Image, Input, HStack, VStack, Textarea, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper  } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import { HiOutlinePencil, HiOutlineLocationMarker, HiOutlineHome, HiOutlineUser, HiOutlineUserGroup } from "react-icons/hi";
 import { TbCalendarEvent, TbCalendarTime, TbCalendarOff } from "react-icons/tb";
 import {BiCategoryAlt, BiText} from "react-icons/bi";
 import { MdAttachMoney, MdOutlineBrokenImage } from "react-icons/md";
-import { getRecintos } from '../utils/funcionesComunes';
+import { getCapacity, getRecintos } from '../utils/funcionesComunes';
 
 export default function RelevantTab({...props}) {
 
@@ -16,11 +16,20 @@ export default function RelevantTab({...props}) {
     const [idRecinto, setIdRecinto] = useState("");
     const [listaRecintos, setListaRecintos] = useState([]);
     const [IdRecintoToCapacity, setIdRecintoToCapacity] = useState(0);
+    const [capacidad, setCapacidad] = useState();
+    const [value, setValue] = useState('');
+  
 
     useEffect(() => {
         setListaRecintos(getRecintos(idRecinto));
     }, [idRecinto]);
 
+    useEffect(() => {
+        setCapacidad(getCapacity(idRecinto,IdRecintoToCapacity));
+        setValue(getCapacity(idRecinto,IdRecintoToCapacity));
+    }, [IdRecintoToCapacity]);
+
+  
     return (
         <Flex flex={1} minW={'600px'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>
           
@@ -88,7 +97,21 @@ export default function RelevantTab({...props}) {
                             <HiOutlineUserGroup/>
                             <Text>Capacidad</Text>
                         </HStack>
-                        {IdRecintoToCapacity == 0 ? <Input/> : <Input placeholder={'Máx' + ' ' + listaRecintos.capacity}/> }
+                        {IdRecintoToCapacity == 0 ? <NumberInput  step={5} min={0} max={0} w={'100%'}>
+                                                        <NumberInputField />
+                                                        <NumberInputStepper>
+                                                            <NumberIncrementStepper />
+                                                            <NumberDecrementStepper />
+                                                        </NumberInputStepper>
+                                                        </NumberInput> : 
+                                                        
+                                                        <NumberInput w={'100%'} step={100} value={value} min={100} max={capacidad}  onChange={(valueString) => setValue(valueString)}>
+                                                        <NumberInputField />
+                                                        <NumberInputStepper>
+                                                            <NumberIncrementStepper />
+                                                            <NumberDecrementStepper />
+                                                        </NumberInputStepper>
+                                                        </NumberInput>}
                         
                     </VStack>
 
