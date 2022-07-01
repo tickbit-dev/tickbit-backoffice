@@ -53,6 +53,34 @@ export function changeNumberforNameMonth(value){
     }
 }
 
+export function getMonthAndYearAbrebiation(month, year){
+    if(month == 1){
+        return 'Ene ' + year[2] + year[3]
+    } else if(month == 2){
+        return 'Feb ' + year[2] + year[3]
+    } else if(month == 3){
+        return 'Mar ' + year[2] + year[3]
+    } else if(month == 4){
+        return 'Abr ' + year[2] + year[3]
+    } else if(month == 5){
+        return 'May ' + year[2] + year[3]
+    } else if(month == 6){
+        return 'Jun ' + year[2] + year[3]
+    } else if(month == 7){
+        return 'Jul ' + year[2] + year[3]
+    } else if(month == 8){
+        return 'Ago ' + year[2] + year[3]
+    } else if(month == 9){
+        return 'Sep ' + year[2] + year[3]
+    } else if(month == 10){
+        return 'Oct ' + year[2] + year[3]
+    } else if(month == 11){
+        return 'Nov ' + year[2] + year[3]
+    } else if(month == 12){
+        return 'Dic ' + year[2] + year[3]
+    }
+}
+
 export function getCiudadPorId(id){
     if(id === 1){
         return 'Barcelona'

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button } from '@chakra-ui/react';
-import { createTicketOnBlockchain, getCiudadPorId, getEstado, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
+import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer } from '@chakra-ui/react';
+import { createTicketOnBlockchain, getCiudadPorId, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesTable from '../components/IncomesTable';
@@ -30,7 +30,7 @@ export default function IncomesTab({...props}) {
 
     function getNumTicketsByMonth(month, year){
         var numtickets = 0;
-        var fechaCompleta = month.toString() + '-' + year.toString() ;
+        var fechaCompleta = getMonthAndYearAbrebiation(month.toString(), year.toString());
         
         for(let i=0; i < tickets.length; i++){
             let d = new Date(tickets[i]._purchaseDate * 1000)
@@ -47,7 +47,7 @@ export default function IncomesTab({...props}) {
   
     function getIncomeByMonth(month, year){
         var income = 0;
-        var fechaCompleta = month.toString() + '-' + year.toString();
+        var fechaCompleta = getMonthAndYearAbrebiation(month.toString(), year.toString());
 
         for(let i=0; i < tickets.length; i++){
             let d = new Date(tickets[i]._purchaseDate * 1000)
@@ -114,8 +114,8 @@ export default function IncomesTab({...props}) {
 
     return (
         <Flex direction={'column'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>
-            <Flex ref={ref} minH={'400px'} transition="all 1.3s ease" flex={1} direction={'column'} p={'16px'} mb={"16px"} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>                 
-                <Box hidden={hidden} h={'300px'} mt={10} d={'flex'}>
+            <Flex ref={ref} minH={{base: '800px', lg: '400px'}} transition="all 1.3s ease" flex={1} direction={'column'} p={'16px'} mb={"16px"} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>                 
+                <Flex direction={{base: "column", lg: "row"}} hidden={hidden} h={{base: '700px', lg: '300px'}} mt={10} d={'flex'}>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             width={100}
@@ -130,11 +130,12 @@ export default function IncomesTab({...props}) {
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="Date" />
                             <YAxis />
-                            <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
+                            <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
                             <Legend />
-                            <Bar dataKey="Número de tickets" fill="#8884d8" />
+                            <Bar dataKey="Número de tickets" fill="#8884d8"/>
                         </BarChart>
                     </ResponsiveContainer>
+                    <Flex h={'50px'}/>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             width={500}
@@ -151,13 +152,12 @@ export default function IncomesTab({...props}) {
                             <XAxis dataKey="Date" />
                             <YAxis />
                     
-                            <Tooltip cursor={{ fill:'rgba(247,250,252, 0.7)'}} />
+                            <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
                             <Legend />
                             <Bar dataKey="Ingresos en $" fill="#40c6de" />
                         </BarChart>
                     </ResponsiveContainer>
-                </Box>
-                
+                </Flex>
             </Flex>
             <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}> 
                 <IncomesTable items={data}/>

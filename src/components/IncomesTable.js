@@ -130,6 +130,7 @@ export default function IncomesTable({...props}) {
                         transition="0.1s ease"
                         h={'40px'}
                         w={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? '40px' : '0px'}
+                        minW={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? '40px' : '0px'}
                         backgroundColor={value == currentPage ? 'gray.50' : 'none'}
                         _hover={{bg: "gray.50"}}
                         borderTopWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
@@ -185,9 +186,6 @@ export default function IncomesTable({...props}) {
                     />
                 </Flex>
             </Flex>
-            
-
-
         </Flex>
     );
 };
