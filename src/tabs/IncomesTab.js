@@ -99,6 +99,9 @@ export default function IncomesTab({...props}) {
 
     useEffect(() => {
         window.addEventListener("resize", updateDimensions);
+        return () => {
+            window.removeEventListener("resize", updateDimensions);
+        };
     }, []);
 
     const updateDimensions = () => {

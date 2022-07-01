@@ -91,6 +91,18 @@ export function getCiudadPorId(id){
     }
 }
 
+export function getSearchBarPlaceholder(link){
+    if(link == 'events' || link == ''){
+        return "Busca un evento por id, título o artista..."
+    } else if(link == 'ticketing'){
+        return "Busca un ticket..."
+    } else if(link == 'incomes'){
+        return "Busca por mes o año..."
+    } else{
+        return "Escribe para buscar..."
+    }
+}
+
 export function getEstado(id){
     if(id === 1){
         return(

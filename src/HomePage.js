@@ -46,7 +46,7 @@ import { IoIosAdd } from 'react-icons/io';
 import SearchEvent from './tabs/SearchEvent';
 import CreateEventModal from './components/CreateEventModal';
 import { HiOutlineTicket } from 'react-icons/hi';
-import { createEventOnBlockchain } from './utils/funcionesComunes';
+import { createEventOnBlockchain, getSearchBarPlaceholder } from './utils/funcionesComunes';
 import MetamaskButton from './components/MetamaskButton';
 import Input from './components/Input';
 import { BsBoxArrowDownRight } from 'react-icons/bs';
@@ -60,7 +60,7 @@ const LinkItems = [
 ];
 
 const SIDE_MENU_WIDTH = '245px';
-const TOP_MENU_HEIGHT = {base: '60px', md: '80px'};
+const TOP_MENU_HEIGHT = {base: '60px', md: '100px'};
 
 export default function HomePage({...props}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -87,21 +87,17 @@ export default function HomePage({...props}) {
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
-      <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: SIDE_MENU_WIDTH }} p="4">
+      <MobileNav onOpen={onOpen}/>
+      <Box ml={{ base: 0, md: SIDE_MENU_WIDTH }}>
         {props.children}
       </Box>
     </Box>
   );
 }
 
-const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
+const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
   const [activeTab, setActiveTab] = useState();
   const location = useLocation();
-
-  useEffect(() => {
-
-  }, []);
 
   return (
     <Box
@@ -129,7 +125,7 @@ const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
       </Flex>
 
       {LinkItems.map((link) => (
-        <NavItem onClick={() => setActiveTab(link.to)} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to || link.to == location.pathname.replace("/","") || (link.default == true && (location.pathname.replace("/","") == "")) ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
+        <NavItem onClick={() => {setActiveTab(link.to); }} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to || link.to == location.pathname.split('/')[1] || (link.default == true && (location.pathname.split('/')[1] == "")) ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
           <Text>{link.name}</Text>
         </NavItem>
       ))}
@@ -139,7 +135,9 @@ const SidebarContent = ({ onClose, onOpenForm, ...rest}) => {
 
 const NavItem = ({ icon, children, to, ...rest }) => {
   return (
-    <Link to={to} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link to={to} state={{from: "Link #1",
+    message: "Welcome to KindaCode.com",
+    timestamp: Date.now()}} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"
@@ -169,10 +167,30 @@ const NavItem = ({ icon, children, to, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const location = useLocation();
+  const [searchValue, setSearchValue] = useState('');
+
+  const onChangeTextSearch = (event) => {
+    if(event.target.value.length == 0){
+      window.history.replaceState({}, '', location.pathname)
+      setSearchValue('')
+    } else{
+      window.history.replaceState({}, undefined, location.pathname + "?search=" + event.target.value.replace(" ", "+"))
+      setSearchValue(event.target.value.replace(" ", "+"))
+    }
+  }
+
+  useEffect(() => {
+    if(searchValue.length == 0){
+      window.history.replaceState({}, '', location.pathname)
+    }
+  }, []);
+  
   return (
     <Flex
       ml={{ base: 0, md: 0 }}
       px={{ base: 4, md: 4 }}
+      display={{base: 'flex', md: 'none'}}
       position={{base: 'unset', md: 'fixed'}}
       w={{base: 'unset', md: "100%"}}
       height={TOP_MENU_HEIGHT}
@@ -188,8 +206,8 @@ const MobileNav = ({ onOpen, ...rest }) => {
       <Box display={{base: 'none', md: 'flex'}} ml={SIDE_MENU_WIDTH} w={{base: 'unset', md: "100%"}} pr={"16px"}>
         <Input
             mt={"-10px"}
-            placeholder={"Busca por id, título o artísta del evento"}
-            onChange={(event) => null/*applySearchFilter(event.target.value)*/}
+            placeholder={getSearchBarPlaceholder(location.pathname.split('/')[1])}
+            onChange={(event) => onChangeTextSearch(event)}
             noOfLines={1}
         />
       </Box>
