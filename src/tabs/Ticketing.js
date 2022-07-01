@@ -4,6 +4,7 @@ import { getCiudadPorId, getEstado, getEventsListFromBlockchain, getEventsListFr
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import TicketingTable from '../components/TicketingTable';
 import Dimensions from '../constants/Dimensions';
+import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 
 // True: BLOCKCHAIN
 // False: LOCAL
@@ -25,9 +26,13 @@ export default function Ticketing({...props}) {
     }, []);
 
     return (
-        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>    
-            <TicketingTable items={items} />
-            
+        <Flex direction={"column"} flex={1} w={'100%'}>
+            <NavBarWithSearchBar applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
+            <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
+                <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>    
+                    <TicketingTable items={items} />
+                </Flex>
+            </Flex>
         </Flex>
     );
 };

@@ -43,7 +43,6 @@ import { Link, useInRouterContext, useLocation } from "react-router-dom";
 import Logo from "./assets/logo.webp"
 import Button from './components/Button';
 import { IoIosAdd } from 'react-icons/io';
-import SearchEvent from './tabs/SearchEvent';
 import CreateEventModal from './components/CreateEventModal';
 import { HiOutlineTicket } from 'react-icons/hi';
 import { createEventOnBlockchain, getSearchBarPlaceholder } from './utils/funcionesComunes';
@@ -55,7 +54,7 @@ const LinkItems = [
     { name: 'Eventos', icon: FiList, to: 'events', default: true },
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
     { name: 'Ingresos', icon: FiDollarSign, to: 'incomes' },
-    { name: 'Campañas', icon: FiTrendingUp, to: 'relevant' },
+    { name: 'Campañas', icon: FiTrendingUp, to: 'campaigns' },
     { name: 'Ajustes', icon: FiSettings, to: 'settings'}
 ];
 
@@ -120,12 +119,15 @@ const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
       {/*<Flex px={'16px'} mb={'16px'} mt={'16px'}>
         <MetamaskButton/>
       </Flex>*/}
+
       <Flex px={'16px'} mb={'16px'} mt={'16px'}>
-        <Button onClick={() => /*onOpenForm()*/ createEventOnBlockchain()} text={'Crear evento'} icon={<IoIosAdd color={'white'} size={'24px'}/>} bg={'black'} color={"white"}/>
+        <Link to={'create'} style={{width: '100%'}}>
+          <Button text={'Crear evento'} w={'100%'} icon={<IoIosAdd color={'white'} size={'24px'}/>} bg={'black'} color={"white"}/>
+        </Link>
       </Flex>
 
       {LinkItems.map((link) => (
-        <NavItem onClick={() => {setActiveTab(link.to); }} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to || link.to == location.pathname.split('/')[1] || (link.default == true && (location.pathname.split('/')[1] == "")) ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
+        <NavItem onClick={() => {setActiveTab(link.to);}} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to || link.to == location.pathname.split('/')[1] || (link.default == true && (location.pathname.split('/')[1] == "")) ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
           <Text>{link.name}</Text>
         </NavItem>
       ))}
@@ -169,22 +171,6 @@ const NavItem = ({ icon, children, to, ...rest }) => {
 const MobileNav = ({ onOpen, ...rest }) => {
   const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
-
-  const onChangeTextSearch = (event) => {
-    if(event.target.value.length == 0){
-      window.history.replaceState({}, '', location.pathname)
-      setSearchValue('')
-    } else{
-      window.history.replaceState({}, undefined, location.pathname + "?search=" + event.target.value.replace(" ", "+"))
-      setSearchValue(event.target.value.replace(" ", "+"))
-    }
-  }
-
-  useEffect(() => {
-    if(searchValue.length == 0){
-      window.history.replaceState({}, '', location.pathname)
-    }
-  }, []);
   
   return (
     <Flex
@@ -201,16 +187,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
       justifyContent={{ base: 'space-between', md: 'space-between' }}
       zIndex={2}
       {...rest}>
-
-
-      <Box display={{base: 'none', md: 'flex'}} ml={SIDE_MENU_WIDTH} w={{base: 'unset', md: "100%"}} pr={"16px"}>
-        <Input
-            mt={"-10px"}
-            placeholder={getSearchBarPlaceholder(location.pathname.split('/')[1])}
-            onChange={(event) => onChangeTextSearch(event)}
-            noOfLines={1}
-        />
-      </Box>
 
       <IconButton
         display={{ base: 'flex', md: 'none' }}

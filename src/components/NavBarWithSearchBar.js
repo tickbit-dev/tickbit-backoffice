@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { getSearchBarPlaceholder } from '../utils/funcionesComunes';
 import { FiMenu } from 'react-icons/fi';
 import MetamaskButton from './MetamaskButton';
+import Dimensions from '../constants/Dimensions';
 
 const SIDE_MENU_WIDTH = '245px';
 const TOP_MENU_HEIGHT = {base: '60px', md: '200px'};
@@ -29,22 +30,37 @@ export default function NavBarWithSearchBar({...props}) {
     }, []);
     
     return (
+        <Flex flex={1} display={{base: 'none', md: 'flex'}} direction={'column'} w={'100%'} bg={'white'} position={'fixed'}>     
+
         <Flex 
             flex={1}
             direction={'row'}
             maxW={'full'}
             overflow={'hidden'}
-            borderWidth={'1px'}
-            h={TOP_MENU_HEIGHT}
+            borderBottomWidth={'1px'}
+            h={Dimensions.navBar.TOP_MENU_HEIGHT}
+            minH={Dimensions.navBar.TOP_MENU_HEIGHT}
+            maxH={Dimensions.navBar.TOP_MENU_HEIGHT}
+            alignItems={'center'}
+            justifyContent={'center'}
+            pl={4}
+            pr={4}
+            zIndex={2}
         >
             <Input
                 flex={1}
-                mt={"-10px"}
+                //mt={"-10px"}
+                minH={'48px'}
                 w={'100%'}
                 placeholder={getSearchBarPlaceholder(location.pathname.split('/')[1])}
-                onChange={(event) => onChangeTextSearch(event)}
+                onChange={(event) => props.applySearchFilter(event.target.value)}
                 noOfLines={1}
             />
+            <Box ml={4} mr={Dimensions.navBar.SIDE_MENU_WIDTH}>
+                <MetamaskButton/>
+            </Box>
+
+        </Flex>
         </Flex>
     );
 };
