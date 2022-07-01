@@ -34,10 +34,10 @@ export default function EventsTab({...props}) {
             if(item._id == parseInt(word)){
                 newItems.push(item);
             }
-            if(item.title.includes(word)){
+            if(item.title.toLowerCase().includes(word.toLowerCase())){
                 newItems.push(item);
             }
-            if(item.artist.includes(word)){
+            if(item.artist.toLowerCase().includes(word.toLowerCase())){
                 newItems.push(item);
             }
         }
