@@ -1,24 +1,52 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, Image, Input, HStack, VStack, Textarea, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper  } from '@chakra-ui/react';
+import { Flex, Box, Text, Image, Input, HStack, VStack, Textarea, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Button  } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import { HiOutlinePencil, HiOutlineLocationMarker, HiOutlineHome, HiOutlineUser, HiOutlineUserGroup } from "react-icons/hi";
 import { TbCalendarEvent, TbCalendarTime, TbCalendarOff } from "react-icons/tb";
 import {BiCategoryAlt, BiText} from "react-icons/bi";
 import { MdAttachMoney, MdOutlineBrokenImage } from "react-icons/md";
-import { getCapacity, getRecintos } from '../utils/funcionesComunes';
+import { createEventOnBlockchain, getCapacity, getRecintos } from '../utils/funcionesComunes';
+import imagePlaceholder from '../assets/default-placeholder.webp'
 
 export default function RelevantTab({...props}) {
 
     const [state, setState] = useState();
-    const [urlImage, setUrlImage] = useState("");
-    const [defaultUrlImage, setDefaultUrlImage] = useState("https://www.sinrumbofijo.com/wp-content/uploads/2016/05/default-placeholder.png");
-
     const [idRecinto, setIdRecinto] = useState("");
     const [listaRecintos, setListaRecintos] = useState([]);
     const [IdRecintoToCapacity, setIdRecintoToCapacity] = useState(0);
     const [capacidad, setCapacidad] = useState();
-    const [value, setValue] = useState('');
-  
+
+    //Valores formulario
+    const [titulo, setTitulo] = useState("");
+    const [ciudad, setCiudad] = useState("");
+    const [categoria, setCategoria] = useState();
+    const [recinto, setRecinto] = useState();
+    const [artista, setArtista] = useState("");
+    const [aforo, setAforo] = useState();
+    const [precio, setPrecio] = useState();
+    const [fechaInicioVenta, setFechaInicioVenta] = useState("");
+    const [fechaInicioEvento, setFechaInicioEvento] = useState("");
+    const [fechaFinalEvento, setFechaFinalEvento] = useState("");
+    const [urlImage, setUrlImage] = useState("");
+    const [descripcion, setDescripcion] = useState("");
+
+    
+    function cutDate(date){
+        if(date.length == 10) {
+            var day = date.slice(0,2);
+            var month = date.slice(3,5) - 1;
+            var year =  date.slice(6,10);
+            var fecha = new Date(stringToDate(year,month,day)).getTime();
+            return fecha;
+        }  
+        return 0;
+    }
+
+    function stringToDate(año,mes,dia){
+        let [Y, M, D, h, m, s] = [año, mes, dia, 0, 0, 0]; // 2018-01-01T15:30:15
+        var d = new Date(Y, M, D, h, m, s).getTime();
+        return d ;
+    }   
 
     useEffect(() => {
         setListaRecintos(getRecintos(idRecinto));
@@ -26,7 +54,7 @@ export default function RelevantTab({...props}) {
 
     useEffect(() => {
         setCapacidad(getCapacity(idRecinto,IdRecintoToCapacity));
-        setValue(getCapacity(idRecinto,IdRecintoToCapacity));
+        setAforo(getCapacity(idRecinto,IdRecintoToCapacity));
     }, [IdRecintoToCapacity]);
 
   
@@ -34,8 +62,8 @@ export default function RelevantTab({...props}) {
         <Flex flex={1} minW={'600px'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={Dimensions.navBar.TOP_MENU_HEIGHT}>
           
             <Box h={300} w={'100%'}>
-                {Object.keys(urlImage).length === 0 ? <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={defaultUrlImage} rounded={5} alt='Image not found' objectFit={'cover'} /> :
-                <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={urlImage} rounded={5} alt='No image found' objectFit={'cover'}  />} 
+                {Object.keys(urlImage).length === 0 ? <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={imagePlaceholder} rounded={5} alt='Image not found' objectFit={'cover'} /> :
+                <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={urlImage} rounded={5} alt='Image not found' objectFit={'cover'}  />} 
             </Box>
                 <HStack w={'100%'} mt={10} >
                     <VStack w={'100%'}>
@@ -43,7 +71,7 @@ export default function RelevantTab({...props}) {
                             <HiOutlinePencil/>
                             <Text >Título</Text>
                         </HStack>
-                        <Input/>
+                        <Input onChange={(event) => setTitulo(event.target.value)}/>
                         
                     </VStack>
                     <VStack w={'100%'}>
@@ -51,7 +79,7 @@ export default function RelevantTab({...props}) {
                             <HiOutlineLocationMarker/>
                             <Text>Ciudad</Text>
                         </HStack>
-                        <Select placeholder='Selecciona ciudad' size='md' onChange={(event) => setIdRecinto(event.target.value)} _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
+                        <Select placeholder='Selecciona ciudad' size='md' onChange={function(event){setIdRecinto(event.target.value);setCiudad(event.target.value)}} _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
                             <option value='1'>Madrid</option>
                             <option value='2'>Barcelona</option>
                         </Select>
@@ -62,7 +90,7 @@ export default function RelevantTab({...props}) {
                             <BiCategoryAlt/>
                             <Text>Categoria</Text>
                         </HStack>
-                        <Select placeholder='Selecciona categoria' size='md'  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
+                        <Select placeholder='Selecciona categoria' size='md'  onChange={(event) => setCategoria(event.target.value)}  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
                             <option value='1'>Concierto</option>
                             <option value='2'>Festival</option>
                             <option value='3'>Teatro</option>
@@ -75,7 +103,7 @@ export default function RelevantTab({...props}) {
                             <HiOutlineHome/>
                             <Text>Recinto</Text>
                         </HStack>
-                        <Select placeholder='Selecciona recinto'  onChange={(event) => setIdRecintoToCapacity(event.target.value)} size='md'  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
+                        <Select placeholder='Selecciona recinto'  onChange={function(event){setIdRecintoToCapacity(event.target.value);setRecinto(event.target.value);}} size='md'  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
                             {listaRecintos.length > 0 ? listaRecintos.map((recinto) => ( 
                             <option value={recinto.id}>{recinto.name}</option>)) : null}
 
@@ -89,7 +117,7 @@ export default function RelevantTab({...props}) {
                             <HiOutlineUser/>
                             <Text>Artista</Text>
                         </HStack>
-                        <Input/>
+                        <Input onChange={(event) => setArtista(event.target.value)}/>
                     </VStack>
 
                     <VStack w={'100%'}>
@@ -97,7 +125,7 @@ export default function RelevantTab({...props}) {
                             <HiOutlineUserGroup/>
                             <Text>Capacidad</Text>
                         </HStack>
-                        {IdRecintoToCapacity == 0 ? <NumberInput  step={5} min={0} max={0} w={'100%'}>
+                        {IdRecintoToCapacity == 0 ? <NumberInput  step={5} value={0} min={0} max={0} w={'100%'}>
                                                         <NumberInputField />
                                                         <NumberInputStepper>
                                                             <NumberIncrementStepper />
@@ -105,7 +133,7 @@ export default function RelevantTab({...props}) {
                                                         </NumberInputStepper>
                                                         </NumberInput> : 
                                                         
-                                                        <NumberInput w={'100%'} step={100} value={value} min={100} max={capacidad}  onChange={(valueString) => setValue(valueString)}>
+                                                        <NumberInput w={'100%'} step={100} value={aforo} min={0} max={capacidad}  onChange={(valueString) => setAforo(valueString)}>
                                                         <NumberInputField />
                                                         <NumberInputStepper>
                                                             <NumberIncrementStepper />
@@ -120,7 +148,13 @@ export default function RelevantTab({...props}) {
                             <MdAttachMoney/>
                             <Text>Precio</Text>
                         </HStack>
-                        <Input/>
+                        <NumberInput w={'100%'} step={10} defaultValue={0} min={0} onChange={(valueString) => setPrecio(valueString)}>
+                                                        <NumberInputField />
+                                                        <NumberInputStepper>
+                                                            <NumberIncrementStepper />
+                                                            <NumberDecrementStepper />
+                                                        </NumberInputStepper>
+                                                        </NumberInput>
                     </VStack>
 
                     <VStack w={'100%'}>
@@ -128,7 +162,7 @@ export default function RelevantTab({...props}) {
                             <TbCalendarTime/>
                             <Text>Fecha inicio de venta</Text>
                         </HStack>
-                        <Input/>
+                        <Input placeholder={"dd/mm/aaaa"} onChange={(event) => setFechaInicioVenta(cutDate(event.target.value))}/>
                     </VStack>
                 </HStack>
 
@@ -139,7 +173,7 @@ export default function RelevantTab({...props}) {
                             <TbCalendarEvent/>
                             <Text>Fecha inicial del evento</Text>
                         </HStack>
-                        <Input/>
+                        <Input placeholder={"dd/mm/aaaa"}  onChange={(event) => setFechaInicioEvento(cutDate(event.target.value))}/>
                     </VStack>
 
                     <VStack w={'25%'}>
@@ -147,7 +181,7 @@ export default function RelevantTab({...props}) {
                             <TbCalendarOff/>
                             <Text>Fecha final del evento</Text>
                         </HStack>
-                        <Input/>
+                        <Input placeholder={"dd/mm/aaaa"} onChange={(event) => setFechaFinalEvento(cutDate(event.target.value))} />
                     </VStack>
                 </HStack>
                     <VStack w={'100%'}  mt={5}>
@@ -162,10 +196,10 @@ export default function RelevantTab({...props}) {
                             <BiText/>
                             <Text>Descripción</Text>
                         </HStack>
-                        <Textarea />
+                        <Textarea onChange={(event) => setDescripcion(event.target.value)} />
                     </VStack>
 
-
+                    <Button mt={10} ml={'auto'} w={300} onClick={() => createEventOnBlockchain(titulo,ciudad,recinto,categoria,descripcion,artista,aforo,precio,urlImage,fechaInicioVenta,fechaInicioEvento,fechaFinalEvento)} text={'Crear evento'} bg={'black'} color={"white"} colorScheme={'black'}>Crear evento</Button>
         </Flex>
     );
 };

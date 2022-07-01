@@ -259,7 +259,7 @@ export function getEventsListFromTest(){
     ])
 }
 
-export async function createEventOnBlockchain(){
+export async function createEventOnBlockchain(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate){
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
         
@@ -296,7 +296,7 @@ export async function createEventOnBlockchain(){
     const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
     
     /* user will be prompted to pay the asking proces to complete the transaction */
-    const transaction = await contract.createEvent(createEventItem("Prueba", 1, 1, 1, "Esto es una prueba", "Albert Granados", 1500, 46, "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/aitana-11-razones-tour-fechas-ciudades-1618312520.jpg?crop=1.00xw:0.402xh;0,0.0448xh&resize=1200:*", new Date().getTime(), new Date().getTime(), new Date().getTime()));
+    const transaction = await contract.createEvent(createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate));
     console.log('hola7')
 
     await transaction.wait()
