@@ -24,9 +24,9 @@ export default function CampaingsTab({...props}) {
                     <Text fontSize="xl" fontWeight="700">El Nano Tour</Text>
                 </Flex>*/}
 
-                <Flex direction={"row"}>
-                    <FrontPageCampaingCard mr={"8px"}/>
-                    <OutstandingCampaingCard ml={"8px"}/>
+                <Flex direction={{base: "column", lg: "row"}}>
+                    <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}}/>
+                    <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}}/>
                 </Flex>
 
             </Flex>
@@ -36,7 +36,7 @@ export default function CampaingsTab({...props}) {
 
 export function FrontPageCampaingCard({...props}){
     return(
-        <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} {...props}>
+        <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={{base: "16px", lg: "0px"}} {...props}>
             <Flex flex={1} direction={'column'} borderRadius={'10px'} mt={"16px"} borderWidth={'1px'} bg={'white'} overflow={"hidden"}>
                 <Flex flex={1}direction={"column"} alignItems={"center"}>
                     <Flex bg={'#dcf7fc'} px={"16px"} h={"35px"} alignItems={"center"} justifyContent={"center"} position={'absolute'} mt={"-17.5px"} borderRadius={"10px"}>
