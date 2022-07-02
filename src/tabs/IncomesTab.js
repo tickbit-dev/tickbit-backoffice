@@ -161,7 +161,7 @@ export default function IncomesTab({...props}) {
                             
                                     <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
                                     <Legend />
-                                    <Bar dataKey="Ingresos en $" fill="#40c6de" />
+                                    <Bar dataKey="Ingresos en $" fill="#69c5d6"/*"#40c6de"*/ />
                                 </BarChart>
                             </ResponsiveContainer>
                         </Flex>

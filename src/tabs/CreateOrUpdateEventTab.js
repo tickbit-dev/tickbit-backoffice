@@ -8,8 +8,10 @@ import { MdAttachMoney, MdOutlineBrokenImage } from "react-icons/md";
 import { createEventOnBlockchain, getCapacity, getRecintos } from '../utils/funcionesComunes';
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
+import { useParams } from 'react-router-dom';
 
 export default function CreateOrUpdateEventTab({...props}) {
+    let params = useParams();
 
     const [state, setState] = useState();
     const [idRecinto, setIdRecinto] = useState("");
@@ -64,7 +66,7 @@ export default function CreateOrUpdateEventTab({...props}) {
             <NavBarWithSearchBar applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
                 <Flex flex={1} minW={'600px'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                
+                    {params.id != null ? <Text>EDITAR EVENTO</Text> : null}
                     <Box h={300} w={'100%'}>
                         {Object.keys(urlImage).length === 0 ? <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={imagePlaceholder} rounded={5} alt='Image not found' objectFit={'cover'} /> :
                         <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={urlImage} rounded={5} alt='Image not found' objectFit={'cover'}  />} 
@@ -75,7 +77,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <HiOutlinePencil/>
                                     <Text >Título</Text>
                                 </HStack>
-                                <Input onChange={(event) => setTitulo(event.target.value)}/>
+                                <Input defaultValue={params.id != null ? titulo : null} onChange={(event) => setTitulo(event.target.value)}/>
                                 
                             </VStack>
                             <VStack w={'100%'}>

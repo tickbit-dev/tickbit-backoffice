@@ -3,6 +3,7 @@ import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, P
 import { getCiudadPorId, getEstado, getEventsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import '../table.css'
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -10,6 +11,7 @@ export default function EventsTable({...props}) {
     const [items, setItems] = useState(props.items ?? getEventsListFromTest());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
+    const navigate = useNavigate();
 
     // Avoid a layout jump when reaching the last page with empty items.
     const emptyItems = currentPage > 0 ? Math.max(0, (1 + currentPage) * itemsPerPage - items.length) : 0;
@@ -45,7 +47,7 @@ export default function EventsTable({...props}) {
                 </Thead>
                 <Tbody>
                     {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row) => (
-                        <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
+                        <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => navigate('/events/' + row._id)} >
                             <Td 
                                 bg={'gray.50'}
                                 borderRightWidth={1}
@@ -75,7 +77,7 @@ export default function EventsTable({...props}) {
                                 minW={'300px'}
                             >   
                                 <Flex direction={"column"}>
-                                    {row.id == 2 ? getEstado(2) : row.id == 3 ? getEstado(3) : row.id == 4 ? getEstado(4) : getEstado(1)}
+                                    {row._id == 2 ? getEstado(2) : row._id == 3 ? getEstado(3) : row._id == 4 ? getEstado(4) : getEstado(1)}
                                     <Text noOfLines={1}>{row.title}</Text>
                                 </Flex>
                             </Td>
@@ -89,7 +91,7 @@ export default function EventsTable({...props}) {
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{getCiudadPorId(row.idCity)}</Text>
+                                <Text noOfLines={1}>{getCiudadPorId(row._idCity)}</Text>
                             </Td>
                         </Tr>
                     ))}

@@ -31,6 +31,7 @@ export default function App({...props}) {
 					<Routes>
 						<Route path="/" element={<EventsTab/>} />
 						<Route path="/events" element={<EventsTab/>} />
+						<Route path="/events/:id" element={<CreateOrUpdateEventTab/>} />
 						<Route path="/ticketing" element={<Ticketing/>} />
 						<Route path="/incomes" element={<IncomesTab/>} />
 						<Route path="/campaigns" element={<CampaingsTab/>} />
