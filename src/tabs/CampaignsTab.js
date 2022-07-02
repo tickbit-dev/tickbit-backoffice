@@ -87,7 +87,7 @@ export function OutstandingCampaingCard({...props}){
                 <Flex flex={1}direction={"column"} alignItems={"center"}>
                     <Flex bg={"gray.100"} px={"16px"} h={"35px"} alignItems={"center"} justifyContent={"center"} position={'absolute'} mt={"-17.5px"} borderRadius={"10px"}>
                         <Text fontSize="md" fontWeight={800} color={"gray.600"}>
-                            PORTADA
+                            DESTACADO
                         </Text>
                     </Flex>
                     <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'}>
