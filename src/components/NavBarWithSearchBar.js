@@ -30,7 +30,7 @@ export default function NavBarWithSearchBar({...props}) {
     }, []);
     
     return (
-        <Flex flex={1} display={{base: 'none', md: 'flex'}} direction={'column'} w={'100%'} bg={'white'} position={'fixed'}>     
+        <Flex flex={1} display={{base: 'none', md: 'flex'}} direction={'column'} w={'100%'} bg={'white'} position={'fixed'} zIndex={2}>     
 
         <Flex 
             flex={1}
@@ -45,7 +45,6 @@ export default function NavBarWithSearchBar({...props}) {
             justifyContent={'center'}
             pl={4}
             pr={4}
-            zIndex={2}
         >
             <Input
                 flex={1}
