@@ -13,7 +13,7 @@ export default function CampaingsTab({...props}) {
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
-            <NavBarWithSearchBar applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
+            <NavBarWithSearchBar searchBar={false} applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
 
                 <Flex flex={1} direction={'row'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>

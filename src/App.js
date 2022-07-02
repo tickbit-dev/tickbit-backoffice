@@ -9,12 +9,12 @@ import {
 } from "react-router-dom";
 
 import HomePage from './HomePage';
-import Settings from './tabs/Settings';
 import EventsTab from './tabs/EventsTab';
 import Ticketing from './tabs/Ticketing';
 import IncomesTab from './tabs/IncomesTab';
 import CampaingsTab from './tabs/CampaignsTab';
 import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab';
+import HelpTab from './tabs/HelpTab';
 
 const theme = extendTheme();
 
@@ -35,7 +35,7 @@ export default function App({...props}) {
 						<Route path="/ticketing" element={<Ticketing/>} />
 						<Route path="/incomes" element={<IncomesTab/>} />
 						<Route path="/campaigns" element={<CampaingsTab/>} />
-						<Route path="/settings" element={<Settings/>} />
+						<Route path="/help" element={<HelpTab/>} />
 						<Route path="/create" element={<CreateOrUpdateEventTab/>} />
 					</Routes>
 				</HomePage>

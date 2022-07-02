@@ -34,7 +34,8 @@ import {
   FiChevronDown,
   FiList,
   FiSearch,
-  FiDollarSign
+  FiDollarSign,
+  FiHelpCircle
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
@@ -55,7 +56,7 @@ const LinkItems = [
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
     { name: 'Ingresos', icon: FiDollarSign, to: 'incomes' },
     { name: 'Campañas', icon: FiTrendingUp, to: 'campaigns' },
-    { name: 'Ajustes', icon: FiSettings, to: 'settings'}
+    { name: 'Ayuda', icon: FiHelpCircle, to: 'help'}
 ];
 
 const SIDE_MENU_WIDTH = '245px';

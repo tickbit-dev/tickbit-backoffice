@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, IconButton, HStack, Image, Input, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Box, Text, IconButton, HStack, Image, Input, useColorModeValue, Spacer } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
 import { getSearchBarPlaceholder } from '../utils/funcionesComunes';
 import { FiMenu } from 'react-icons/fi';
@@ -46,6 +46,7 @@ export default function NavBarWithSearchBar({...props}) {
             pl={4}
             pr={4}
         >
+          {props.searchBar != false ?
             <Input
                 flex={1}
                 //mt={"-10px"}
@@ -55,6 +56,7 @@ export default function NavBarWithSearchBar({...props}) {
                 onChange={(event) => props.applySearchFilter(event.target.value)}
                 noOfLines={1}
             />
+          : <Spacer/>}
             <Box ml={4} mr={Dimensions.navBar.SIDE_MENU_WIDTH}>
                 <MetamaskButton/>
             </Box>
