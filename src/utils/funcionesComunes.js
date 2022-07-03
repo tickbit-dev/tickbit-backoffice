@@ -106,38 +106,38 @@ export function getSearchBarPlaceholder(link){
 export function getEstado(id){
     if(id === 1){
         return(
-            <Badge maxW={'fit-content'} colorScheme='green' mb={"3px"}>
+            <Badge h={"16px"} maxW={'fit-content'} colorScheme='green' mb={"3px"}>
                 <Flex alignItems={'center'}>
-                    <Text fontSize={10}>EN VENTA</Text>
+                    <Text mt={"-2px"} fontSize={10}>EN VENTA</Text>
                 </Flex>
             </Badge>
         )
     } else if(id === 2){
         return (
-            <Badge maxW={'fit-content'} mb={"3px"}>
+            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"}>
                 <Flex alignItems={'center'}>
-                    <Text fontSize={10}>FINALIZADO</Text>
+                    <Text mt={"-2px"} fontSize={10}>FINALIZADO</Text>
                 </Flex>
             </Badge>
         )
     } else if(id === 3){
         return (
-            <Badge maxW={'fit-content'} colorScheme='red' mb={"3px"}>
+            <Badge h={"16px"} maxW={'fit-content'} colorScheme='red' mb={"3px"}>
                 <Flex alignItems={'center'}>
-                    <Text fontSize={10}>AGOTADO</Text>
+                    <Text mt={"-2px"} fontSize={10}>AGOTADO</Text>
                 </Flex>
             </Badge>
         )
     } else if(id === 4){
         return (
-            <Badge maxW={'fit-content'} colorScheme='yellow' mb={"3px"}>
+            <Badge h={"16px"} maxW={'fit-content'} colorScheme='yellow' mb={"3px"}>
                 <Flex alignItems={'center'}>
                     <Icon
                         mr="6px"
                         fontSize="16"
                         as={FiTrendingUp}
                     />
-                    <Text fontSize={10}>PROMOCIONADO</Text>
+                    <Text mt={"-2px"} fontSize={10}>PROMOCIONADO</Text>
                 </Flex>
             </Badge>
         )

@@ -38,7 +38,7 @@ export default function EventsTable({...props}) {
             <Table sx={{minWidth: 650}} /*variant='striped'*/ colorScheme='gray' size='md'>
                 <Thead backgroundColor={'gray.100'}>
                     <Tr>
-                        <Th color={'black'} textAlign={'center'} minW={'62px'} w={0}>Id</Th>
+                        <Th color={'black'} textAlign={'center'} minW={'66px'} w={0}>Id</Th>
                         <Th color={'black'}>Portada</Th>
                         <Th color={'black'} minW={'300px'}>Título</Th>
                         <Th color={'black'} w={0} minW={'200px'}>Artista</Th>
@@ -49,13 +49,14 @@ export default function EventsTable({...props}) {
 
                     {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row) => (
                         <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => navigate('/events/' + row._id)} >
-                            <Td 
-                                bg={'gray.50'}
+                            <Td
                                 borderRightWidth={1}
-                                minW={'62px'}
+                                bg={'gray.50'}
+                                minW={'66px'}
                                 textAlign={'center'}
+                                width={'66px'}
                             >
-                                {row._id}
+                                <Text noOfLines={1}>{row._id}</Text>
                             </Td>
                             <Td 
                                 style={{width:'3%', paddingTop: 10, paddingBottom: 10}}
@@ -85,12 +86,14 @@ export default function EventsTable({...props}) {
                             <Td
                                 borderRightWidth={1}
                                 minW={'200px'}
+                                w={'200px'}
                             >
                                 <Text noOfLines={1}>{row.artist}</Text>
                             </Td>
                             <Td
-                                borderRightWidth={1}
-                                minW={'130px'}
+                                borderRightWidth={0}
+                                minW={'160px'}
+                                w={'160px'}
                             >
                                 <Text noOfLines={1}>{getCiudadPorId(row.idCity)}</Text>
                             </Td>
@@ -107,7 +110,7 @@ export default function EventsTable({...props}) {
 
 
             {/* PAGER */}
-            <Flex padding={"10px"} alignItems={'center'} justifyContent={{base: 'start', xl: 'end'}}>
+            <Flex padding={"10px"} alignItems={'center'} justifyContent={{base: 'start', xl: 'flex-end'}}>
                 <Flex display={{ base: 'none', xl: 'block' }}>
                     <Text noOfLines={1} color={"gray.400"} mx={"16px"}>{items.length}{items.length == 1 ? " evento" : " eventos"}</Text>
                 </Flex>

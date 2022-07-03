@@ -60,7 +60,7 @@ export default function IncomesTable({...props}) {
                                 <Text noOfLines={1}>{row.num_tickets}</Text>
                             </Td>
                             <Td
-                                borderRightWidth={1}
+                                borderRightWidth={0}
                                 minW={'130px'}
                             >
                                 <Text noOfLines={1}>{row.income} $</Text>

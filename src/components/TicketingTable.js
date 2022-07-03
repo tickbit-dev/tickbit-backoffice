@@ -65,8 +65,9 @@ export default function TicketingTable({...props}) {
                             <Td
                                 borderRightWidth={1}
                                 bg={'gray.50'}
-                                minW={'62px'}
+                                minW={'66px'}
                                 textAlign={'center'}
+                                width={'66px'}
                             >
                                 <Text noOfLines={1}>{row._id}</Text>
                             </Td>
@@ -120,7 +121,7 @@ export default function TicketingTable({...props}) {
                                 <Text noOfLines={1}>{row.idZona}</Text>
                             </Td>*/}
                             <Td
-                                borderRightWidth={1}
+                                borderRightWidth={0}
                                 minW={'130px'}
                             >
                                 <Text noOfLines={1}>{row.price}</Text>
