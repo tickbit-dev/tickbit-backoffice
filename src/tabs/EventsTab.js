@@ -17,28 +17,29 @@ export default function EventsTab({...props}) {
     const location = useLocation();
     const [searchValue, setSearchValue] = useState('');
 
-    function applySearchFilter(word){
+    function applySearchFilter(word, list){
         setSearchValue(word)
 
         changePathOnSearch(word)
         
         if(word.length == 0){
-            setItems(initialItems)
+            setItems(list ?? initialItems)
             return
         }
 
-        setItems(initialItems)
+        setItems(list ?? initialItems)
+        
         let newItems = [];
 
-        for(let item of initialItems){
+        for(let item of list ?? initialItems){
             if(item._id == parseInt(word)){
-                newItems.push(item);
+                if(!newItems.some(ev => ev._id == item._id)) newItems.push(item);
             }
             if(item.title.toLowerCase().includes(word.toLowerCase())){
-                newItems.push(item);
+                if(!newItems.some(ev => ev._id == item._id)) newItems.push(item);
             }
             if(item.artist.toLowerCase().includes(word.toLowerCase())){
-                newItems.push(item);
+                if(!newItems.some(ev => ev._id == item._id)) newItems.push(item);
             }
         }
 
@@ -66,6 +67,9 @@ export default function EventsTab({...props}) {
 
         setItems(items_list)
         setInitialItems(items_list);
+        if(location.search.length > 0){
+            applySearchFilter(location.search.replace("?search=", "").replaceAll("+", " "), items_list)
+        }
     }
 
     useEffect(() => {
@@ -76,7 +80,7 @@ export default function EventsTab({...props}) {
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
-            <NavBarWithSearchBar applySearchFilter={(value) => applySearchFilter(value)}/>
+            <NavBarWithSearchBar value={searchValue.replaceAll("+", " ")} applySearchFilter={(value) => applySearchFilter(value)}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
                 {/*<Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
                     <Input

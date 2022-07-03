@@ -50,18 +50,26 @@ export default function TicketingTable({...props}) {
             <Table sx={{minWidth: 650}} /*variant='striped'*/ colorScheme='gray' size='md'>
                 <Thead backgroundColor={'gray.100'}>
                     <Tr>
+                        <Th color={'black'} textAlign={'center'} minW={'62px'} w={0}>Id</Th>
                         <Th color={'black'} minW={'200px'}>Propietario</Th>
-                        <Th color={'black'} minW={'200px'}>Id Ticket</Th>
                         <Th color={'black'} minW={'200px'}>Fecha de compra</Th>
                         <Th color={'black'} minW={'200px'}>Id Recinto</Th>
                         <Th color={'black'} minW={'200px'}>Id Evento</Th>
-                        <Th color={'black'} minW={'200px'}>Id Zona</Th>
+                        {/*<Th color={'black'} minW={'200px'}>Id Zona</Th>*/}
                         <Th color={'black'} minW={'200px'}>Precio</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
                     {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row) => (
                         <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
+                            <Td
+                                borderRightWidth={1}
+                                bg={'gray.50'}
+                                minW={'62px'}
+                                textAlign={'center'}
+                            >
+                                <Text noOfLines={1}>{row._id}</Text>
+                            </Td>
                             <Td
                                 borderRightWidth={1}
                                 minW={'200px'}
@@ -88,12 +96,6 @@ export default function TicketingTable({...props}) {
                             </Td>
                             <Td
                                 borderRightWidth={1}
-                                minW={'200px'}
-                            >
-                                <Text noOfLines={1}>{row._id}</Text>
-                            </Td>
-                            <Td
-                                borderRightWidth={1}
                                 minW={'130px'}
                             >
                                 
@@ -111,12 +113,12 @@ export default function TicketingTable({...props}) {
                             >
                                 <Text noOfLines={1}>{row.idEvent}</Text>
                             </Td>
-                            <Td
+                            {/*<Td
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
                                 <Text noOfLines={1}>{row.idZona}</Text>
-                            </Td>
+                            </Td>*/}
                             <Td
                                 borderRightWidth={1}
                                 minW={'130px'}

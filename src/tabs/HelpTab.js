@@ -3,7 +3,7 @@ import { Flex, Box, Text } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 
-export default function Settings({...props}) {
+export default function HelpTab({...props}) {
 
     const [state, setState] = useState();
 
@@ -12,10 +12,10 @@ export default function Settings({...props}) {
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
-            <NavBarWithSearchBar applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
+            <NavBarWithSearchBar searchBar={false} applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
                 <Flex flex={1} minW={'600px'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                    <Text>Settings</Text>
+                    <Text>HelpTab</Text>
                 </Flex>
             </Flex>
         </Flex>

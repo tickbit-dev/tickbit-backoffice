@@ -34,7 +34,8 @@ import {
   FiChevronDown,
   FiList,
   FiSearch,
-  FiDollarSign
+  FiDollarSign,
+  FiHelpCircle
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
@@ -55,7 +56,7 @@ const LinkItems = [
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
     { name: 'Ingresos', icon: FiDollarSign, to: 'incomes' },
     { name: 'Campañas', icon: FiTrendingUp, to: 'campaigns' },
-    { name: 'Ajustes', icon: FiSettings, to: 'settings'}
+    { name: 'Ayuda', icon: FiHelpCircle, to: 'help'}
 ];
 
 const SIDE_MENU_WIDTH = '245px';
@@ -137,9 +138,7 @@ const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
 
 const NavItem = ({ icon, children, to, ...rest }) => {
   return (
-    <Link to={to} state={{from: "Link #1",
-    message: "Welcome to KindaCode.com",
-    timestamp: Date.now()}} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link to={to} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"
