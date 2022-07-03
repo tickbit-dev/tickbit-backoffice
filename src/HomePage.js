@@ -246,7 +246,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
             </MenuList>
           </Menu>
         </Flex>*/}
-        <MetamaskButton/>
+        <MetamaskButton isHome={true}/>
       </HStack>
     </Flex>
   );

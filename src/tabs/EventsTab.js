@@ -10,13 +10,15 @@ import { getEventsListFromBlockchain, getEventsListFromTest } from '../utils/fun
 import Dimensions from '../constants/Dimensions';
 import { useLocation, useParams } from 'react-router-dom';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
+import { FiAlertCircle, FiAlertTriangle, FiInfo, FiSearch } from 'react-icons/fi';
 
 export default function EventsTab({...props}) {
     const [initialItems, setInitialItems] = useState([]);
     const [items, setItems] = useState([]);
     const [isLaoaded, setIsLoaded] = useState(false);
-    const location = useLocation();
     const [searchValue, setSearchValue] = useState('');
+
+    const location = useLocation();
 
     function applySearchFilter(word, list){
         setSearchValue(word)
@@ -126,7 +128,16 @@ export default function EventsTab({...props}) {
                     </Flex>*/}
 
                     {items.length == 0 && isLaoaded ?
-                        <Text p={4}>No se han encontrado resultados para "{searchValue}".</Text>
+                        searchValue.length > 0 ?
+                            <Flex p={4} alignItems={"center"}>
+                                <FiSearch/>
+                                <Text ml={"10px"}>No se han encontrado resultados para "{searchValue}".</Text>
+                            </Flex>
+                        :
+                            <Flex p={4} alignItems={"center"}>
+                                <FiInfo/>
+                                <Text ml={"10px"}>Todavía no has creado ningún evento.</Text>
+                            </Flex>
                     :
                         <EventsTable
                             items={items}

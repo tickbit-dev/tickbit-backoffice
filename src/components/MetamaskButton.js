@@ -1,12 +1,12 @@
 //Libraries
 import { useState, useEffect, useRef } from 'react';
-import { Box, Image, Text, Button, useToast, Flex, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Link, Spacer } from '@chakra-ui/react';
+import { Box, Image, Text, Button, useToast, Flex, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Link, Spacer, Icon } from '@chakra-ui/react';
 //import Cookies from 'js-cookie';
 
 //Images & Icons
 import MetamaskLogo from "../assets/metamask_logo.webp"
 import {BsFillCheckCircleFill} from "react-icons/bs"
-import {FiChevronDown} from "react-icons/fi"
+import {FiChevronDown, FiLogOut} from "react-icons/fi"
 import {FaUser} from "react-icons/fa"
 import {IoWallet} from "react-icons/io5"
 import {HiTicket} from "react-icons/hi"
@@ -34,7 +34,8 @@ export default function MetamaskButton({...props}) {
                 status: 'info',
                 duration: 2000,
                 isClosable: true,
-              })
+            })
+            window.open("/", "_self");
         }
     }, [userAddress]);
 
@@ -50,6 +51,7 @@ export default function MetamaskButton({...props}) {
                     isClosable: true,
                 })
             });
+            window.open("/", "_self");
         } else {
             window.open("https://metamask.app.link/dapp/tickb.it", "_blank")
         }
@@ -75,6 +77,7 @@ export default function MetamaskButton({...props}) {
                         duration: 2000,
                         isClosable: true,
                     })
+                    window.open("/", "_self");
                 }
                 setUserAddress(accounts[0]);
             });
@@ -102,7 +105,19 @@ export default function MetamaskButton({...props}) {
     }
 
     return(
-        userAddress == null ?
+        userAddress != null ?
+            <Flex
+                borderWidth={1}
+                borderRadius={"6px"}
+                h={"50px"}
+                px={"20px"}
+                alignItems={'center'}
+                justifyContent={'center'}
+            >
+                <Image h="24px" w={"24px"} src={MetamaskLogo}/>
+                <Text color={"black"} fontWeight={500} ml={"16px"}>{shortAddress(userAddress)}</Text>
+            </Flex>
+        :
             <Button
                 as="button"
                 pl={"20px"}
@@ -111,13 +126,8 @@ export default function MetamaskButton({...props}) {
                 w={'100%'}
                 borderRadius={"10px"}
                 transition="all .6s ease"
-                _hover={{ bg: "gray.200", /*transform: 'scale(1.01)'*/ }}
-                //_active={{bg: Colors.secondary.grayHover}}
+                _hover={{ bg: "gray.200"}}
                 bg={"gray.100"}
-                /*_focus={{
-                    boxShadow:
-                    '0 0 1px 3px rgba(64, 153, 255, 0.6), 0 1px 1px rgba(0, 0, 0, .15)',
-                }}*/
                 _focus={{boxShadow:'0 0 0px 0px rgba(0, 0, 0, 0)'}}
                 style={{WebkitTapHighlightColor: "transparent"}}
                 onClick={() => userAddress == null ? connectMetamaskWallet() : null}
@@ -128,8 +138,10 @@ export default function MetamaskButton({...props}) {
                     <Text display={{base: "none", md: "flex"}} fontWeight={500}>Conectar Metamask</Text>
                 </Box>
             </Button>
-        :
-            <Menu>
+    )
+}
+
+/*<Menu>
                 <MenuButton
                     pl={"20px"}
                     pr={"12px"}
@@ -137,31 +149,29 @@ export default function MetamaskButton({...props}) {
                     w={"100%"}
                     borderRadius={"10px"}
                     transition="all .6s ease"
-                    _hover={{ bg: "gray.100", /*transform: 'scale(1.01)'*/ }}
+                    _hover={{ bg: "gray.100"}}
                     bg={"white"}
                     borderWidth={1}
-                    //_active={{bg: '#dddfe2'}}
                     overflow={"hidden"}
                 >
                     <Box>
                         <Box d="flex" alignItems={"center"} justifyContent={"center"}>
-                            {/*<Flex w={"26px"} h={"26px"} px={"7px"} borderWidth={"1px"} borderRadius={"full"} mr={"10px"} alignItems={"center"} justifyContent={"center"}>
-                                <FaUser/>
-                            </Flex>*/}
-                            {/*<IoWallet color={"#60d16b"}/>*/}
-                            {/*<BsFillCheckCircleFill color={"#60d16b"}/>*/}
                             <Image h="24px" w={"24px"} src={MetamaskLogo}/>
                             <Text color={"black"} ml={"12px"} fontWeight={500} mr={"16px"}>{shortAddress(userAddress)}</Text>
                             <FiChevronDown color={'#b7bfc9'} size={"17px"}/>
                         </Box>
                     </Box>
                 </MenuButton> 
-                <MenuList borderWidth={"0px"} boxShadow={"lg"}>
+                <MenuList borderWidth={1}>
                     <MenuItem _focus={{bg: 'none'}}>
-                        <Link py={"6px"} px={"16px"} width={"full"} height={"full"} role={'group'} _hover={{bg: Colors.primary.pink + '22'}} borderRadius={"5px"} transition='all 0.2s cubic-bezier(.08,.52,.52,1)'>
+                        <Link py={"6px"} px={"16px"} width={"full"} height={"full"} role={'group'} _hover={{bg: 'gray.100'}} borderRadius={"5px"} transition='all 0.2s cubic-bezier(.08,.52,.52,1)'>
                             <Flex alignItems={"center"}>
-                                <FaUser/>
-                                <Text ml={"10px"} fontSize={"15px"} _groupHover={{ color: 'pink.400'}} transition='all 0.2s cubic-bezier(.08,.52,.52,1)'>Mi cuenta</Text>
+                                <Icon
+                                    mr="4"
+                                    fontSize="16"
+                                    as={FiLogOut}
+                                />
+                                <Text fontSize={"15px"} transition='all 0.2s cubic-bezier(.08,.52,.52,1)'>Desconectar Metamask</Text>
                             </Flex>
                         </Link>
                     </MenuItem>
@@ -173,10 +183,7 @@ export default function MetamaskButton({...props}) {
                             </Flex>
                         </Link>
                     </MenuItem>
-                    {/*<MenuDivider />
-                    <MenuItem>Link 3</MenuItem>*/}
+                    <MenuDivider />
+                    <MenuItem>Link 3</MenuItem>
                 </MenuList>
-            </Menu>
-
-    )
-}
+            </Menu>*/
