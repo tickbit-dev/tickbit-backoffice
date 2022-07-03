@@ -108,6 +108,9 @@ export default function EventsTable({...props}) {
 
             {/* PAGER */}
             <Flex padding={"10px"} alignItems={'center'} justifyContent={{base: 'start', xl: 'end'}}>
+                <Flex display={{ base: 'none', xl: 'block' }}>
+                    <Text noOfLines={1} color={"gray.400"} mx={"16px"}>{items.length}{items.length == 1 ? " evento" : " eventos"}</Text>
+                </Flex>
                 <Flex 
                     style={{cursor: currentPage != 0 ? 'pointer' : 'default', userSelect: "none"}}
                     transition="0.3s ease"
@@ -160,7 +163,7 @@ export default function EventsTable({...props}) {
                         h={'40px'}
                         w={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? '40px' : '0px'}
                         minW={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? '40px' : '0px'}
-                        backgroundColor={value == currentPage ? 'gray.50' : 'none'}
+                        backgroundColor={value == currentPage ? 'gray.100' : 'none'}
                         _hover={{bg: "gray.50"}}
                         borderTopWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
                         borderBottomWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
@@ -214,8 +217,10 @@ export default function EventsTable({...props}) {
                         as={FiChevronsRight}
                     />
                 </Flex>
+                <Flex display={{ base: 'block', xl: 'none' }}>
+                    <Text noOfLines={1} color={"gray.400"} mx={"16px"}>{items.length}{items.length == 1 ? " evento" : " eventos"}</Text>
+                </Flex>
             </Flex>
-            
 
 
         </Flex>

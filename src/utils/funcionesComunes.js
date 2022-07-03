@@ -95,9 +95,9 @@ export function getSearchBarPlaceholder(link){
     if(link == 'events' || link == ''){
         return "Busca un evento por id, título o artista..."
     } else if(link == 'ticketing'){
-        return "Busca un ticket..."
+        return "Busca un ticket por id o una cartera de propietario..."
     } else if(link == 'incomes'){
-        return "Busca por mes o año..."
+        return "Busca por mes y/o año..."
     } else{
         return "Escribe para buscar..."
     }
@@ -106,7 +106,7 @@ export function getSearchBarPlaceholder(link){
 export function getEstado(id){
     if(id === 1){
         return(
-            <Badge maxW={['-webkit-fit-content', '-moz-min-content']} colorScheme='green' mb={"3px"}>
+            <Badge maxW={'fit-content'} colorScheme='green' mb={"3px"}>
                 <Flex alignItems={'center'}>
                     <Text fontSize={10}>EN VENTA</Text>
                 </Flex>
@@ -114,7 +114,7 @@ export function getEstado(id){
         )
     } else if(id === 2){
         return (
-            <Badge maxW={'-webkit-fit-content'} mb={"3px"}>
+            <Badge maxW={'fit-content'} mb={"3px"}>
                 <Flex alignItems={'center'}>
                     <Text fontSize={10}>FINALIZADO</Text>
                 </Flex>
@@ -122,7 +122,7 @@ export function getEstado(id){
         )
     } else if(id === 3){
         return (
-            <Badge maxW={'-webkit-fit-content'} colorScheme='red' mb={"3px"}>
+            <Badge maxW={'fit-content'} colorScheme='red' mb={"3px"}>
                 <Flex alignItems={'center'}>
                     <Text fontSize={10}>AGOTADO</Text>
                 </Flex>
@@ -130,7 +130,7 @@ export function getEstado(id){
         )
     } else if(id === 4){
         return (
-            <Badge maxW={'-webkit-fit-content'} colorScheme='yellow' mb={"3px"}>
+            <Badge maxW={'fit-content'} colorScheme='yellow' mb={"3px"}>
                 <Flex alignItems={'center'}>
                     <Icon
                         mr="6px"

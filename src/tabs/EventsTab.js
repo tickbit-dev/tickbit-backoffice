@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Input, Spacer } from '@chakra-ui/react';
+import { Flex, Input, Spacer, Text } from '@chakra-ui/react';
 
 //Componentes
 import EventsTable from '../components/EventsTable';
@@ -14,6 +14,7 @@ import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 export default function EventsTab({...props}) {
     const [initialItems, setInitialItems] = useState([]);
     const [items, setItems] = useState([]);
+    const [isLaoaded, setIsLoaded] = useState(false);
     const location = useLocation();
     const [searchValue, setSearchValue] = useState('');
 
@@ -56,19 +57,23 @@ export default function EventsTab({...props}) {
         }
     }
     
-    useEffect(() => {
+    /*useEffect(() => {
         if(searchValue.length == 0){
             window.history.replaceState({}, '', location.pathname)
         }
-    }, []);
+    }, []);*/
 
     async function getData(online){
         const items_list = online == true ? await getEventsListFromBlockchain() : getEventsListFromTest();
 
         setItems(items_list)
         setInitialItems(items_list);
-        if(location.search.length > 0){
-            applySearchFilter(location.search.replace("?search=", "").replaceAll("+", " "), items_list)
+        setIsLoaded(true)
+        
+        if (performance.navigation.type !== 1) { //If it is not refresh page
+            if(location.search.length > 0){
+                applySearchFilter(location.search.replace("?search=", "").replaceAll("+", " "), items_list)
+            }
         }
     }
 
@@ -120,9 +125,13 @@ export default function EventsTab({...props}) {
                         />
                     </Flex>*/}
 
-                    <EventsTable
-                        items={items}
-                    />
+                    {items.length == 0 && isLaoaded ?
+                        <Text p={4}>No se han encontrado resultados para "{searchValue}".</Text>
+                    :
+                        <EventsTable
+                            items={items}
+                        />
+                    }
                 </Flex>
             </Flex>
         </Flex>
