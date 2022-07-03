@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Flex, Box, Text, Image, Input, HStack, VStack, Textarea, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Button  } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import { HiOutlinePencil, HiOutlineLocationMarker, HiOutlineHome, HiOutlineUser, HiOutlineUserGroup } from "react-icons/hi";
@@ -37,6 +37,8 @@ export default function CreateOrUpdateEventTab({...props}) {
     const [urlImage, setUrlImage] = useState("");
     const [descripcion, setDescripcion] = useState("");
 
+    const citySelectorRef = useRef();
+
     const [dataEvento, setDataEvento] = useState([]);
     
     function cutDate(date){
@@ -60,9 +62,8 @@ export default function CreateOrUpdateEventTab({...props}) {
     async function getEventById(id){
         const event = await readEventbyId(id);
         setTitulo(event.title);
-        setCiudad(Integer.valueOf(event.idCity));
-        console.log(event.idVenue);
-
+        setCiudad(event.idCity);
+        setUrlImage(event.coverImageUrl);
     }
 
     useEffect(() => {
@@ -103,7 +104,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <HiOutlineLocationMarker/>
                                     <Text>Ciudad</Text>
                                 </HStack>
-                                <Select defaultValue={params.id != null ? ciudad : null} placeholder='Selecciona ciudad' size='md' onChange={function(event){setIdRecinto(event.target.value);setCiudad(event.target.value)}} _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
+                                <Select value={params.id != null ? ciudad : null} placeholder='Selecciona ciudad' size='md' onChange={function(event){setIdRecinto(event.target.value);setCiudad(event.target.value)}} _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
                                     <option value='1'>Madrid</option>
                                     <option value='2'>Barcelona</option>
                                 </Select>
@@ -127,7 +128,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <HiOutlineHome/>
                                     <Text>Recinto</Text>
                                 </HStack>
-                                <Select placeholder='Selecciona recinto'  onChange={function(event){setIdRecintoToCapacity(event.target.value);setRecinto(event.target.value);}} size='md'  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
+                                <Select placeholder='Selecciona recinto' onChange={function(event){setIdRecintoToCapacity(event.target.value);setRecinto(event.target.value);}} size='md'  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
                                     {listaRecintos.length > 0 ? listaRecintos.map((recinto) => ( 
                                     <option value={recinto.id}>{recinto.name}</option>)) : null}
 
@@ -213,7 +214,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <MdOutlineBrokenImage/>
                                     <Text>URL Imagen</Text>
                                 </HStack>
-                                <Input onChange={(event) => setUrlImage(event.target.value)}/>
+                                <Input defaultValue={params.id != null ? urlImage : null} onChange={(event) => setUrlImage(event.target.value)}/>
                             </VStack>
                             <VStack  w={'100%'}  mt={5}>
                                 <HStack mr={'auto'}>
