@@ -16,7 +16,7 @@ const endDate = new Date();
 
 // True: BLOCKCHAIN
 // False: LOCAL
-const IS_ONLINE = false;
+const IS_ONLINE = true;
 
 export default function IncomesTab({...props}) {
     const [tickets, setTickets] = useState([]);
@@ -118,7 +118,7 @@ export default function IncomesTab({...props}) {
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
-            <NavBarWithSearchBar applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
+            <NavBarWithSearchBar searchBar={false} applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
                 <Flex direction={'column'}>
                     <Flex ref={ref} minH={{base: '800px', lg: '400px'}} transition="all 1.3s ease" flex={1} direction={'column'} p={'16px'} mb={"16px"} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>                 
