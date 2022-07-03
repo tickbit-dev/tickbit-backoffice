@@ -188,7 +188,7 @@ export function getCapacity(idciudad,idrecinto){
 
 ///////// EVENTS /////////
 
-function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted) {
+export function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted) {
     return { _owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted };
 }
 
@@ -236,7 +236,41 @@ export async function getEventsListFromBlockchain(){
     return itemsArray;
 }
 
-export function getEventsListFromTest(){
+export async function getEventFromId(id){
+    const provider = new ethers.providers.JsonRpcProvider()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
+    const data = await contract.readEvent(id);
+
+    const item_data = await Promise.all(data);
+
+    let event ;
+
+    /*
+    [0] address _owner;
+    [1] uint _id;
+    [2] uint256 _insertionDate;
+    [3] string title;
+    [4] uint idCity;
+    [5] uint idVenue;
+    [6] uint idCategory;
+    [7] string description;
+    [8] string artist;
+    [9] uint capacity;
+    [10] uint price;
+    [11] string coverImageUrl;
+    [12] uint256 initialSaleDate;
+    [13] uint256 initialDate;
+    [14] uint256 finalDate;
+    [15] bool aproved;
+    [16] bool deleted;
+    */
+   
+    event = newEvent(item_data[0], item_data[1].toNumber(), item_data[2].toNumber(), item_data[3], item_data[4].toNumber(), item_data[5].toNumber(), item_data[6].toNumber(), item_data[7], item_data[8], item_data[9].toNumber(), item_data[10].toNumber(), item_data[11], item_data[12].toNumber(), item_data[13].toNumber(), item_data[14].toNumber(), item_data[15], item_data[16]);
+    return event;
+}
+
+
+ export function getEventsListFromTest(){
     /*
     [0] address _owner;
     [1] uint _id;
@@ -297,8 +331,8 @@ export function getEventsListFromTest(){
             false
         )
     ])
-}
 
+ }
 export async function createEventOnBlockchain(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate){
     /* needs the user to sign the transaction, so will use Web3Provider and sign it */
     await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
@@ -340,6 +374,15 @@ export async function createEventOnBlockchain(title, idCity, idVenue, idCategory
     console.log('hola7')
 
     await transaction.wait()
+}
+
+export async function readEventbyId(eventId) {         
+    const provider = new ethers.providers.JsonRpcProvider()         
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)         
+    const data = await contract.readEvent(BigNumber.from(String(eventId)));          
+    const item_data = await Promise.all(data);          
+    let item = newEvent(item_data[0], item_data[1].toNumber(), item_data[2].toNumber(), item_data[3], item_data[4].toNumber(), item_data[5].toNumber(), item_data[6].toNumber(), item_data[7], item_data[8], item_data[9].toNumber(), item_data[10].toNumber(), item_data[11], item_data[12].toNumber(), item_data[13].toNumber(), item_data[14].toNumber(), item_data[15], item_data[16]);
+    return item;
 }
 
 ///////// TICKETS /////////
