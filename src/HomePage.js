@@ -138,9 +138,7 @@ const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
 
 const NavItem = ({ icon, children, to, ...rest }) => {
   return (
-    <Link to={to} state={{from: "Link #1",
-    message: "Welcome to KindaCode.com",
-    timestamp: Date.now()}} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link to={to} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"

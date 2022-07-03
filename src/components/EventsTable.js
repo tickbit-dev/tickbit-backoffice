@@ -46,6 +46,7 @@ export default function EventsTable({...props}) {
                     </Tr>
                 </Thead>
                 <Tbody>
+
                     {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row) => (
                         <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => navigate('/events/' + row._id)} >
                             <Td 
@@ -91,7 +92,7 @@ export default function EventsTable({...props}) {
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{getCiudadPorId(row._idCity)}</Text>
+                                <Text noOfLines={1}>{getCiudadPorId(row.idCity)}</Text>
                             </Td>
                         </Tr>
                     ))}

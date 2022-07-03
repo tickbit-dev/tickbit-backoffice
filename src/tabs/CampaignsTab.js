@@ -71,7 +71,7 @@ export function FrontPageCampaingCard({...props}){
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
-                        <Button mt={"16px"} text={"Comprar"} bg={"#69c5d6"}/>
+                        <Button mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"}/>
                     </Flex>
                 </Flex>
             </Flex>
