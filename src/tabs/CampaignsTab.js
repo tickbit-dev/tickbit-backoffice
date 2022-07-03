@@ -59,6 +59,9 @@ export function FrontPageCampaingCard({...props}){
                                 ≈ 1.300$
                             </Text>
                         </HStack>
+                        <Text fontSize="xl" color="gray.300" textAlign={"center"}>
+                                1 disponible
+                        </Text>
                     </Flex>
                     <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
                         {/*<Flex flex={1} w={"100%"} alignItems="center">
@@ -105,6 +108,9 @@ export function OutstandingCampaingCard({...props}){
                                 ≈ 400$
                             </Text>
                         </HStack>
+                        <Text fontSize="xl" color="gray.300" textAlign={"center"}>
+                                15 disponible
+                        </Text>
                     </Flex>
                     <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
                         {/*<Flex flex={1} w={"100%"} alignItems="center">

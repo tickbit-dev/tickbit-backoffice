@@ -50,6 +50,7 @@ export default function NavBarWithSearchBar({...props}) {
             <Input
                 flex={1}
                 //mt={"-10px"}
+                value={props.value ?? ""}
                 minH={'48px'}
                 w={'100%'}
                 placeholder={getSearchBarPlaceholder(location.pathname.split('/')[1])}
