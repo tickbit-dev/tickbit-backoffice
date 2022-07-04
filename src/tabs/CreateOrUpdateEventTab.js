@@ -25,6 +25,7 @@ export default function CreateOrUpdateEventTab({...props}) {
     const [idEvento, setIdEvento] = useState();
 
     //Valores formulario
+    const [owner, setOwner] = useState("");
     const [titulo, setTitulo] = useState("");
     const [ciudad, setCiudad] = useState();
     const [categoria, setCategoria] = useState();
@@ -75,6 +76,7 @@ export default function CreateOrUpdateEventTab({...props}) {
         const event = await readEventbyId(id);
         console.log(event);
         setIdEvento(id);
+        setOwner(event._owner)
         setTitulo(event.title);
         setCiudad(event.idCity);
         setListaRecintos(getRecintos(event.idCity));
@@ -122,6 +124,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                         {Object.keys(urlImage).length === 0 ? <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={imagePlaceholder} rounded={5} alt='Image not found' objectFit={'cover'} /> :
                         <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={urlImage} rounded={5} alt='Image not found' objectFit={'cover'}  />} 
                     </Box>
+                        <Text>{"_owner: " + owner}</Text>
                         <HStack w={'100%'} mt={10} >
                             <VStack w={'100%'}>
                                 <HStack mr={'auto'}>

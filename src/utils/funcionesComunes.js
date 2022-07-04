@@ -207,11 +207,15 @@ function createEventItem(title, idCity, idVenue, idCategory, description, artist
 }
 
 export async function getEventsListFromBlockchain(){
-    const provider = new ethers.providers.JsonRpcProvider()
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
-    const data = await contract.readAllEvents();
-
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+  
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
+    const data = await contract.readEvents();
     const item_data = await Promise.all(data);
+    console.log(item_data)
 
     let itemsArray = [];
 
@@ -246,47 +250,7 @@ export async function getEventsListFromBlockchain(){
     return itemsArray;
 }
 
-export async function getMyEventsListFromBlockchain(){
-    const provider = new ethers.providers.JsonRpcProvider()
-    console.log(await provider.getSigner());
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
-    const data = await contract.readMyEvents();
-
-    const item_data = await Promise.all(data);
-
-    let itemsArray = [];
-
-    /*
-    [0] address _owner;
-    [1] uint _id;
-    [2] uint256 _insertionDate;
-    [3] string title;
-    [4] uint idCity;
-    [5] uint idVenue;
-    [6] uint idCategory;
-    [7] string description;
-    [8] string artist;
-    [9] uint capacity;
-    [10] uint price;
-    [11] string coverImageUrl;
-    [12] uint256 initialSaleDate;
-    [13] uint256 initialDate;
-    [14] uint256 finalDate;
-    [15] bool aproved;
-    [16] bool deleted;
-    */
-
-    for(let item of item_data){
-        itemsArray.push(
-            newEvent(
-                item[0], item[1].toNumber(), item[2].toNumber(), item[3], item[4].toNumber(), item[5].toNumber(), item[6].toNumber(), item[7], item[8], item[9].toNumber(), item[10].toNumber(), item[11], item[12].toNumber(), item[13].toNumber(), item[14].toNumber(), item[15], item[16]
-            )
-        );
-    }
-
-    return itemsArray;
-}
- export function getEventsListFromTest(){
+export function getEventsListFromTest(){
     /*
     [0] address _owner;
     [1] uint _id;

@@ -73,14 +73,7 @@ export default function EventsTab({...props}) {
     async function getData(online){
         var items_list = [];
 
-        if(Literals.OWNER_ADDRESS == currentAddress){
-            items_list = online == true ? await getEventsListFromBlockchain() : getEventsListFromTest();
-        }
-        else{
-            console.log('hola')
-            items_list = online == true ? await getMyEventsListFromBlockchain() : getEventsListFromTest();
-           
-        }
+        items_list = online == true ? await getEventsListFromBlockchain() : getEventsListFromTest();
 
         setItems(items_list)
         setInitialItems(items_list);
@@ -116,9 +109,7 @@ export default function EventsTab({...props}) {
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
             <NavBarWithSearchBar value={searchValue.replaceAll("+", " ")} applySearchFilter={(value) => applySearchFilter(value)}/>
-            <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
-                <Text>{"Hola" + currentAddress}</Text>
-               
+            <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>               
                 {/*<Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
                     <Input
                         w={"400px"}
