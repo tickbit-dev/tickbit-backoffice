@@ -82,9 +82,9 @@ export function getMonthAndYearAbrebiation(month, year){
 }
 
 export function getCiudadPorId(id){
-    if(id === 1){
+    if(id == 1){
         return 'Barcelona'
-    } else if(id === 2){
+    } else if(id == 2){
         return 'Madrid'
     } else{
         return 'Sin definir'
@@ -149,7 +149,7 @@ export function getEstado(id){
 export function getRecintos(id){
     var RecintosMadrid = [
         {
-            "id": 1,
+            "id": 2,
             "name": "Wizink Center",
             "capacity": 17453,
             "address": "Av. Felipe II, s/n, 28009 Madrid"
@@ -158,17 +158,17 @@ export function getRecintos(id){
 
     var RecintosBarcelona = [
         {
-            "id": 2,
+            "id": 1,
             "name": "Palau Sant Jordi",
             "capacity":  17000,
             "address": "Passeig Olímpic, 5-7, 08038 Barcelona"
            }
     ]
 
-    if(id == 1){
+    if( id == 2){
         return RecintosMadrid;
     }
-    else if(id == 2){
+    else if(id == 1){
         return RecintosBarcelona;
     }
     else return [];
@@ -235,40 +235,6 @@ export async function getEventsListFromBlockchain(){
 
     return itemsArray;
 }
-
-export async function getEventFromId(id){
-    const provider = new ethers.providers.JsonRpcProvider()
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
-    const data = await contract.readEvent(id);
-
-    const item_data = await Promise.all(data);
-
-    let event ;
-
-    /*
-    [0] address _owner;
-    [1] uint _id;
-    [2] uint256 _insertionDate;
-    [3] string title;
-    [4] uint idCity;
-    [5] uint idVenue;
-    [6] uint idCategory;
-    [7] string description;
-    [8] string artist;
-    [9] uint capacity;
-    [10] uint price;
-    [11] string coverImageUrl;
-    [12] uint256 initialSaleDate;
-    [13] uint256 initialDate;
-    [14] uint256 finalDate;
-    [15] bool aproved;
-    [16] bool deleted;
-    */
-   
-    event = newEvent(item_data[0], item_data[1].toNumber(), item_data[2].toNumber(), item_data[3], item_data[4].toNumber(), item_data[5].toNumber(), item_data[6].toNumber(), item_data[7], item_data[8], item_data[9].toNumber(), item_data[10].toNumber(), item_data[11], item_data[12].toNumber(), item_data[13].toNumber(), item_data[14].toNumber(), item_data[15], item_data[16]);
-    return event;
-}
-
 
  export function getEventsListFromTest(){
     /*
@@ -375,6 +341,26 @@ export async function createEventOnBlockchain(title, idCity, idVenue, idCategory
 
     await transaction.wait()
 }
+
+export async function editEventOnBlockchain(_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate) {         
+    await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
+        
+    });
+  
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+    //const objeto = [BigNumber.from(String(2))].concat(createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate));
+    const transaction = await contract.editEvent([_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, 	1656938107, 	1656938107, 	1656938107]);
+    console.log('editfunction')
+
+    await transaction.wait()
+   // const data = await contract.editEvent(Object.assign(_id, createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate)));                   
+
+}
+
 
 export async function readEventbyId(eventId) {         
     const provider = new ethers.providers.JsonRpcProvider()         
