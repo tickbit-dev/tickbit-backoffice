@@ -6,17 +6,22 @@ import EventsTable from '../components/EventsTable';
 import InputSelector from '../components/InputSelector';
 
 //Funciones comunes
-import { getEventsListFromBlockchain, getEventsListFromTest } from '../utils/funcionesComunes';
+import { getCurrentAddress, getEventsListFromBlockchain, getEventsListFromTest, getMyEventsListFromBlockchain, setCurrentAddress } from '../utils/funcionesComunes';
 import Dimensions from '../constants/Dimensions';
 import { useLocation, useParams } from 'react-router-dom';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import { FiAlertCircle, FiAlertTriangle, FiInfo, FiSearch } from 'react-icons/fi';
+import Literals from '../constants/Literals';
+import { ethers, BigNumber } from 'ethers';
+import Web3Modal, { Provider } from 'web3modal';
+
 
 export default function EventsTab({...props}) {
     const [initialItems, setInitialItems] = useState([]);
     const [items, setItems] = useState([]);
     const [isLaoaded, setIsLoaded] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+    const [currentAddress, setCurrentAddress] = useState("");
 
     const location = useLocation();
 
@@ -66,7 +71,16 @@ export default function EventsTab({...props}) {
     }, []);*/
 
     async function getData(online){
-        const items_list = online == true ? await getEventsListFromBlockchain() : getEventsListFromTest();
+        var items_list = [];
+
+        if(Literals.OWNER_ADDRESS == currentAddress){
+            items_list = online == true ? await getEventsListFromBlockchain() : getEventsListFromTest();
+        }
+        else{
+            console.log('hola')
+            items_list = online == true ? await getMyEventsListFromBlockchain() : getEventsListFromTest();
+           
+        }
 
         setItems(items_list)
         setInitialItems(items_list);
@@ -79,16 +93,32 @@ export default function EventsTab({...props}) {
         }
     }
 
+ 
+    function getCurrentUserAddress() {
+            window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
+                //console.log("current account: " + accounts[0])
+                setCurrentAddress(accounts[0]);
+            });
+    }
+
     useEffect(() => {
         // True: BLOCKCHAIN
         // False: LOCAL
         getData(true);
+        //console.log(Literals.OWNER_ADDRESS)
+       // console.log('nuestra dir' + getCurrentAddress())
+       getCurrentUserAddress();
+       
+        
+
     }, []);
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
             <NavBarWithSearchBar value={searchValue.replaceAll("+", " ")} applySearchFilter={(value) => applySearchFilter(value)}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
+                <Text>{"Hola" + currentAddress}</Text>
+               
                 {/*<Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
                     <Input
                         w={"400px"}

@@ -13,6 +13,7 @@ import {HiTicket} from "react-icons/hi"
 
 //Contstants
 import Colors from '../constants/Colors';
+import { setCurrentAddress } from '../utils/funcionesComunes';
 
 export default function MetamaskButton({...props}) {
     const [userAddress, setUserAddress] = useState(null);
@@ -35,6 +36,7 @@ export default function MetamaskButton({...props}) {
                 duration: 2000,
                 isClosable: true,
             })
+            setCurrentAddress(userAddress);
             window.open("/", "_self");
         }
     }, [userAddress]);
@@ -51,6 +53,7 @@ export default function MetamaskButton({...props}) {
                     isClosable: true,
                 })
             });
+            setCurrentAddress(userAddress);
             window.open("/", "_self");
         } else {
             window.open("https://metamask.app.link/dapp/tickb.it", "_blank")
@@ -79,6 +82,7 @@ export default function MetamaskButton({...props}) {
                     })
                     window.open("/", "_self");
                 }
+                setCurrentAddress(accounts[0]);
                 setUserAddress(accounts[0]);
             });
         }
