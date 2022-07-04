@@ -18,8 +18,8 @@ import { createEvent } from '@testing-library/react';
 export default function CreateOrUpdateEventTab({...props}) {
     let params = useParams();
     const toast = useToast()
-
-    const [state, setState] = useState();
+    const [activeButton, setActiveButton] = useState(true);
+    
     const [idRecinto, setIdRecinto] = useState("");
     const [listaRecintos, setListaRecintos] = useState([]);
     const [IdRecintoToCapacity, setIdRecintoToCapacity] = useState(0);
@@ -117,15 +117,19 @@ export default function CreateOrUpdateEventTab({...props}) {
     }, []);
 
     async function createEvent(){
+        setActiveButton(false)
+        
         const transaction = await createEventOnBlockchain(titulo,ciudad,recinto,categoria,descripcion,artista,aforo,precio,urlImage,fechaInicioVenta,fechaInicioEvento,fechaFinalEvento);
+        
         if(transaction == null){
             toast({
                 title: 'Error al crear evento',
                 description: "No se ha podido crear el evento debido a un error.",
                 status: 'error',
-                duration: 2000,
+                duration: 4000,
                 isClosable: true,
             })
+            setActiveButton(true)
         } else {
             toast({
                 title: 'Evento creado correctamente',
@@ -134,6 +138,36 @@ export default function CreateOrUpdateEventTab({...props}) {
                 duration: 2000,
                 isClosable: true,
             })
+            setTimeout(() => {
+                window.open('/events', '_self')
+                setActiveButton(true)
+            }, 1500);
+        }
+    }
+
+    async function editEvent(){
+        setActiveButton(false)
+
+        const transaction = await editEventOnBlockchain(idEvento, titulo,ciudad,recinto,categoria,descripcion,artista,aforo,precio,urlImage,fechaInicioVenta,fechaInicioEvento,fechaFinalEvento)
+    
+        if(transaction == null){
+            toast({
+                title: 'Error al modificar evento',
+                description: "No se ha podido modificar el evento debido a un error.",
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+            setActiveButton(true)
+        } else {
+            toast({
+                title: 'Evento modificado correctamente',
+                description: "Se ha modificado el evento " + titulo + ".",
+                status: 'success',
+                duration: 4000,
+                isClosable: true,
+            })
+            setActiveButton(true)
         }
     }
   
@@ -142,7 +176,6 @@ export default function CreateOrUpdateEventTab({...props}) {
             <NavBarWithSearchBar searchBar={false} applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
                 <Flex flex={1} minW={'600px'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                    {params.id != null ? <Text>EDITAR EVENTO</Text> : null}
                     <Box h={300} w={'100%'}>
                         {Object.keys(urlImage).length === 0 ? <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={imagePlaceholder} rounded={5} alt='Image not found' objectFit={'cover'} /> :
                         <Image ml={'auto'} mr={'auto'} h={'100%'} w={'40%'} src={urlImage} rounded={5} alt='Image not found' objectFit={'cover'}  />} 
@@ -281,8 +314,8 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 </HStack>
                                 <Textarea defaultValue={descripcion} onChange={(event) => setDescripcion(event.target.value)} />
                             </VStack>
-                            { params.id != null ? <Button mt={10} ml={'auto'} w={300} onClick={() => editEventOnBlockchain(idEvento, titulo,ciudad,recinto,categoria,descripcion,artista,aforo,precio,urlImage,fechaInicioVenta,fechaInicioEvento,fechaFinalEvento)} bg={'black'} color={"white"} colorScheme={'black'}>Modificar evento</Button> :
-                                <Button mt={10} ml={'auto'} w={300} onClick={() => createEvent()} text={'Crear evento'} bg={'black'} color={"white"} colorScheme={'black'}>Crear evento</Button>
+                            { params.id != null ? <Button mt={10} isActive={activeButton} ml={'auto'} w={300} onClick={() => editEvent()} bg={'black'} color={"white"} colorScheme={'black'}>Modificar evento</Button> :
+                                <Button mt={10} isActive={activeButton} ml={'auto'} w={300} onClick={() => createEvent()} text={'Crear evento'} bg={'black'} color={"white"} colorScheme={'black'}>Crear evento</Button>
                             }
               
                 </Flex>

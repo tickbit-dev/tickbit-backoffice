@@ -331,23 +331,21 @@ export async function createEventOnBlockchain(title, idCity, idVenue, idCategory
     }
 }
 
-export async function editEventOnBlockchain(_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate) {         
-    await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
-        
-    });
-  
+export async function editEventOnBlockchain(_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate){
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
-    //const objeto = [BigNumber.from(String(2))].concat(createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate));
-    const transaction = await contract.editEvent([_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, 	1656938107, 	1656938107, 	1656938107]);
-    console.log('editfunction')
 
-    await transaction.wait()
-   // const data = await contract.editEvent(Object.assign(_id, createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate)));                   
+    try{
+        const transaction = await contract.editEvent([_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, 	1656938107, 	1656938107, 	1656938107]);
+        await transaction.wait()
 
+        return transaction;
+    } catch(error){
+        return null;
+    }
 }
 
 
@@ -516,22 +514,22 @@ export async function getTicketsListFromTest(){
 }
 
 export async function createTicketOnBlockchain(){
-/* needs the user to sign the transaction, so will use Web3Provider and sign it */
-await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
+    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
+    await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
 
-});
+    });
 
-const web3Modal = new Web3Modal()
-const connection = await web3Modal.connect()
-const provider = new ethers.providers.Web3Provider(connection)
-const signer = provider.getSigner()
-const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
 
-const transaction = await contract.createTicket(
-    "MDR", 
-    1, 
-    1,
-    50);
+    const transaction = await contract.createTicket(
+        "MDR", 
+        1, 
+        1,
+        50);
 
-await transaction.wait()
+    await transaction.wait()
 }
