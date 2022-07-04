@@ -16,7 +16,7 @@ const endDate = new Date();
 
 // True: BLOCKCHAIN
 // False: LOCAL
-const IS_ONLINE = true;
+const IS_ONLINE = false;
 
 export default function IncomesTab({...props}) {
     const [tickets, setTickets] = useState([]);

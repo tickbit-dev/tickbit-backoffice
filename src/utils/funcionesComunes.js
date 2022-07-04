@@ -1,4 +1,4 @@
-import { Badge, Flex, Icon, Link, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Text } from '@chakra-ui/react'
+import { Badge, Flex, Icon, Link, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Text, toast } from '@chakra-ui/react'
 import { FiArchive, FiChevronLeft, FiClock, FiDollarSign, FiFlag, FiStar, FiTrendingUp } from 'react-icons/fi'
 import { HiOutlineTicket } from 'react-icons/hi';
 import { TbCalendarOff } from 'react-icons/tb';
@@ -314,35 +314,6 @@ export function getEventsListFromTest(){
 
  }
 export async function createEventOnBlockchain(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate){
-    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
-    await window.ethereum.request({ method: 'eth_requestAccounts' }).then(accounts => {
-        
-    });
-    /*if ( window.ethereum ) {
-        const web3 = new Web3( window.ethereum );
-    
-        try {
-            // Request account access if needed
-            let handleAccountsChanged;
-            await window.ethereum
-                .request( {
-                    method: 'eth_requestAccounts'
-                } )
-                .then( handleAccountsChanged )
-                .catch( ( error ) => {
-                    if ( error.code === 4001 ) {
-                        // EIP-1193 userRejectedRequest error
-                        console.log( 'Please connect to MetaMask.' );
-                    } else {
-                        console.error( error );
-                    }
-                } );
-        } catch ( error ) {
-            // handle error
-        }
-    }*/
-    
-
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
@@ -350,10 +321,14 @@ export async function createEventOnBlockchain(title, idCity, idVenue, idCategory
     const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
     
     /* user will be prompted to pay the asking proces to complete the transaction */
-    const transaction = await contract.createEvent(createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate));
-    console.log('hola7')
+    try{
+        const transaction = await contract.createEvent(createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate));
+        await transaction.wait()
 
-    await transaction.wait()
+        return transaction;
+    } catch(error){
+        return null;
+    }
 }
 
 export async function editEventOnBlockchain(_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate) {         

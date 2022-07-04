@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Flex, Box, Text, Image, Input, HStack, VStack, Textarea, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Button  } from '@chakra-ui/react';
+import { Flex, Box, Text, Image, Input, HStack, VStack, Textarea, Select, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Button, useToast  } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import { HiOutlinePencil, HiOutlineLocationMarker, HiOutlineHome, HiOutlineUser, HiOutlineUserGroup } from "react-icons/hi";
 import { TbCalendarEvent, TbCalendarTime, TbCalendarOff } from "react-icons/tb";
@@ -13,9 +13,11 @@ import { EventNoteSharp } from '@mui/icons-material';
 import { BigNumber, ethers } from 'ethers';
 import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
+import { createEvent } from '@testing-library/react';
 
 export default function CreateOrUpdateEventTab({...props}) {
     let params = useParams();
+    const toast = useToast()
 
     const [state, setState] = useState();
     const [idRecinto, setIdRecinto] = useState("");
@@ -113,6 +115,27 @@ export default function CreateOrUpdateEventTab({...props}) {
     useEffect(() => {
         getEventById(params.id);
     }, []);
+
+    async function createEvent(){
+        const transaction = await createEventOnBlockchain(titulo,ciudad,recinto,categoria,descripcion,artista,aforo,precio,urlImage,fechaInicioVenta,fechaInicioEvento,fechaFinalEvento);
+        if(transaction == null){
+            toast({
+                title: 'Error al crear evento',
+                description: "No se ha podido crear el evento debido a un error.",
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+            })
+        } else {
+            toast({
+                title: 'Evento creado correctamente',
+                description: "Se ha creado el evento " + titulo + ".",
+                status: 'success',
+                duration: 2000,
+                isClosable: true,
+            })
+        }
+    }
   
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
@@ -259,7 +282,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 <Textarea defaultValue={descripcion} onChange={(event) => setDescripcion(event.target.value)} />
                             </VStack>
                             { params.id != null ? <Button mt={10} ml={'auto'} w={300} onClick={() => editEventOnBlockchain(idEvento, titulo,ciudad,recinto,categoria,descripcion,artista,aforo,precio,urlImage,fechaInicioVenta,fechaInicioEvento,fechaFinalEvento)} bg={'black'} color={"white"} colorScheme={'black'}>Modificar evento</Button> :
-                                <Button mt={10} ml={'auto'} w={300} onClick={() => createEventOnBlockchain(titulo,ciudad,recinto,categoria,descripcion,artista,aforo,precio,urlImage,fechaInicioVenta,fechaInicioEvento,fechaFinalEvento)} text={'Crear evento'} bg={'black'} color={"white"} colorScheme={'black'}>Crear evento</Button>
+                                <Button mt={10} ml={'auto'} w={300} onClick={() => createEvent()} text={'Crear evento'} bg={'black'} color={"white"} colorScheme={'black'}>Crear evento</Button>
                             }
               
                 </Flex>
