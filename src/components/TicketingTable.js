@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input, useToast } from '@chakra-ui/react';
 import {truncateAddress, changeNumberforNameMonth, getCiudadPorId, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest, timestampToDate, openScan } from '../utils/funcionesComunes';
-import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiCopy, FiExternalLink } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
 import '../table.css'
 
 const ITEMS_PER_PAGE = 6;
@@ -29,13 +29,14 @@ export default function TicketingTable({...props}) {
         navigator.clipboard.writeText(value);
         toast({
             position: 'bottom',
-            duration: 2000,
+            duration: 4000,
             render: () => (
-              <Box color='white' p={3} bg='black' rounded={5} textAlign={'center'}>
-                Dirección copiada correctamente
-              </Box>
+              <Flex color='black' p={3} bg='white' rounded={5} textAlign={'center'} borderWidth={1} alignItems={'center'} justifyContent={'center'}>
+                <FiClipboard/>
+                <Text ml={"16px"}>Dirección copiada correctamente</Text>
+              </Flex>
             ),
-          })
+        })
     }
 
     useEffect(() => {
@@ -79,17 +80,22 @@ export default function TicketingTable({...props}) {
                             
                             
                             <Popover trigger={'hover'}>
-                                    <Box  d={'flex'}>
+                                    <Box d={'flex'} alignItems={'center'}>
                                         <PopoverTrigger>
                                             <Text noOfLines={1} pr={5}>{truncateAddress(row._owner)}</Text>
                                         </PopoverTrigger>
-                                            <FiExternalLink onClick={() => openScan(row._owner)} />
+                                        <Flex onClick={() => copyText(row._owner)} _hover={{bg: 'gray.200'}} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} transition="all .3s ease">
+                                            <FiCopy size={"14px"}/>
+                                        </Flex>
                                     </Box>
                                    
                                     <PopoverContent _focus={{outline:'none'}} >
                                         <PopoverArrow />
                                         <PopoverBody p={4}>
-                                            <Link _focus={{outline:'none'}} onClick={() => copyText(row._owner)} >{row._owner} </Link>
+                                            <Box onClick={() => openScan(row._owner)}>
+                                                <FiExternalLink/>
+                                                <Link _focus={{outline:'none'}} noOfLines={2} ml={"26px"} mt={"-18px"}>{row._owner}</Link>
+                                            </Box>
                                         </PopoverBody>
                                     </PopoverContent>
                                 </Popover>
@@ -124,7 +130,7 @@ export default function TicketingTable({...props}) {
                                 borderRightWidth={0}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.price}</Text>
+                                <Text noOfLines={1}>{row.price + " ETH"}</Text>
                             </Td>
                         </Tr>
                     ))}

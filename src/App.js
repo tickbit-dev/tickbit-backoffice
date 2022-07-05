@@ -10,7 +10,7 @@ import {
 
 import HomePage from './HomePage';
 import EventsTab from './tabs/EventsTab';
-import Ticketing from './tabs/Ticketing';
+import Ticketing from './tabs/TicketingTab';
 import IncomesTab from './tabs/IncomesTab';
 import CampaingsTab from './tabs/CampaignsTab';
 import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab';

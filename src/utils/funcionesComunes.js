@@ -26,7 +26,7 @@ export function truncateAddress(address){
 
 export function timestampToDate(value){
     var fecha = new Date(value * 1000);
-    var fechaFormateada = fecha.toLocaleDateString();
+    var fechaFormateada = fecha.toLocaleDateString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric'});
     return fechaFormateada;
 }
 

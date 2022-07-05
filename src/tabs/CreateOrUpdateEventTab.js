@@ -8,7 +8,7 @@ import { MdAttachMoney, MdOutlineBrokenImage } from "react-icons/md";
 import { createEventOnBlockchain, editEventOnBlockchain, getCapacity, getCiudadPorId, getEventFromId, getRecintos, loadEvent, newEvent, readEventbyId } from '../utils/funcionesComunes';
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { EventNoteSharp } from '@mui/icons-material';
 import { BigNumber, ethers } from 'ethers';
 import { contractAddress } from '../solidity/config';
@@ -17,7 +17,8 @@ import { createEvent } from '@testing-library/react';
 
 export default function CreateOrUpdateEventTab({...props}) {
     let params = useParams();
-    const toast = useToast()
+    const toast = useToast();
+    const navigate = useNavigate();
     const [activeButton, setActiveButton] = useState(true);
     
     const [idRecinto, setIdRecinto] = useState("");
@@ -135,13 +136,10 @@ export default function CreateOrUpdateEventTab({...props}) {
                 title: 'Evento creado correctamente',
                 description: "Se ha creado el evento " + titulo + ".",
                 status: 'success',
-                duration: 2000,
+                duration: 4000,
                 isClosable: true,
             })
-            setTimeout(() => {
-                window.open('/events', '_self')
-                setActiveButton(true)
-            }, 1500);
+            navigate('/events')
         }
     }
 
