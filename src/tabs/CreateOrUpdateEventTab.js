@@ -5,11 +5,11 @@ import { HiOutlinePencil, HiOutlineLocationMarker, HiOutlineHome, HiOutlineUser,
 import { TbCalendarEvent, TbCalendarTime, TbCalendarOff } from "react-icons/tb";
 import {BiCategoryAlt, BiText} from "react-icons/bi";
 import { MdAttachMoney, MdOutlineBrokenImage } from "react-icons/md";
-import { createEventOnBlockchain, editEventOnBlockchain, getCapacity, getCiudadPorId, getEventFromId, getRecintos, loadEvent, newEvent, readEventbyId } from '../utils/funcionesComunes';
+import { createEventOnBlockchain, editEventOnBlockchain, getCapacity, getCategories, getCities, getCityById, getEventFromId, getVenueById, getVenuesByIdCity, loadEvent, newEvent, readEventbyId } from '../utils/funcionesComunes';
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import { useNavigate, useParams } from 'react-router-dom';
-import { EventNoteSharp } from '@mui/icons-material';
+import { Category, EventNoteSharp } from '@mui/icons-material';
 import { BigNumber, ethers } from 'ethers';
 import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json'
@@ -82,13 +82,13 @@ export default function CreateOrUpdateEventTab({...props}) {
         setOwner(event._owner)
         setTitulo(event.title);
         setCiudad(event.idCity);
-        setListaRecintos(getRecintos(event.idCity));
+        setListaRecintos(getVenuesByIdCity(event.idCity));
         setCategoria(event.idCategory);
         setUrlImage(event.coverImageUrl);
         setRecinto(event.idVenue);
         setArtista(event.artist);
         setAforo(event.capacity);
-        setCapacidad(getCapacity(event.idCity,event.idVenue)); //Cambio que puede estar mal
+        setCapacidad(getVenueById(event.idVenue).capacity); //Cambio que puede estar mal
         setIdRecintoToCapacity(event.idVenue); //Cambio que puede estar mal
         setPrecio(event.price);
         setFechaInicioVenta(textToDate(event.initialSaleDate * 1000));
@@ -100,12 +100,12 @@ export default function CreateOrUpdateEventTab({...props}) {
 
     function setCapacityNoParams(){
         if(params.id == null){
-        setCapacidad(getCapacity(idRecinto,IdRecintoToCapacity));
-        setAforo(getCapacity(idRecinto,IdRecintoToCapacity));
-    }
+            setCapacidad(getVenueById(IdRecintoToCapacity).capacity);
+            setAforo(getVenueById(IdRecintoToCapacity).capacity);
+        }
     }
     useEffect(() => {
-        setListaRecintos(getRecintos(idRecinto));
+        setListaRecintos(getVenuesByIdCity(idRecinto));
     }, [idRecinto]);
 
     useEffect(() => {
@@ -194,8 +194,11 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <Text>Ciudad</Text>
                                 </HStack>
                                 <Select value={params.id != null ? ciudad : null} placeholder='Selecciona ciudad' size='md' onChange={function(event){setIdRecinto(event.target.value);setCiudad(event.target.value)}} _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
-                                    <option value='1'>{getCiudadPorId(1)}</option>
-                                    <option value='2'>{getCiudadPorId(2)}</option>
+                                    {getCities().length > 0 ? 
+                                        getCities().map((city) => ( 
+                                            <option value={city.id}>{city.name}</option>
+                                        )) 
+                                    : null}
                                 </Select>
                             </VStack>
 
@@ -205,10 +208,11 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <Text>Categoria</Text>
                                 </HStack>
                                 <Select value={params.id != null ? categoria : null} placeholder='Selecciona categoria' size='md'  onChange={(event) => setCategoria(event.target.value)}  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
-                                    <option value='1'>Concierto</option>
-                                    <option value='2'>Festival</option>
-                                    <option value='3'>Teatro</option>
-                                    <option value='4'>Deporte</option>
+                                    {getCategories(categoria).length > 0 ? 
+                                        getCategories(categoria).map((category) => ( 
+                                            <option value={category.value}>{category.name}</option>
+                                        ))
+                                    : null}
                                 </Select>
                             </VStack>
 
@@ -218,9 +222,11 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <Text>Recinto</Text>
                                 </HStack>
                                 <Select value={params.id != null ? recinto : null} placeholder='Selecciona recinto' onChange={function(event){setIdRecintoToCapacity(event.target.value);setRecinto(event.target.value);}} size='md'  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
-                                    {listaRecintos.length > 0 ? listaRecintos.map((recinto) => ( 
-                                    <option value={recinto.id}>{recinto.name}</option>)) : null}
-
+                                    {getVenuesByIdCity(ciudad).length > 0 ? 
+                                        getVenuesByIdCity(ciudad).map((venue) => ( 
+                                            <option value={venue.id}>{venue.name}</option>
+                                        ))
+                                    : null}
                                 </Select>
                             </VStack>
                         </HStack>

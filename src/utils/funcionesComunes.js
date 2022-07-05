@@ -1,7 +1,8 @@
-import { Badge, Flex, Icon, Link, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverTrigger, Text, toast } from '@chakra-ui/react'
-import { FiArchive, FiChevronLeft, FiClock, FiDollarSign, FiFlag, FiStar, FiTrendingUp } from 'react-icons/fi'
-import { HiOutlineTicket } from 'react-icons/hi';
-import { TbCalendarOff } from 'react-icons/tb';
+import { Badge, Flex, Icon, Text } from '@chakra-ui/react'
+import { FiTrendingUp } from 'react-icons/fi'
+
+//Data
+import Data from '../data/Data';
 
 //Solidity
 import { ethers, BigNumber } from 'ethers';
@@ -9,29 +10,18 @@ import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json';
 import Web3Modal from 'web3modal';
 
-var currentAddress = "";
-
-export function getCurrentAddress(){
-    return currentAddress;
-}
-
-export function setCurrentAddress(addr){
-    currentAddress = addr;
-}
-
-
 export function truncateAddress(address){
     return address.length > 10 ? address.substring(0, 5) + "..." + address.substring(address.length - 4, address.length) : address
 }
 
-export function timestampToDate(value){
-    var fecha = new Date(value * 1000);
+export function timestampToDate(timestamp){
+    var fecha = new Date(timestamp * 1000);
     var fechaFormateada = fecha.toLocaleDateString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric'});
     return fechaFormateada;
 }
 
-export function openScan(value){
-    var link = "https://etherscan.io/address/" + value;
+export function openScan(address){
+    var link = "https://etherscan.io/address/" + address;
     window.open(link);
 }
 
@@ -91,13 +81,89 @@ export function getMonthAndYearAbrebiation(month, year){
     }
 }
 
-export function getCiudadPorId(id){
-    if(id == 1){
-        return 'Barcelona'
-    } else if(id == 2){
-        return 'Madrid'
-    } else{
-        return 'Sin definir'
+export function getCategories(){
+    return Data.categories;
+}
+
+export function getCategoryById(idCategory){
+    if(idCategory < 0) idCategory = 0;
+
+    for(let category of Data.categories){
+        if(category.id == idCategory) return category;
+    }
+    
+    idCategory = 0;
+
+    for(let category of Data.categories){
+        if(category.id == idCategory) return category;
+    }
+}
+
+export function getCities(){
+    return Data.cities;
+}
+
+export function getCityById(idCity){
+    if(idCity < 0) idCity = 0;
+
+    for(let city of Data.cities){
+        if(city.id == idCity) return city;
+    }
+    
+    idCity = 0;
+
+    for(let city of Data.cities){
+        if(city.id == idCity) return city;
+    }
+}
+
+export function getCityByIdVenue(idVenue){
+    if(idVenue < 0) idVenue = 0;
+
+    for(let city of Data.cities){
+        for(let venue of city.venues){
+            if(venue.id == idVenue) return city;
+        }
+    }
+
+    idVenue = 0;
+
+    for(let city of Data.cities){
+        for(let venue of city.venues){
+            if(venue.id == idVenue) return city;
+        }
+    }
+}
+
+export function getVenueById(idVenue){
+    if(idVenue < 0) idVenue = 0;
+
+    for(let city of Data.cities){
+        for(let venue of city.venues){
+            if(venue.id == idVenue) return venue;
+        }
+    }
+
+    idVenue = 0;
+
+    for(let city of Data.cities){
+        for(let venue of city.venues){
+            if(venue.id == idVenue) return venue;
+        }
+    }
+}
+
+export function getVenuesByIdCity(idCity){
+    if(idCity < 0) idCity = 0;
+
+    for(let city of Data.cities){
+        if(city.id == idCity) return city.venues;
+    }
+    
+    idCity = 0;
+
+    for(let city of Data.cities){
+        if(city.id == idCity) return city.venues;
     }
 }
 
@@ -156,46 +222,6 @@ export function getEstado(id){
     }
 }
 
-export function getRecintos(id){
-    var RecintosMadrid = [
-        {
-            "id": 2,
-            "name": "Wizink Center",
-            "capacity": 17453,
-            "address": "Av. Felipe II, s/n, 28009 Madrid"
-        }
-    ]
-
-    var RecintosBarcelona = [
-        {
-            "id": 1,
-            "name": "Palau Sant Jordi",
-            "capacity":  17000,
-            "address": "Passeig Olímpic, 5-7, 08038 Barcelona"
-           }
-    ]
-
-    if( id == 2){
-        return RecintosMadrid;
-    }
-    else if(id == 1){
-        return RecintosBarcelona;
-    }
-    else return [];
-}
-
-export function getCapacity(idciudad,idrecinto){
-    var recintos = getRecintos(idciudad);
-    var capacity;
-
-    for(let i=0; i<recintos.length; i++){
-        if(recintos[i].id == idrecinto){
-            capacity = recintos[i].capacity;
-        }
-    }
-    return capacity;
-}
-
 ///////// EVENTS /////////
 
 export function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted) {
@@ -215,7 +241,6 @@ export async function getEventsListFromBlockchain(){
     const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
     const data = await contract.readEvents();
     const item_data = await Promise.all(data);
-    console.log(item_data)
 
     let itemsArray = [];
 
@@ -247,7 +272,7 @@ export async function getEventsListFromBlockchain(){
         );
     }
 
-    return itemsArray;
+    return itemsArray.reverse();
 }
 
 export function getEventsListFromTest(){
@@ -365,10 +390,13 @@ function newTicket(_owner, _id, _purchaseDate, idVenue, idEvent, idZona, price) 
 }
 
 export async function getTicketsListFromBlockchain(){
-    const provider = new ethers.providers.JsonRpcProvider()
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
-    const data = await contract.readAllTickets();
-
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+  
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
+    const data = await contract.readTickets();
     const item_data = await Promise.all(data);
 
     let itemsArray = [];
@@ -377,7 +405,7 @@ export async function getTicketsListFromBlockchain(){
     [0] address _owner;
     [1] uint _id;
     [2] uint256 _purchaseDate;
-    [3] string idVenue;
+    [3] uint256 idVenue;
     [4] uint256 idEvent;
     [5] uint256 idZona;
     [6] uint256 price;
@@ -386,12 +414,12 @@ export async function getTicketsListFromBlockchain(){
      for(let item of item_data){
         itemsArray.push(
             newTicket(
-                item[0], item[1].toNumber(), item[2].toNumber(), item[3], item[4].toNumber(), item[5].toNumber(), item[6].toNumber()
+                item[0], item[1].toNumber(), item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(), item[6].toNumber()
             )
         );
     }
 
-    return itemsArray;
+    return itemsArray.reverse();
 }
 
 export async function getTicketsListFromTest(){

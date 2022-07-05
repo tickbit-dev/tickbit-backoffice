@@ -12,7 +12,7 @@ import { HiStar } from "react-icons/hi"
 import { FaTheaterMasks } from "react-icons/fa"
 import { IoMusicalNotes } from "react-icons/io5"
 
-import { getCiudadPorId, getEstado } from '../utils/funcionesComunes'
+import { getCityById, getEstado } from '../utils/funcionesComunes'
 
 //Solidity
 import { ethers, BigNumber } from 'ethers'
@@ -291,7 +291,7 @@ function table_sc(events) {
                             </Td>
                             <Td>{item.title}</Td>
                             <Td>{item.artist}</Td>
-                            <Td w={'30px'}>{getCiudadPorId(item.city)}</Td>
+                            <Td w={'30px'}>{getCityById(item.city).name}</Td>
                             <Td w={'30px'}>{getEstado(3)}</Td>
                         </Tr>
                     )

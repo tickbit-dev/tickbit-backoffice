@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { getCiudadPorId, getEstado, getEventsListFromTest } from '../utils/funcionesComunes';
+import { getCityById, getEstado, getEventsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import '../table.css'
 import { useNavigate, useParams } from 'react-router-dom';
@@ -95,7 +95,7 @@ export default function EventsTable({...props}) {
                                 minW={'160px'}
                                 w={'160px'}
                             >
-                                <Text noOfLines={1}>{getCiudadPorId(row.idCity)}</Text>
+                                <Text noOfLines={1}>{getCityById(row.idCity).name}</Text>
                             </Td>
                         </Tr>
                     ))}
@@ -221,7 +221,7 @@ export default function EventsTable({...props}) {
                     />
                 </Flex>
                 <Flex display={{ base: 'block', xl: 'none' }}>
-                    <Text noOfLines={1} color={"gray.400"} mx={"16px"}>{items.length}{items.length == 1 ? " evento" : " eventos"}</Text>
+                    <Text noOfLines={1} minW={"120px"} color={"gray.400"} mx={"16px"}>{items.length}{items.length == 1 ? " evento" : " eventos"}</Text>
                 </Flex>
             </Flex>
 

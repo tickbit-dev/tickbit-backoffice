@@ -11,7 +11,6 @@ import Dimensions from '../constants/Dimensions';
 import { useLocation, useParams } from 'react-router-dom';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import { FiAlertCircle, FiAlertTriangle, FiInfo, FiSearch } from 'react-icons/fi';
-import Literals from '../constants/Literals';
 import { ethers, BigNumber } from 'ethers';
 import Web3Modal, { Provider } from 'web3modal';
 
@@ -98,12 +97,8 @@ export default function EventsTab({...props}) {
         // True: BLOCKCHAIN
         // False: LOCAL
         getData(true);
-        //console.log(Literals.OWNER_ADDRESS)
-       // console.log('nuestra dir' + getCurrentAddress())
-       getCurrentUserAddress();
-       
-        
 
+        getCurrentUserAddress();
     }, []);
 
     return (

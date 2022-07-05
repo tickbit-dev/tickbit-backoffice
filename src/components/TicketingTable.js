@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input, useToast } from '@chakra-ui/react';
-import {truncateAddress, changeNumberforNameMonth, getCiudadPorId, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest, timestampToDate, openScan } from '../utils/funcionesComunes';
+import {truncateAddress, changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest, timestampToDate, openScan, getVenueById, getCityByIdVenue } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
 import '../table.css'
 
@@ -54,9 +54,10 @@ export default function TicketingTable({...props}) {
                         <Th color={'black'} textAlign={'center'} minW={'62px'} w={0}>Id</Th>
                         <Th color={'black'} minW={'200px'}>Propietario</Th>
                         <Th color={'black'} minW={'200px'}>Fecha de compra</Th>
-                        <Th color={'black'} minW={'200px'}>Id Recinto</Th>
-                        <Th color={'black'} minW={'200px'}>Id Evento</Th>
-                        {/*<Th color={'black'} minW={'200px'}>Id Zona</Th>*/}
+                        <Th color={'black'} minW={'200px'}>Recinto</Th>
+                        <Th color={'black'} minW={'200px'}>Ciudad</Th>
+                        {/*<Th color={'black'} minW={'200px'}>Id Evento</Th>
+                        <Th color={'black'} minW={'200px'}>Id Zona</Th>*/}
                         <Th color={'black'} minW={'200px'}>Precio</Th>
                     </Tr>
                 </Thead>
@@ -112,15 +113,21 @@ export default function TicketingTable({...props}) {
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.idVenue}</Text>
+                                <Text noOfLines={1}>{getVenueById(row.idVenue).name}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.idEvent}</Text>
+                                <Text noOfLines={1}>{getCityByIdVenue(row.idVenue).name}</Text>
                             </Td>
                             {/*<Td
+                                borderRightWidth={1}
+                                minW={'130px'}
+                            >
+                                <Text noOfLines={1}>{row.idEvent}</Text>
+                            </Td>
+                            <Td
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
@@ -146,6 +153,9 @@ export default function TicketingTable({...props}) {
 
             {/* PAGER */}
             <Flex padding={"10px"} alignItems={'center'} justifyContent={{base: 'start', xl: 'end'}}>
+                <Flex display={{ base: 'none', xl: 'block' }}>
+                    <Text noOfLines={1} color={"gray.400"} mx={"16px"}>{items.length}{items.length == 1 ? " ticket" : " tickets"}</Text>
+                </Flex>
                 <Flex 
                     style={{cursor: currentPage != 0 ? 'pointer' : 'default', userSelect: "none"}}
                     transition="0.3s ease"
@@ -252,10 +262,11 @@ export default function TicketingTable({...props}) {
                         as={FiChevronsRight}
                     />
                 </Flex>
+
+                <Box display={{ base: 'inline', xl: 'none' }}>
+                    <Text noOfLines={1} minW={"120px"} color={"gray.400"} mx={"16px"}>{items.length}{items.length == 1 ? " evento" : " eventos"}</Text>
+                </Box>
             </Flex>
-            
-
-
         </Flex>
     );
 };

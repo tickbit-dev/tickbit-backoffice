@@ -5,7 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { getCiudadPorId, getEstado } from '../utils/funcionesComunes';
+import { getCityById, getEstado } from '../utils/funcionesComunes';
 import { Box, IconButton, TableFooter, TablePagination, useTheme } from '@mui/material';
 import PropTypes from 'prop-types';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
@@ -134,7 +134,7 @@ export default function BasicTable({...props}) {
                             </TableCell>
                             <TableCell style={{fontSize: 16}}>Listado de eventos</TableCell>
                             <TableCell align="left" style={{fontSize: 16}}>{row.artist}</TableCell>
-                            <TableCell align="left" style={{fontSize: 16}}>{getCiudadPorId(row.city)}</TableCell>
+                            <TableCell align="left" style={{fontSize: 16}}>{getCityById(row.city).name}</TableCell>
                             <TableCell align="left" style={{width:'4%', fontSize: 16}}>{/*{getEstado(1)}*/}</TableCell>
                         </TableRow>
                     ))}
