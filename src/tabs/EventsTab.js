@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Input, Spacer, Text } from '@chakra-ui/react';
+import { Box, Center, Fade, Flex, Input, Skeleton, SlideFade, Spacer, Stack, Text } from '@chakra-ui/react';
 
 //Componentes
 import EventsTable from '../components/EventsTable';
@@ -18,7 +18,7 @@ import Web3Modal, { Provider } from 'web3modal';
 export default function EventsTab({...props}) {
     const [initialItems, setInitialItems] = useState([]);
     const [items, setItems] = useState([]);
-    const [isLaoaded, setIsLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [currentAddress, setCurrentAddress] = useState("");
 
@@ -104,63 +104,46 @@ export default function EventsTab({...props}) {
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
             <NavBarWithSearchBar value={searchValue.replaceAll("+", " ")} applySearchFilter={(value) => applySearchFilter(value)}/>
-            <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>               
-                {/*<Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"}>    
-                    <Input
-                        w={"400px"}
-                        maxW={"100%"}
-                        placeholder={"Busca por id, título o artísta del evento"}
-                        onChange={(event) => applySearchFilter(event.target.value)}
-                        noOfLines={1}
-                    />
-                    <Spacer/>
-                </Flex>*/}
-                <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} >        
-                    {/*<Flex mb={"10px"}>
-                        <InputSelector
-                            icon={<FiMapPin/>}
-                            title={'Ciudad'}
-                            required={true}
-                            selectoritems={[
-                                <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
-                                <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
-                                <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
-                            ]}
-                            placeholder={"Selecciona una ciudad"}
-                            onChange={(value) => null}
-                        />*/}
-                        {/*<InputSelector
-                            icon={<FiMapPin/>}
-                            title={'Ciudad'}
-                            required={true}
-                            selectoritems={[
-                                <Flex alignItems={'center'}><Text fontWeight={500}>-</Text></Flex>,
-                                <Flex alignItems={'center'}><Text fontWeight={500}>Barcelona</Text></Flex>,
-                                <Flex alignItems={'center'}><Text fontWeight={500}>Madrid</Text></Flex>
-                            ]}
-                            placeholder={"Filtrar por estados"}
-                            onChange={(value) => null}
-                        />
-                    </Flex>*/}
-
-                    {items.length == 0 && isLaoaded ?
-                        searchValue.length > 0 ?
-                            <Flex p={4} alignItems={"center"}>
-                                <FiSearch/>
-                                <Text ml={"10px"}>No se han encontrado resultados para "{searchValue}".</Text>
-                            </Flex>
+            <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>   
+                <SlideFade in={isLoaded}>  
+                    <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} transition="all 6s ease">        
+                        {items.length == 0 ?
+                            searchValue.length > 0 ?
+                                <Flex p={4} alignItems={"center"}>
+                                    <FiSearch/>
+                                    <Text ml={"10px"}>No se han encontrado resultados para "{searchValue}".</Text>
+                                </Flex>
+                            :
+                                <Flex p={4} alignItems={"center"}>
+                                    <FiInfo/>
+                                    <Text ml={"10px"}>Todavía no has creado ningún evento.</Text>
+                                </Flex>
                         :
-                            <Flex p={4} alignItems={"center"}>
-                                <FiInfo/>
-                                <Text ml={"10px"}>Todavía no has creado ningún evento.</Text>
-                            </Flex>
-                    :
-                        <EventsTable
-                            items={items}
-                        />
-                    }
-                </Flex>
+                            <EventsTable
+                                items={items}
+                            />
+                        }
+                    </Flex>
+                </SlideFade>
+                <Loader isLoaded={isLoaded}/>
             </Flex>
         </Flex>
     );
  };
+
+ export function Loader({...props}) {
+    return(
+        <Flex>
+            <Box w={'100%'} transition="all 3s ease">
+                <Box w={'100%'}>
+                    <Stack w={'100%'}>
+                        <Skeleton isLoaded={props.isLoaded} height='20px' />
+                        <Skeleton isLoaded={props.isLoaded} height='20px' />
+                        <Skeleton isLoaded={props.isLoaded} height='20px' />
+                    </Stack>
+                </Box>
+            </Box>
+            <Spacer/>
+        </Flex>
+    )
+ }
