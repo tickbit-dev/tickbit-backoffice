@@ -21,7 +21,7 @@ export function timestampToDate(timestamp){
 }
 
 export function openScan(address){
-    var link = "https://etherscan.io/address/" + address;
+    var link = "https://mumbai.polygonscan.com/address/" + address;
     window.open(link);
 }
 

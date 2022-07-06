@@ -2,18 +2,14 @@ import { useState, useEffect } from 'react';
 import { Flex, Box, Text } from '@chakra-ui/react';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import HomePage from './HomePage';
 import EventsTab from './tabs/EventsTab';
 import Ticketing from './tabs/TicketingTab';
 import IncomesTab from './tabs/IncomesTab';
 import CampaingsTab from './tabs/CampaignsTab';
-import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab';
+import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab2';
 import HelpTab from './tabs/HelpTab';
 import LoginScreen from './LoginScreen';
 

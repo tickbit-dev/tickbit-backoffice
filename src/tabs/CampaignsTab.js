@@ -17,7 +17,7 @@ export default function CampaingsTab({...props}) {
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
 
                 <Flex flex={1} direction={'row'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
-                    <Text fontSize="xl" fontWeight="700">18 - 24 de Julio</Text>
+                    <Text fontSize="xl" fontWeight="700">18 - 24 de Julio de 2022</Text>
                 </Flex>
 
                 {/*<Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
