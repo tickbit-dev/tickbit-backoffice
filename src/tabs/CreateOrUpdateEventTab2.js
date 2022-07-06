@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { AspectRatio, Box, Button, Flex, HStack, Icon, Image, Input, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Spacer, Stack, Text, Textarea } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AspectRatio, Box, Button, Flex, HStack, Icon, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Spacer, Spinner, Stack, Text, Textarea, toast, useDisclosure } from '@chakra-ui/react';
 
 //Components
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 //Constants
 import Dimensions from '../constants/Dimensions';
@@ -11,19 +11,19 @@ import Dimensions from '../constants/Dimensions';
 //Images
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import { HiOutlineHome, HiOutlineLocationMarker, HiOutlinePencil, HiOutlineUser, HiOutlineUserGroup } from 'react-icons/hi';
-import { getCategories, getCities, getVenuesByIdCity } from '../utils/funcionesComunes';
+import { createEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenuesByIdCity } from '../utils/funcionesComunes';
 import { BiCategoryAlt, BiText } from 'react-icons/bi';
 import { MdAttachMoney, MdOutlineBrokenImage } from 'react-icons/md';
 import { TbCalendarEvent, TbCalendarOff, TbCalendarTime } from 'react-icons/tb';
-import { IoIosAdd } from 'react-icons/io';
 import { FiInfo, FiTrash2 } from 'react-icons/fi';
 
 
 export default function CreateOrUpdateEventTab({...props}) {
     let params = useParams();
+    const navigate = useNavigate();
 
     //Valores formulario
-    const [owner, setOwner] = useState("0x12e1e1241we124eeqw13124");
+    const [owner, setOwner] = useState("");
     const [titulo, setTitulo] = useState("");
     const [ciudad, setCiudad] = useState();
     const [categoria, setCategoria] = useState();
@@ -39,12 +39,58 @@ export default function CreateOrUpdateEventTab({...props}) {
 
     //utility
     const [activeButton, setActiveButton] = useState(true);
+    const [isLoadingCreateEvent, setIsLoadingCreateEvent] = useState(false);
 
     //functions
-    async function editEvent(){
+    async function createEvent(){
+        console.log("createEvent")
+
+        const fe = getTimeStampFromString(fechaInicioVenta);
+        console.log(fe);
+        console.log(getStringFromTimestamp(fe));
+
+        /*//Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+        setActiveButton(false)
+        
+        const transaction = await createEventOnBlockchain(titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, fechaInicioVenta, fechaInicioEvento, fechaFinalEvento);
+        
+        if(transaction == null){
+            //Le decimos que cierre el loader
+            setIsLoadingCreateEvent(false)
+            //Enseñamos un toast de error
+            toast({
+                title: 'Error al crear evento',
+                description: "No se ha podido crear el evento debido a un error.",
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+        } else {
+            //Le decimos que cierre el loader
+            setIsLoadingCreateEvent(false)
+            //Enseñamos un toast de éxito
+            toast({
+                title: 'Evento creado correctamente',
+                description: "Se ha creado el evento " + titulo + ".",
+                status: 'success',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+            //Redirigimos al home
+            navigate('/events')
+        }*/
     }
 
-    async function createEvent(){
+    async function editEvent(){
+        console.log("editEvent")
+    }
+
+    async function deleteEvent(){
+        console.log("deleteEvent")
     }
   
     return (
@@ -65,7 +111,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                     <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-start'} spacing={"16px"}>
                                         <Stack flex={1} flexDirection={'column'}>
                                             <Text color={"gray.500"}>_id:</Text>
-                                            <Text color={"gray.500"}>4</Text>
+                                            <Text color={"gray.500"}>{params.id}</Text>
                                         </Stack>
                                         <Stack flex={1} flexDirection={'column'}>
                                             <Text color={"gray.500"}>_owner:</Text>
@@ -203,6 +249,13 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 setItem={(value) => setDescripcion(value)}
                             />
                         </Stack>
+                        <Flex direction={'row'} alignItems={'center'} justifyContent={'center'} mt={'10px'}>
+                            <Icon
+                                color={"gray.400"}
+                                as={FiInfo}
+                            />
+                            <Text color={"gray.400"} ml={'6px'}>Los campos marcados con * , son obligatorios.</Text>
+                        </Flex>
                     </Stack>
 
 
@@ -214,46 +267,21 @@ export default function CreateOrUpdateEventTab({...props}) {
                     { params.id != null ? 
                         <Flex direction={"column"}>
                             <Stack w={'full'} direction={{base: 'column', lg: "row"}} spacing={"16px"}>
-                                <Button 
-                                    bg={"#e06c5c"}
-                                    h={"50px"}
-                                    //isActive={activeButton}
-                                    _hover={{bg: "#e6796a"}}
-                                    w={{base: 'full', lg: 'fit-content'}}
-                                    color={"white"}
-                                    onClick={() => editEvent()}
-                                >
-                                    <HStack spacing={"16px"} px={"16px"}>
-                                        <FiTrash2/>
-                                        <Text>Eliminar evento</Text>
-                                    </HStack>
-                                </Button>
-                                <Button 
-                                    bg={"#69c5d6"}
-                                    h={"50px"}
-                                    //isActive={activeButton}
-                                    _hover={{bg: "#82d8e8"}}
-                                    w={{base: 'full', lg: 'full'}}
-                                    color={"white"}
-                                    onClick={() => editEvent()}
-                                >
-                                    Modificar evento
-                                </Button>
+                                <DeleteButton
+                                    deleteEvent={() => deleteEvent()}
+                                />
+                                <ModifyButton
+                                    editEvent={() => editEvent()}
+                                />
                             </Stack>
                         </Flex>
                     :
                         <Flex direction={"column"} alignItems={'center'}>
-                            <Button 
-                                bg={"#69c5d6"}
-                                h={"50px"}
-                                //isActive={activeButton}
-                                _hover={{bg: "#82d8e8"}}
-                                w={{base: 'full', lg: 'full'}}
-                                color={"white"}
-                                onClick={() => createEvent()}
-                            >
-                                Crear este evento
-                            </Button>
+                            <CreateButton
+                                onCreateEvent={() => createEvent()}
+                                isLoading={isLoadingCreateEvent}
+                                setIsLoading={(value) => setIsLoadingCreateEvent(value)}
+                            />
                         </Flex>
                     }
 
@@ -358,3 +386,142 @@ export function CustomNumberInput({...props}) {
         </Stack>
     )
 }
+
+export function DeleteButton({...props}) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = useRef()
+
+    return (
+        <>
+            <Button 
+                colorScheme='gray'
+                h={"50px"}
+                //isActive={activeButton}
+                w={{base: 'full', lg: 'fit-content'}}
+                onClick={onOpen}
+            >
+                <HStack spacing={"16px"} px={"16px"}>
+                    <FiTrash2/>
+                    <Text>Eliminar evento</Text>
+                </HStack>
+            </Button>
+    
+          <AlertDialog
+            isOpen={isOpen}
+            motionPreset='slideInBottom'
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                  Eliminar evento
+                </AlertDialogHeader>
+    
+                <AlertDialogBody>
+                  ¿Estás seguro que quieres eliminar el evento? Esta acción no se puede deshacer.
+                </AlertDialogBody>
+    
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Cancelar
+                  </Button>
+                  <Button colorScheme='red' onClick={() => props.deleteEvent()} ml={3}>
+                    Eliminar evento
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+        </>
+    )
+}
+
+export function ModifyButton({...props}) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = useRef();
+
+    return (
+        <>
+            <Button 
+                bg={"#69c5d6"}
+                h={"50px"}
+                //isActive={activeButton}
+                _hover={{bg: "#82d8e8"}}
+                w={{base: 'full', lg: 'full'}}
+                color={"white"}
+                onClick={onOpen}
+            >
+                Modificar evento
+            </Button>
+    
+            <Modal motionPreset='slideInBottom' closeOnEsc={false} closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>
+                    <Flex alignItems={"center"}>
+                        <Spinner size='xs' mr={'16px'}/>
+                        <Text>Espera un momento, por favor...</Text>
+                    </Flex>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                    <Text>Los cambios están siendo registrados en la blockchain.</Text>
+                </ModalBody>
+
+                {/*<ModalFooter>
+                    
+                </ModalFooter>*/}
+                </ModalContent>
+            </Modal>
+        </>
+    )
+}
+
+export function CreateButton({...props}) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = useRef()
+
+    useEffect(() => {
+        if(props.isLoading == false){
+            onClose()
+        }
+    }, [props.isLoading]);
+
+    return (
+        <>
+            <Button 
+                bg={"#69c5d6"}
+                h={"50px"}
+                //isActive={activeButton}
+                _hover={{bg: "#82d8e8"}}
+                w={{base: 'full', lg: 'full'}}
+                color={"white"}
+                onClick={() => {onOpen(); props.onCreateEvent(); props.setIsLoading(true)}}
+            >
+                Crear evento
+            </Button>
+
+            <Modal motionPreset='slideInBottom' closeOnEsc={false} closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>
+                    <Flex alignItems={"center"}>
+                        <Spinner size='xs' mr={'16px'}/>
+                        <Text>Espera un momento, por favor...</Text>
+                    </Flex>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                    <Text>El evento se está registrando en la blockchain.</Text>
+                </ModalBody>
+
+                {/*<ModalFooter>
+                    
+                </ModalFooter>*/}
+                </ModalContent>
+            </Modal>
+        </>
+    )
+}
+

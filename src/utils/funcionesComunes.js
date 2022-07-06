@@ -9,6 +9,7 @@ import { ethers, BigNumber } from 'ethers';
 import { contractAddress } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json';
 import Web3Modal from 'web3modal';
+import moment from 'moment';
 
 export function truncateAddress(address){
     return address.length > 10 ? address.substring(0, 5) + "..." + address.substring(address.length - 4, address.length) : address
@@ -79,6 +80,23 @@ export function getMonthAndYearAbrebiation(month, year){
     } else if(month == 12){
         return 'Dic ' + year[2] + year[3]
     }
+}
+
+export function getTimeStampFromString(stringValue){
+    const day = stringValue.split("/")[0];
+    const month = stringValue.split("/")[1];
+    const year = stringValue.split("/")[2];
+
+    const timestamp = moment(String(day) + String(month) + String(year), "DDMMYYYY").unix();
+
+    return timestamp;
+}
+
+export function getStringFromTimestamp(timestampValue){
+    const date = moment(timestampValue * 1000).format("DDMMYYYY");
+    const string = date.substring(0,2) + "/" + date.substring(2,4) + "/" + date.substring(4,8);
+
+    return string;
 }
 
 export function getCategories(){
