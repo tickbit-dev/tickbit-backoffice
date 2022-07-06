@@ -103,47 +103,35 @@ export default function EventsTab({...props}) {
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
-            <NavBarWithSearchBar value={searchValue.replaceAll("+", " ")} applySearchFilter={(value) => applySearchFilter(value)}/>
-            <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>   
-                <SlideFade in={isLoaded}>  
-                    <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} transition="all 6s ease">        
-                        {items.length == 0 ?
-                            searchValue.length > 0 ?
-                                <Flex p={4} alignItems={"center"}>
-                                    <FiSearch/>
-                                    <Text ml={"10px"}>No se han encontrado resultados para "{searchValue}".</Text>
-                                </Flex>
+            <NavBarWithSearchBar
+                value={searchValue.replaceAll("+", " ")}
+                applySearchFilter={(value) => applySearchFilter(value)}
+                isLoaded={isLoaded}
+            />
+            <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>  
+                <Skeleton isLoaded={isLoaded} maxH={"50px"}> 
+                    <SlideFade in={isLoaded}>  
+                        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>        
+                            {items.length == 0 ?
+                                searchValue.length > 0 ?
+                                    <Flex p={4} alignItems={"center"}>
+                                        <FiSearch/>
+                                        <Text ml={"10px"}>No se han encontrado resultados para "{searchValue}".</Text>
+                                    </Flex>
+                                :
+                                    <Flex p={4} alignItems={"center"}>
+                                        <FiInfo/>
+                                        <Text ml={"10px"}>Todavía no has creado ningún evento.</Text>
+                                    </Flex>
                             :
-                                <Flex p={4} alignItems={"center"}>
-                                    <FiInfo/>
-                                    <Text ml={"10px"}>Todavía no has creado ningún evento.</Text>
-                                </Flex>
-                        :
-                            <EventsTable
-                                items={items}
-                            />
-                        }
-                    </Flex>
-                </SlideFade>
-                <Loader isLoaded={isLoaded}/>
+                                <EventsTable
+                                    items={items}
+                                />
+                            }
+                        </Flex>
+                    </SlideFade>
+                </Skeleton>
             </Flex>
         </Flex>
     );
  };
-
- export function Loader({...props}) {
-    return(
-        <Flex>
-            <Box w={'100%'} transition="all 3s ease">
-                <Box w={'100%'}>
-                    <Stack w={'100%'}>
-                        <Skeleton isLoaded={props.isLoaded} height='20px' />
-                        <Skeleton isLoaded={props.isLoaded} height='20px' />
-                        <Skeleton isLoaded={props.isLoaded} height='20px' />
-                    </Stack>
-                </Box>
-            </Box>
-            <Spacer/>
-        </Flex>
-    )
- }

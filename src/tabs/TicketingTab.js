@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon } from '@chakra-ui/react';
+import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, SlideFade, Stack, Skeleton } from '@chakra-ui/react';
 import { getCityById, getEstado, getEventsListFromBlockchain, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo, FiSearch } from 'react-icons/fi';
 import TicketingTable from '../components/TicketingTable';
@@ -14,7 +14,7 @@ const IS_ONLINE = true;
 export default function Ticketing({...props}) {
     const [initialItems, setInitialItems] = useState([]);
     const [items, setItems] = useState([]);
-    const [isLaoaded, setIsLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
     const [searchValue, setSearchValue] = useState('');
 
     const location = useLocation();
@@ -77,24 +77,28 @@ export default function Ticketing({...props}) {
         <Flex direction={"column"} flex={1} w={'100%'}>
             <NavBarWithSearchBar value={searchValue.replaceAll("+", " ")} applySearchFilter={(value) => applySearchFilter(value)}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
-                <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>    
-                    {items.length == 0 && isLaoaded ?
-                        searchValue.length > 0 ?
-                            <Flex p={4} alignItems={"center"}>
-                                <FiSearch/>
-                                <Text ml={"10px"}>No se han encontrado resultados para "{searchValue}".</Text>
-                            </Flex>
-                        :
-                            <Flex p={4} alignItems={"center"}>
-                                <FiInfo/>
-                                <Text ml={"10px"}>Todavía no se han comprado tickets.</Text>
-                            </Flex>
-                    :
-                        <TicketingTable
-                            items={items}
-                        />
-                    }
-                </Flex>
+                <Skeleton isLoaded={isLoaded} maxH={"50px"}> 
+                    <SlideFade in={isLoaded}>  
+                        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>    
+                            {items.length == 0 && isLoaded ?
+                                searchValue.length > 0 ?
+                                    <Flex p={4} alignItems={"center"}>
+                                        <FiSearch/>
+                                        <Text ml={"10px"}>No se han encontrado resultados para "{searchValue}".</Text>
+                                    </Flex>
+                                :
+                                    <Flex p={4} alignItems={"center"}>
+                                        <FiInfo/>
+                                        <Text ml={"10px"}>Todavía no se han comprado tickets.</Text>
+                                    </Flex>
+                            :
+                                <TicketingTable
+                                    items={items}
+                                />
+                            }
+                        </Flex>
+                    </SlideFade>
+                </Skeleton>
             </Flex>
         </Flex>
     );

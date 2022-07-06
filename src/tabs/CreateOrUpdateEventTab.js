@@ -210,7 +210,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 <Select value={params.id != null ? categoria : null} placeholder='Selecciona categoria' size='md'  onChange={(event) => setCategoria(event.target.value)}  _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} _hover={{ bg: "gray.50"}} >
                                     {getCategories(categoria).length > 0 ? 
                                         getCategories(categoria).map((category) => ( 
-                                            <option value={category.value}>{category.name}</option>
+                                            <option value={category.id}>{category.name}</option>
                                         ))
                                     : null}
                                 </Select>
