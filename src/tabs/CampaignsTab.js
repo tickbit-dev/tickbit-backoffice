@@ -82,10 +82,9 @@ export default function CampaingsTab({...props}) {
             <NavBarWithSearchBar searchBar={false} applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
 
-                <Flex flex={1} direction={'row'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
-                    {/*<Text fontSize="xl" fontWeight="700">18 - 24 de Julio de 2022</Text>*/}
-                    <Text fontSize="xl" fontWeight="700">{textoIntervalo}</Text>
-                    <Select placeholder='Selecciona semana' w={300} onChange = {(e) => setTextoIntervalo(e.target.value)}>
+                <Flex flex={1} alignItems={{base:'center',lg:'none'}} direction={{base:'column',lg:'row'}} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
+                    <Text fontSize="xl" fontWeight="700">{textoIntervalo == null ? fechaPorDefecto : textoIntervalo}</Text>
+                    <Select ml={{base:'none', lg:'auto'}}  mt={{base:'2', lg:'none'}} w={250} onChange = {(e) => setTextoIntervalo(e.target.value)}>
                         {intervalos.length > 0 ? 
                                             intervalos.map((intervalo) => ( 
                                                 <option value={cutDate(intervalo.fechainicial) + '-' + cutDate(intervalo.fechafinal)}>{cutDate(intervalo.fechainicial)} - {cutDate(intervalo.fechafinal)}</option>
@@ -211,4 +210,3 @@ export function OutstandingCampaingCard({...props}){
         </Flex>
     )
 }
-
