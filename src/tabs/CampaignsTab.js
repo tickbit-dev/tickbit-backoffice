@@ -3,13 +3,71 @@ import { Flex, Box, Text, HStack, Input, Select } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
+import { setYear } from 'date-fns';
+import moment from 'moment';
+import { getEventsListFromBlockchain, getMonthAndYearAbrebiation } from '../utils/funcionesComunes';
 
 export default function CampaingsTab({...props}) {
 
     const [state, setState] = useState();
+    const [intervalos, setIntervalos] = useState([]);
+    const [textoIntervalo, setTextoIntervalo] = useState();
+    const [currentAddress, setCurrentAddress] = useState("");
+    const [items, setItems] = useState([]);
+    
+
+    function getWeeksIntervals(){
+        var fechaactual = new Date();
+
+        while(fechaactual.getDay()-1 !== 0){
+            fechaactual.setDate(fechaactual.getDate()-1);
+        }
+
+        var fechainicial = moment(fechaactual);
+        var fechafinal = moment(fechainicial).add(6, 'days');
+        var intervalos =[];
+        intervalos.push({"fechainicial" : fechainicial.format('YYYY-MM-DD') , "fechafinal" :fechafinal.format('YYYY-MM-DD')});
+
+        var mes = fechainicial.month();
+        var año = fechainicial.year() + 1;
+       
+
+        while(fechafinal.month() != mes  ||  fechafinal.year() != año){
+            const fecha_aux = moment(fechainicial);
+            fechainicial = moment(fecha_aux).add(7, 'days');
+            fechafinal = moment(fechainicial).add(6, 'days');    
+            intervalos.push({"fechainicial" : fechainicial.format('YYYY-MM-DD') , "fechafinal" :fechafinal.format('YYYY-MM-DD')});
+        }
+
+        return intervalos
+        
+        
+    }
+
+    function cutDate(date){
+            var year = date.slice(0,4);
+            var month = date.slice(5,7);
+            var day =  date.slice(8,10); 
+            var fechaEscrita = day + ' ' + getMonthAndYearAbrebiation(month, year);
+    
+           return fechaEscrita;
+    }
+    
+    async function getData(online){
+        var items_list = [];
+
+        items_list = await getEventsListFromBlockchain();
+
+        setItems(items_list)
+        
+    }
 
     useEffect(() => {
+        setIntervalos(getWeeksIntervals());
     }, []);
+
+    // 3 desplehables - numero de dias - 
+
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
@@ -17,7 +75,21 @@ export default function CampaingsTab({...props}) {
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
 
                 <Flex flex={1} direction={'row'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
+<<<<<<< Updated upstream
                     <Text fontSize="xl" fontWeight="700">18 - 24 de Julio de 2022</Text>
+=======
+                    <Text fontSize="xl" fontWeight="700">{textoIntervalo}</Text>
+                    <Select placeholder='Selecciona semana' w={300} onChange = {(e) => setTextoIntervalo(e.target.value)}>
+                        {intervalos.length > 0 ? 
+                                            intervalos.map((intervalo) => ( 
+                                                <option value={cutDate(intervalo.fechainicial) + '-' + cutDate(intervalo.fechafinal) }>{cutDate(intervalo.fechainicial)} - {cutDate(intervalo.fechafinal)}</option>
+                                            ))
+                                        : null}
+                    </Select>
+                    <Select placeholder='Selecciona evento' w={300} onChange = {(e) => setTextoIntervalo(e.target.value)}>
+                        
+                    </Select>
+>>>>>>> Stashed changes
                 </Flex>
 
                 {/*<Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
