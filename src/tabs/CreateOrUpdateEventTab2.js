@@ -61,16 +61,18 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 <Image flex={1} src={imagePlaceholder} borderRadius={"10px"} alt='Image not found' objectFit={'cover'} />
                             </AspectRatio>
                             <Stack flex={1} direction={"column"} alignItems={'flex-start'} spacing={"16px"}>
-                                <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-start'} spacing={"16px"}>
-                                    <Stack flex={1} flexDirection={'column'}>
-                                        <Text color={"gray.500"}>_id:</Text>
-                                        <Text color={"gray.500"}>4</Text>
+                                { params.id != null ? 
+                                    <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-start'} spacing={"16px"}>
+                                        <Stack flex={1} flexDirection={'column'}>
+                                            <Text color={"gray.500"}>_id:</Text>
+                                            <Text color={"gray.500"}>4</Text>
+                                        </Stack>
+                                        <Stack flex={1} flexDirection={'column'}>
+                                            <Text color={"gray.500"}>_owner:</Text>
+                                            <Text color={"gray.500"}>{owner}</Text>
+                                        </Stack>
                                     </Stack>
-                                    <Stack flex={1} flexDirection={'column'}>
-                                        <Text color={"gray.500"}>_owner:</Text>
-                                        <Text color={"gray.500"}>{owner}</Text>
-                                    </Stack>
-                                </Stack>
+                                : null}
                                 <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-start'} spacing={"16px"}>
                                     <CustomInput
                                         required
@@ -128,6 +130,16 @@ export default function CreateOrUpdateEventTab({...props}) {
                                         setItem={(value) => setRecinto(value)}
                                     />
                                 </Stack>
+                                <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-end'} spacing={"16px"}>
+                                    <CustomInput
+                                        required
+                                        icon={<MdOutlineBrokenImage/>}
+                                        text={"Enlace de la imagen"}
+                                        placeholder={"Añade aquí el enlace de la imagen..."}
+                                        item={urlImage}
+                                        setItem={(value) => setUrlImage(value)}
+                                    />
+                                </Stack>
                             </Stack>
                         </Stack>
                         <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-end'} spacing={"16px"}>
@@ -183,16 +195,6 @@ export default function CreateOrUpdateEventTab({...props}) {
                             />
                         </Stack>
                         <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-end'} spacing={"16px"}>
-                            <CustomInput
-                                required
-                                icon={<MdOutlineBrokenImage/>}
-                                text={"URL Imagen"}
-                                placeholder={"Añade aquí el enlace de la imagen..."}
-                                item={urlImage}
-                                setItem={(value) => setUrlImage(value)}
-                            />       
-                        </Stack>
-                        <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-end'} spacing={"16px"}>
                             <CustomTextArea
                                 icon={<BiText/>}
                                 text={"Descripción"}
@@ -209,7 +211,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                 </Flex>
 
                 <Flex flex={1} mt={"16px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                    { params.idEvento == null ? 
+                    { params.id != null ? 
                         <Flex direction={"column"}>
                             <Stack w={'full'} direction={{base: 'column', lg: "row"}} spacing={"16px"}>
                                 <Button 
