@@ -11,7 +11,7 @@ import Dimensions from '../constants/Dimensions';
 //Images
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import { HiOutlineHome, HiOutlineLocationMarker, HiOutlinePencil, HiOutlineUser, HiOutlineUserGroup } from 'react-icons/hi';
-import { createEventOnBlockchain, deleteEventBlockchain, editEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenuesByIdCity, readEventbyId, restoreEventBlockchain, truncateAddress } from '../utils/funcionesComunes';
+import { createEventOnBlockchain, deleteEventBlockchain, editEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenueById, getVenuesByIdCity, readEventbyId, restoreEventBlockchain, truncateAddress } from '../utils/funcionesComunes';
 import { BiCategoryAlt, BiText } from 'react-icons/bi';
 import { MdAttachMoney, MdOutlineBrokenImage } from 'react-icons/md';
 import { TbCalendarEvent, TbCalendarOff, TbCalendarTime } from 'react-icons/tb';
@@ -46,6 +46,7 @@ export default function CreateOrUpdateEventTab({...props}) {
     const [isLoadingEditEvent, setIsLoadingEditEvent] = useState(false);
     const [isLoadingDeleteEvent, setIsLoadingDeleteEvent] = useState(false);
     const [isLoadingRestoreEvent, setIsLoadingRestoreEvent] = useState(false);
+    const [capacidad, setCapacidad] = useState(0);
 
     //functions
     async function createEvent(){
@@ -218,6 +219,13 @@ export default function CreateOrUpdateEventTab({...props}) {
         setIsLoaded(true);
     }
 
+    function autoSetCapacity(value){
+        if(params.id == null){
+            setCapacidad(getVenueById(value).capacity);
+            setAforo(getVenueById(value).capacity);
+        }
+    }
+
     function copyOwner(value){
         navigator.clipboard.writeText(value);
         toast({
@@ -351,7 +359,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                         }
                                         isLoaded={isLoaded}
                                         item={recinto}
-                                        setItem={(value) => setRecinto(value)}
+                                        setItem={(value) => {setRecinto(value); autoSetCapacity(value)}}
                                     />
                                 </Stack>
                                 <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-end'} spacing={"16px"}>
@@ -382,6 +390,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<HiOutlineUserGroup/>}
                                 text={"Aforo"}
                                 placeholder={0}
+                                max={capacidad}
                                 isLoaded={isLoaded}
                                 item={aforo}
                                 setItem={(value) => setAforo(value)}
@@ -469,11 +478,13 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 </Flex>
                             </Skeleton>
                         :
-                            <RestoreButton
-                                onRestoreEvent={() => onRestoreEvent()}
-                                isLoading={isLoadingRestoreEvent}
-                                setIsLoading={(value) => setIsLoadingRestoreEvent(value)}
-                            />
+                            <Skeleton isLoaded={isLoaded}>
+                                <RestoreButton
+                                    onRestoreEvent={() => onRestoreEvent()}
+                                    isLoading={isLoadingRestoreEvent}
+                                    setIsLoading={(value) => setIsLoadingRestoreEvent(value)}
+                                />
+                            </Skeleton>
                     :
                         <Flex direction={"column"} alignItems={'center'}>
                             <CreateButton
@@ -582,6 +593,7 @@ export function CustomNumberInput({...props}) {
                     color={props.item == "0" ? "gray.300" : null}
                     value={props.item}
                     min={0}
+                    max={props.max}
                     onChange={(valueString) => props.setItem(valueString)}
                 >
                     <NumberInputField />
