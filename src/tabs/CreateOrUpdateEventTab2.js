@@ -214,16 +214,17 @@ export default function CreateOrUpdateEventTab({...props}) {
         setFechaInicioEvento(getStringFromTimestamp(event.initialDate));
         setFechaFinalEvento(getStringFromTimestamp(event.finalDate))
         setDescripcion(event.description);
+
         setEliminado(event.deleted);
+        
+        setCapacidad(getVenueById(event.idVenue).capacity);
 
         setIsLoaded(true);
     }
 
     function autoSetCapacity(value){
-        if(params.id == null){
-            setCapacidad(getVenueById(value).capacity);
-            setAforo(getVenueById(value).capacity);
-        }
+        setCapacidad(getVenueById(value).capacity);
+        if(params.id == null) setAforo(getVenueById(value).capacity);
     }
 
     function copyOwner(value){
@@ -584,6 +585,8 @@ export function CustomNumberInput({...props}) {
                 {props.icon}
                 <Text>{props.text}</Text>
                 {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}
+                <Spacer/>
+                {props.max ? <Text color={"gray.400"} fontSize={"sm"}>{"(máx. " + props.max + ")"}</Text> : null}
             </HStack>
             <Skeleton flex={1} isLoaded={props.isLoaded} borderRadius={"10px"}>
                 <NumberInput
