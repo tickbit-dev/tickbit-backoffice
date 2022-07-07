@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { getCityById, getEstado, getEventsListFromTest } from '../utils/funcionesComunes';
+import { getCityById, getEstado, getEventsListFromTest, getStringFromTimestamp } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
 import '../table.css'
 import { useNavigate, useParams } from 'react-router-dom';
@@ -56,7 +56,7 @@ export default function EventsTable({...props}) {
                                 textAlign={'center'}
                                 width={'66px'}
                             >
-                                <Text noOfLines={1}>{row._id}</Text>
+                                <Text noOfLines={1} color={row.deleted ? "gray.400" : null}>{row._id}</Text>
                             </Td>
                             <Td 
                                 style={{width:'3%', paddingTop: 10, paddingBottom: 10}}
@@ -64,7 +64,7 @@ export default function EventsTable({...props}) {
                             >
                                 <Popover trigger={'hover'}>
                                     <PopoverTrigger>
-                                        <Image src={row.coverImageUrl} borderRadius={'10px'} fit={'cover'} h={"50px"}/>
+                                        <Image opacity={row.deleted ? 0.2 : 1} src={row.coverImageUrl} borderRadius={'10px'} fit={'cover'} h={"50px"}/>
                                     </PopoverTrigger>
                                     <PopoverContent _focus={{outline:'none'}} >
                                         <PopoverArrow />
@@ -79,8 +79,8 @@ export default function EventsTable({...props}) {
                                 minW={'300px'}
                             >   
                                 <Flex direction={"column"}>
-                                    {row._id == 2 ? getEstado(2) : row._id == 3 ? getEstado(3) : row._id == 4 ? getEstado(4) : getEstado(1)}
-                                    <Text noOfLines={1}>{row.title}</Text>
+                                    {getEstado(row)}
+                                    <Text noOfLines={1} color={row.deleted ? "gray.400" : null} textDecoration={row.deleted ? "line-through" : null}>{row.title}</Text>
                                 </Flex>
                             </Td>
                             <Td
@@ -88,14 +88,14 @@ export default function EventsTable({...props}) {
                                 minW={'200px'}
                                 w={'200px'}
                             >
-                                <Text noOfLines={1}>{row.artist}</Text>
+                                <Text noOfLines={1} color={row.deleted ? "gray.400" : null} textDecoration={row.deleted ? "line-through" : null}>{row.artist}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={0}
                                 minW={'160px'}
                                 w={'160px'}
                             >
-                                <Text noOfLines={1}>{getCityById(row.idCity).name}</Text>
+                                <Text noOfLines={1} color={row.deleted ? "gray.400" : null} textDecoration={row.deleted ? "line-through" : null}>{getCityById(row.idCity).name}</Text>
                             </Td>
                         </Tr>
                     ))}

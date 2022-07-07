@@ -197,8 +197,18 @@ export function getSearchBarPlaceholder(link){
     }
 }
 
-export function getEstado(id){
-    if(id === 1){
+export function getEstado(row){
+    const now = moment(new Date()).unix();
+
+    if(row.deleted == true){
+        return (
+            <Badge h={"16px"} maxW={'fit-content'} colorScheme='gray' mb={"3px"}>
+                <Flex alignItems={'center'}>
+                    <Text mt={"-2px"} fontSize={10} color={'gray.500'}>ELIMINADO</Text>
+                </Flex>
+            </Badge>
+        )
+    } else if(row.initialSaleDate <= now && row.finalDate > now){
         return(
             <Badge h={"16px"} maxW={'fit-content'} colorScheme='green' mb={"3px"}>
                 <Flex alignItems={'center'}>
@@ -206,23 +216,33 @@ export function getEstado(id){
                 </Flex>
             </Badge>
         )
-    } else if(id === 2){
+    } else if(row.initialSaleDate > now){
         return (
-            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"}>
+            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"} colorScheme='purple'>
+                <Flex alignItems={'center'}>
+                    <Text mt={"-2px"} fontSize={10}>PROGRAMADO</Text>
+                </Flex>
+            </Badge>
+        )
+    } else if(row.finalDate <= now){
+        return (
+            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"} colorScheme='red'>
                 <Flex alignItems={'center'}>
                     <Text mt={"-2px"} fontSize={10}>FINALIZADO</Text>
                 </Flex>
             </Badge>
         )
-    } else if(id === 3){
-        return (
-            <Badge h={"16px"} maxW={'fit-content'} colorScheme='red' mb={"3px"}>
+    } else{
+        return(
+            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"} colorScheme='red'>
                 <Flex alignItems={'center'}>
-                    <Text mt={"-2px"} fontSize={10}>AGOTADO</Text>
+                    <Text mt={"-2px"} fontSize={10}>FINALIZADO</Text>
                 </Flex>
             </Badge>
         )
-    } else if(id === 4){
+    }
+
+    /*else if(row){
         return (
             <Badge h={"16px"} maxW={'fit-content'} colorScheme='yellow' mb={"3px"}>
                 <Flex alignItems={'center'}>
@@ -235,9 +255,7 @@ export function getEstado(id){
                 </Flex>
             </Badge>
         )
-    } else{
-        return <Badge colorScheme='red'>Eliminado</Badge>
-    }
+    }*/
 }
 
 ///////// EVENTS /////////
@@ -382,7 +400,7 @@ export async function editEventOnBlockchain(_id,title, idCity, idVenue, idCatego
     const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
 
     try{
-        const transaction = await contract.editEvent([_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, 	1656938107, 	1656938107, 	1656938107]);
+        const transaction = await contract.editEvent([_id,title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate]);
         await transaction.wait()
 
         return transaction;
@@ -391,13 +409,57 @@ export async function editEventOnBlockchain(_id,title, idCity, idVenue, idCatego
     }
 }
 
+export async function deleteEventBlockchain(eventId) {    
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
 
-export async function readEventbyId(eventId) {         
-    const provider = new ethers.providers.JsonRpcProvider()         
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)         
+    const id = BigNumber.from(String(eventId));
+
+    try{
+        const transaction = await contract.deleteEvent(id);
+        await transaction.wait()
+
+        return transaction;
+    } catch(error){
+        console.log(error)
+        return null;
+    }
+}
+
+export async function restoreEventBlockchain(eventId) {    
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+
+    const id = BigNumber.from(String(eventId));
+
+    try{
+        const transaction = await contract.restoreEvent(id);
+        await transaction.wait()
+
+        return transaction;
+    } catch(error){
+        console.log(error)
+        return null;
+    }
+}
+
+export async function readEventbyId(eventId) {    
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+     
     const data = await contract.readEvent(BigNumber.from(String(eventId)));          
     const item_data = await Promise.all(data);          
     let item = newEvent(item_data[0], item_data[1].toNumber(), item_data[2].toNumber(), item_data[3], item_data[4].toNumber(), item_data[5].toNumber(), item_data[6].toNumber(), item_data[7], item_data[8], item_data[9].toNumber(), item_data[10].toNumber(), item_data[11], item_data[12].toNumber(), item_data[13].toNumber(), item_data[14].toNumber(), item_data[15], item_data[16]);
+
     return item;
 }
 

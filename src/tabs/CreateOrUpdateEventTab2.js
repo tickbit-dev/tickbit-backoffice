@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AspectRatio, Box, Button, Flex, HStack, Icon, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Spacer, Spinner, Stack, Text, Textarea, toast, useDisclosure } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AspectRatio, Box, Button, Flex, HStack, Icon, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Skeleton, Spacer, Spinner, Stack, Text, Textarea, toast, useDisclosure, useToast } from '@chakra-ui/react';
 
 //Components
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
@@ -11,16 +11,17 @@ import Dimensions from '../constants/Dimensions';
 //Images
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import { HiOutlineHome, HiOutlineLocationMarker, HiOutlinePencil, HiOutlineUser, HiOutlineUserGroup } from 'react-icons/hi';
-import { createEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenuesByIdCity } from '../utils/funcionesComunes';
+import { createEventOnBlockchain, deleteEventBlockchain, editEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenuesByIdCity, readEventbyId, restoreEventBlockchain, truncateAddress } from '../utils/funcionesComunes';
 import { BiCategoryAlt, BiText } from 'react-icons/bi';
 import { MdAttachMoney, MdOutlineBrokenImage } from 'react-icons/md';
 import { TbCalendarEvent, TbCalendarOff, TbCalendarTime } from 'react-icons/tb';
-import { FiInfo, FiTrash2 } from 'react-icons/fi';
+import { FiClipboard, FiCopy, FiInfo, FiRotateCcw, FiTrash2 } from 'react-icons/fi';
 
 
 export default function CreateOrUpdateEventTab({...props}) {
     let params = useParams();
     const navigate = useNavigate();
+    const toast = useToast();
 
     //Valores formulario
     const [owner, setOwner] = useState("");
@@ -36,23 +37,22 @@ export default function CreateOrUpdateEventTab({...props}) {
     const [fechaFinalEvento, setFechaFinalEvento] = useState("");
     const [urlImage, setUrlImage] = useState("");
     const [descripcion, setDescripcion] = useState("");
+    const [eliminado, setEliminado] = useState(false);
 
     //utility
+    const [isLoaded, setIsLoaded] = useState(params.id != null ? false : true);
     const [activeButton, setActiveButton] = useState(true);
     const [isLoadingCreateEvent, setIsLoadingCreateEvent] = useState(false);
+    const [isLoadingEditEvent, setIsLoadingEditEvent] = useState(false);
+    const [isLoadingDeleteEvent, setIsLoadingDeleteEvent] = useState(false);
+    const [isLoadingRestoreEvent, setIsLoadingRestoreEvent] = useState(false);
 
     //functions
     async function createEvent(){
-        console.log("createEvent")
-
-        const fe = getTimeStampFromString(fechaInicioVenta);
-        console.log(fe);
-        console.log(getStringFromTimestamp(fe));
-
-        /*//Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+        //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
         setActiveButton(false)
         
-        const transaction = await createEventOnBlockchain(titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, fechaInicioVenta, fechaInicioEvento, fechaFinalEvento);
+        const transaction = await createEventOnBlockchain(titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, getTimeStampFromString(fechaInicioVenta), getTimeStampFromString(fechaInicioEvento), getTimeStampFromString(fechaFinalEvento));
         
         if(transaction == null){
             //Le decimos que cierre el loader
@@ -82,16 +82,181 @@ export default function CreateOrUpdateEventTab({...props}) {
             setActiveButton(true)
             //Redirigimos al home
             navigate('/events')
-        }*/
+        }
     }
 
     async function editEvent(){
-        console.log("editEvent")
+        //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+        setActiveButton(false)
+
+        const transaction = await editEventOnBlockchain(params.id, titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, getTimeStampFromString(fechaInicioVenta), getTimeStampFromString(fechaInicioEvento), getTimeStampFromString(fechaFinalEvento))
+    
+        if(transaction == null){
+            //Le decimos que cierre el loader
+            setIsLoadingEditEvent(false)
+            //Enseñamos un toast de error
+            toast({
+                title: 'Error al modificar evento',
+                description: "No se ha podido modificar el evento debido a un error.",
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+        } else {
+            //Le decimos que cierre el loader
+            setIsLoadingEditEvent(false)
+            //Enseñamos un toast de éxito
+            toast({
+                title: 'Evento modificado correctamente',
+                description: "Se ha modificado el evento " + titulo + ".",
+                status: 'success',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+        }
     }
 
-    async function deleteEvent(){
-        console.log("deleteEvent")
+    async function onRestoreEvent(){
+        //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+        setActiveButton(false)
+
+        const transaction = await restoreEventBlockchain(params.id);
+    
+        if(transaction == null){
+            //Le decimos que cierre el loader
+            setIsLoadingRestoreEvent(false)
+            //Enseñamos un toast de error
+            toast({
+                title: 'Error al restaurar evento',
+                description: "No se ha podido restaurar el evento debido a un error.",
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+        } else {
+            //Le decimos que cierre el loader
+            setIsLoadingRestoreEvent(false)
+            //Enseñamos un toast de éxito
+            toast({
+                title: 'Evento restaurado correctamente',
+                description: "Se ha restaurado el evento " + titulo + ".",
+                status: 'success',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+            //Redirigimos al home
+            navigate('/events')
+        }
     }
+
+    async function onDeleteEvent(){
+        //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+        setActiveButton(false)
+
+        const transaction = await deleteEventBlockchain(params.id);
+    
+        if(transaction == null){
+            //Le decimos que cierre el loader
+            setIsLoadingDeleteEvent(false)
+            //Enseñamos un toast de error
+            toast({
+                title: 'Error al eliminar evento',
+                description: "No se ha podido eliminar el evento debido a un error.",
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+        } else {
+            //Le decimos que cierre el loader
+            setIsLoadingDeleteEvent(false)
+            //Enseñamos un toast de éxito
+            toast({
+                title: 'Evento eliminado correctamente',
+                description: "Se ha eliminado el evento " + titulo + ".",
+                status: 'success',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Volvemos a habilitar el botón
+            setActiveButton(true)
+            //Redirigimos al home
+            navigate('/events')
+        }
+    }
+
+    async function getEvent(id){
+        const event = await readEventbyId(id);
+
+        //console.log(event.initialSaleDate)
+        //console.log(getStringFromTimestamp(event.initialSaleDate))
+
+        setOwner(truncateAddress(event._owner))
+        setTitulo(event.title);
+        setCiudad(event.idCity);
+        setCategoria(event.idCategory);
+        setUrlImage(event.coverImageUrl);
+        setRecinto(event.idVenue);
+        setArtista(event.artist);
+        setAforo(event.capacity);
+        setPrecio(event.price);
+        setFechaInicioVenta(getStringFromTimestamp(event.initialSaleDate));
+        setFechaInicioEvento(getStringFromTimestamp(event.initialDate));
+        setFechaFinalEvento(getStringFromTimestamp(event.finalDate))
+        setDescripcion(event.description);
+        setEliminado(event.deleted);
+
+        setIsLoaded(true);
+    }
+
+    function copyOwner(value){
+        navigator.clipboard.writeText(value);
+        toast({
+            position: 'bottom',
+            duration: 3000,
+            render: () => (
+              <Flex color='black' p={3} bg='white' rounded={5} textAlign={'center'} borderWidth={1} alignItems={'center'} justifyContent={'center'}>
+                <FiClipboard/>
+                <Text ml={"16px"}>Dirección copiada correctamente</Text>
+              </Flex>
+            ),
+        })
+    }
+
+    useEffect(() => {
+        if(params.id != null){
+            getEvent(params.id);
+        }
+    }, []);
+
+    useEffect(() => {
+        if(params.id == null){
+            //Reseteamos los valores por defecto
+            setOwner("");
+            setTitulo("");
+            setCiudad();
+            setCategoria();
+            setRecinto();
+            setArtista("");
+            setAforo(0);
+            setPrecio(0);
+            setFechaInicioVenta("");
+            setFechaInicioEvento("");
+            setFechaFinalEvento("");
+            setUrlImage("");
+            setDescripcion("");
+            setEliminado(false);
+        }
+    }, [params.id]);
   
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
@@ -104,7 +269,9 @@ export default function CreateOrUpdateEventTab({...props}) {
                     <Stack spacing={"16px"} direction={'column'}>
                         <Stack spacing={"16px"} direction={{base: 'column', lg: "row"}}>
                             <AspectRatio flex={1} maxW={{base: '100%', lg: '32.2%'}} ratio={6/4}>
-                                <Image flex={1} src={imagePlaceholder} borderRadius={"10px"} alt='Image not found' objectFit={'cover'} />
+                                <Skeleton isLoaded={isLoaded} borderRadius={"10px"}>
+                                    <Image flex={1} height={'100%'} src={Object.keys(urlImage).length === 0 ? imagePlaceholder : urlImage} borderRadius={"10px"} objectFit={'cover'} />
+                                </Skeleton>
                             </AspectRatio>
                             <Stack flex={1} direction={"column"} alignItems={'flex-start'} spacing={"16px"}>
                                 { params.id != null ? 
@@ -115,7 +282,14 @@ export default function CreateOrUpdateEventTab({...props}) {
                                         </Stack>
                                         <Stack flex={1} flexDirection={'column'}>
                                             <Text color={"gray.500"}>_owner:</Text>
-                                            <Text color={"gray.500"}>{owner}</Text>
+                                            <Skeleton isLoaded={isLoaded} borderRadius={"10px"} h={'40px'}>
+                                                <Box d={'flex'} alignItems={'center'}>
+                                                    <Text noOfLines={1} color={'gray.500'} mr={"10px"}>{truncateAddress(owner)}</Text>
+                                                    <Flex onClick={() => copyOwner(owner)} style={{cursor: 'pointer'}} _hover={{bg: 'gray.200'}} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} transition="all .3s ease">
+                                                        <FiCopy size={"14px"}/>
+                                                    </Flex>
+                                                </Box>
+                                            </Skeleton>
                                         </Stack>
                                     </Stack>
                                 : null}
@@ -125,6 +299,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                         icon={<HiOutlinePencil/>}
                                         text={"Título"}
                                         placeholder={"Escribe un título para el evento..."}
+                                        isLoaded={isLoaded}
                                         item={titulo}
                                         setItem={(value) => setTitulo(value)}
                                     />
@@ -140,6 +315,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                                 ))
                                             : null
                                         }
+                                        isLoaded={isLoaded}
                                         item={categoria}
                                         setItem={(value) => setCategoria(value)}
                                     />
@@ -157,6 +333,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                                 )) 
                                             : null
                                         }
+                                        isLoaded={isLoaded}
                                         item={ciudad}
                                         setItem={(value) => setCiudad(value)}
                                     />
@@ -172,6 +349,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                                 ))
                                             : null
                                         }
+                                        isLoaded={isLoaded}
                                         item={recinto}
                                         setItem={(value) => setRecinto(value)}
                                     />
@@ -182,6 +360,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                         icon={<MdOutlineBrokenImage/>}
                                         text={"Enlace de la imagen"}
                                         placeholder={"Añade aquí el enlace de la imagen..."}
+                                        isLoaded={isLoaded}
                                         item={urlImage}
                                         setItem={(value) => setUrlImage(value)}
                                     />
@@ -194,6 +373,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<HiOutlineUser/>}
                                 text={"Artista/s"}
                                 placeholder={"Escribe el nombre del artísta..."}
+                                isLoaded={isLoaded}
                                 item={artista}
                                 setItem={(value) => setArtista(value)}
                             />
@@ -202,6 +382,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<HiOutlineUserGroup/>}
                                 text={"Aforo"}
                                 placeholder={0}
+                                isLoaded={isLoaded}
                                 item={aforo}
                                 setItem={(value) => setAforo(value)}
                             />
@@ -210,6 +391,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<MdAttachMoney/>}
                                 text={"Precio"}
                                 placeholder={0}
+                                isLoaded={isLoaded}
                                 item={precio}
                                 setItem={(value) => setPrecio(value)}
                             />
@@ -220,6 +402,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<TbCalendarEvent/>}
                                 text={"Fecha de inicio de puesta venta"}
                                 placeholder={"dd/mm/aaaa"}
+                                isLoaded={isLoaded}
                                 item={fechaInicioVenta}
                                 setItem={(value) => setFechaInicioVenta(value)}
                             />
@@ -228,6 +411,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<TbCalendarTime/>}
                                 text={"Fecha de inicio del evento"}
                                 placeholder={"dd/mm/aaaa"}
+                                isLoaded={isLoaded}
                                 item={fechaInicioEvento}
                                 setItem={(value) => setFechaInicioEvento(value)}
                             />
@@ -236,6 +420,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<TbCalendarOff/>}
                                 text={"Fecha final del evento"}
                                 placeholder={"dd/mm/aaaa"}
+                                isLoaded={isLoaded}
                                 item={fechaFinalEvento}
                                 setItem={(value) => setFechaFinalEvento(value)}
                             />
@@ -245,6 +430,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<BiText/>}
                                 text={"Descripción"}
                                 placeholder={"Escribe una descripción para el evento..."}
+                                isLoaded={isLoaded}
                                 item={descripcion}
                                 setItem={(value) => setDescripcion(value)}
                             />
@@ -265,16 +451,29 @@ export default function CreateOrUpdateEventTab({...props}) {
 
                 <Flex flex={1} mt={"16px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
                     { params.id != null ? 
-                        <Flex direction={"column"}>
-                            <Stack w={'full'} direction={{base: 'column', lg: "row"}} spacing={"16px"}>
-                                <DeleteButton
-                                    deleteEvent={() => deleteEvent()}
-                                />
-                                <ModifyButton
-                                    editEvent={() => editEvent()}
-                                />
-                            </Stack>
-                        </Flex>
+                        eliminado == false ?
+                            <Skeleton isLoaded={isLoaded}>
+                                <Flex direction={"column"}>
+                                    <Stack w={'full'} direction={{base: 'column', lg: "row"}} spacing={"16px"}>
+                                        <DeleteButton
+                                            onDeleteEvent={() => onDeleteEvent()}
+                                            isLoading={isLoadingDeleteEvent}
+                                            setIsLoading={(value) => setIsLoadingDeleteEvent(value)}
+                                        />
+                                        <ModifyButton
+                                            onEditEvent={() => editEvent()}
+                                            isLoading={isLoadingEditEvent}
+                                            setIsLoading={(value) => setIsLoadingEditEvent(value)}
+                                        />
+                                    </Stack>
+                                </Flex>
+                            </Skeleton>
+                        :
+                            <RestoreButton
+                                onRestoreEvent={() => onRestoreEvent()}
+                                isLoading={isLoadingRestoreEvent}
+                                setIsLoading={(value) => setIsLoadingRestoreEvent(value)}
+                            />
                     :
                         <Flex direction={"column"} alignItems={'center'}>
                             <CreateButton
@@ -307,13 +506,16 @@ export function CustomInput({...props}) {
                 <Text>{props.text}</Text>
                 {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}
             </HStack>
-            <Input
-                w={'100%'}
-                defaultValue={props.titulo}
-                noOfLines={1}
-                placeholder={props.placeholder}
-                onChange={(event) => props.setItem(event.target.value)}
-            />
+            <Skeleton flex={1} isLoaded={props.isLoaded} borderRadius={"10px"}>
+                <Input
+                    w={'100%'}
+                    defaultValue={props.item}
+                    noOfLines={1}
+                    value={props.item}
+                    placeholder={props.placeholder}
+                    onChange={(event) => props.setItem(event.target.value)}
+                />
+            </Skeleton>
         </Stack>
     )
 }
@@ -326,19 +528,21 @@ export function CustomSelector({...props}) {
                 <Text>{props.text}</Text>
                 {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}
             </HStack>
-            <Select
-                w={'100%'}
-                noOfLines={1}
-                value={props.item}
-                color={!props.item ? "gray.300" : null}
-                placeholder={props.placeholder}
-                size='md'
-                onChange={(event) => {props.setItem(event.target.value); /*props.setIdRecinto(event.target.value);*/}}
-                _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} 
-                _hover={{ bg: "gray.50"}} 
-            >
-                {props.options}
-            </Select>
+            <Skeleton flex={1} isLoaded={props.isLoaded} borderRadius={"10px"}>
+                <Select
+                    w={'100%'}
+                    noOfLines={1}
+                    value={props.item}
+                    color={!props.item ? "gray.300" : null}
+                    placeholder={props.placeholder}
+                    size='md'
+                    onChange={(event) => {props.setItem(event.target.value); /*props.setIdRecinto(event.target.value);*/}}
+                    _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} 
+                    _hover={{ bg: "gray.50"}} 
+                >
+                    {props.options}
+                </Select>
+            </Skeleton>
         </Stack>
     )
 }
@@ -351,11 +555,13 @@ export function CustomTextArea({...props}) {
                 <Text>{props.text}</Text>
                 {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}
             </HStack>
-            <Textarea
-                defaultValue={props.item}
-                placeholder={props.placeholder}
-                onChange={(event) => props.setItem(event.target.value)} 
-            />
+            <Skeleton flex={1} isLoaded={props.isLoaded} borderRadius={"10px"}>
+                <Textarea
+                    value={props.item}
+                    placeholder={props.placeholder}
+                    onChange={(event) => props.setItem(event.target.value)} 
+                />
+            </Skeleton>
         </Stack>
     )
 }
@@ -368,28 +574,37 @@ export function CustomNumberInput({...props}) {
                 <Text>{props.text}</Text>
                 {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}
             </HStack>
-            <NumberInput
-                w={'100%'}
-                step={10}
-                placeholder={props.placeholder}
-                color={props.item == "0" ? "gray.300" : null}
-                value={props.item}
-                min={0}
-                onChange={(valueString) => props.setItem(valueString)}
-            >
-                <NumberInputField />
-                <NumberInputStepper color={'black'}>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                </NumberInputStepper>
-            </NumberInput>
+            <Skeleton flex={1} isLoaded={props.isLoaded} borderRadius={"10px"}>
+                <NumberInput
+                    w={'100%'}
+                    step={10}
+                    placeholder={props.placeholder}
+                    color={props.item == "0" ? "gray.300" : null}
+                    value={props.item}
+                    min={0}
+                    onChange={(valueString) => props.setItem(valueString)}
+                >
+                    <NumberInputField />
+                    <NumberInputStepper color={'black'}>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                    </NumberInputStepper>
+                </NumberInput>
+            </Skeleton>
         </Stack>
     )
 }
 
 export function DeleteButton({...props}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure()
     const cancelRef = useRef()
+
+    useEffect(() => {
+        if(props.isLoading == false){
+            onCloseModal();
+        }
+    }, [props.isLoading]);
 
     return (
         <>
@@ -406,33 +621,131 @@ export function DeleteButton({...props}) {
                 </HStack>
             </Button>
     
-          <AlertDialog
-            isOpen={isOpen}
-            motionPreset='slideInBottom'
-            leastDestructiveRef={cancelRef}
-            onClose={onClose}
-          >
-            <AlertDialogOverlay>
-              <AlertDialogContent>
-                <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                  Eliminar evento
-                </AlertDialogHeader>
-    
-                <AlertDialogBody>
-                  ¿Estás seguro que quieres eliminar el evento? Esta acción no se puede deshacer.
-                </AlertDialogBody>
-    
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onClose}>
-                    Cancelar
-                  </Button>
-                  <Button colorScheme='red' onClick={() => props.deleteEvent()} ml={3}>
+            <AlertDialog
+                isOpen={isOpen}
+                motionPreset='slideInBottom'
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+            >
+                <AlertDialogOverlay>
+                <AlertDialogContent>
+                    <AlertDialogHeader fontSize='lg' fontWeight='bold'>
                     Eliminar evento
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
+                    </AlertDialogHeader>
+        
+                    <AlertDialogBody>
+                    ¿Estás seguro que quieres eliminar el evento? Esta acción no se puede deshacer.
+                    </AlertDialogBody>
+        
+                    <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                        Cancelar
+                    </Button>
+                    <Button colorScheme='red' onClick={() => {onOpenModal(); onClose(); props.onDeleteEvent(); props.setIsLoading(true)}} ml={3}>
+                        Eliminar evento
+                    </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
+            <Modal motionPreset='slideInBottom' closeOnEsc={false} closeOnOverlayClick={false} isOpen={isOpenModal} onClose={onCloseModal}>
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>
+                    <Flex alignItems={"center"}>
+                        <Spinner size='xs' mr={'16px'}/>
+                        <Text>Espera un momento, por favor...</Text>
+                    </Flex>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                    <Text>Los cambios están siendo registrados en la blockchain.</Text>
+                </ModalBody>
+
+                {/*<ModalFooter>
+                    
+                </ModalFooter>*/}
+                </ModalContent>
+            </Modal>
+        </>
+    )
+}
+
+
+export function RestoreButton({...props}) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen: isOpenModal, onOpen: onOpenModal, onClose: onCloseModal } = useDisclosure()
+    const cancelRef = useRef()
+
+    useEffect(() => {
+        if(props.isLoading == false){
+            onCloseModal();
+        }
+    }, [props.isLoading]);
+
+    return (
+        <>
+            <Button 
+                colorScheme='green'
+                h={"50px"}
+                //isActive={activeButton}
+                w={{base: 'full', lg: 'full'}}
+                onClick={onOpen}
+            >
+                <HStack spacing={"16px"} px={"16px"}>
+                    <FiRotateCcw/>
+                    <Text>Restaurar evento</Text>
+                </HStack>
+            </Button>
+    
+            <AlertDialog
+                isOpen={isOpen}
+                motionPreset='slideInBottom'
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+            >
+                <AlertDialogOverlay>
+                <AlertDialogContent>
+                    <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                    Restaurar evento
+                    </AlertDialogHeader>
+        
+                    <AlertDialogBody>
+                    ¿Estás seguro que quieres restaurar el evento?
+                    </AlertDialogBody>
+        
+                    <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                        Cancelar
+                    </Button>
+                    <Button colorScheme='green' onClick={() => {onOpenModal(); onClose(); props.onRestoreEvent(); props.setIsLoading(true)}} ml={3}>
+                        Restaurar evento
+                    </Button>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
+            <Modal motionPreset='slideInBottom' closeOnEsc={false} closeOnOverlayClick={false} isOpen={isOpenModal} onClose={onCloseModal}>
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>
+                    <Flex alignItems={"center"}>
+                        <Spinner size='xs' mr={'16px'}/>
+                        <Text>Espera un momento, por favor...</Text>
+                    </Flex>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                    <Text>Los cambios están siendo registrados en la blockchain.</Text>
+                </ModalBody>
+
+                {/*<ModalFooter>
+                    
+                </ModalFooter>*/}
+                </ModalContent>
+            </Modal>
         </>
     )
 }
@@ -440,6 +753,12 @@ export function DeleteButton({...props}) {
 export function ModifyButton({...props}) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = useRef();
+
+    useEffect(() => {
+        if(props.isLoading == false){
+            onClose();
+        }
+    }, [props.isLoading]);
 
     return (
         <>
@@ -450,7 +769,7 @@ export function ModifyButton({...props}) {
                 _hover={{bg: "#82d8e8"}}
                 w={{base: 'full', lg: 'full'}}
                 color={"white"}
-                onClick={onOpen}
+                onClick={() => {onOpen(); props.onEditEvent(); props.setIsLoading(true)}}
             >
                 Modificar evento
             </Button>
