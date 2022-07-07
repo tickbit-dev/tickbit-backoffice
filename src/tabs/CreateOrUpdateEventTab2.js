@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AspectRatio, Box, Button, Flex, HStack, Icon, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Skeleton, Spacer, Spinner, Stack, Text, Textarea, toast, useDisclosure, useToast } from '@chakra-ui/react';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AspectRatio, Box, Button, Center, Flex, HStack, Icon, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Skeleton, Spacer, Spinner, Stack, Text, Textarea, toast, useDisclosure, useToast } from '@chakra-ui/react';
 
 //Components
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 //Constants
 import Dimensions from '../constants/Dimensions';
@@ -11,11 +11,12 @@ import Dimensions from '../constants/Dimensions';
 //Images
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import { HiOutlineHome, HiOutlineLocationMarker, HiOutlinePencil, HiOutlineUser, HiOutlineUserGroup } from 'react-icons/hi';
-import { createEventOnBlockchain, deleteEventBlockchain, editEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenueById, getVenuesByIdCity, readEventbyId, restoreEventBlockchain, truncateAddress } from '../utils/funcionesComunes';
+import { createEventOnBlockchain, dateValidation, deleteEventBlockchain, editEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenueById, getVenuesByIdCity, readEventbyId, restoreEventBlockchain, truncateAddress } from '../utils/funcionesComunes';
 import { BiCategoryAlt, BiText } from 'react-icons/bi';
 import { MdAttachMoney, MdOutlineBrokenImage } from 'react-icons/md';
 import { TbCalendarEvent, TbCalendarOff, TbCalendarTime } from 'react-icons/tb';
-import { FiClipboard, FiCopy, FiInfo, FiRotateCcw, FiTrash2 } from 'react-icons/fi';
+import { FiCheck, FiClipboard, FiCopy, FiInfo, FiRotateCcw, FiTrash2, FiX } from 'react-icons/fi';
+import Colors from '../constants/Colors';
 
 
 export default function CreateOrUpdateEventTab({...props}) {
@@ -90,34 +91,52 @@ export default function CreateOrUpdateEventTab({...props}) {
         //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
         setActiveButton(false)
 
-        const transaction = await editEventOnBlockchain(params.id, titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, getTimeStampFromString(fechaInicioVenta), getTimeStampFromString(fechaInicioEvento), getTimeStampFromString(fechaFinalEvento))
-    
-        if(transaction == null){
-            //Le decimos que cierre el loader
-            setIsLoadingEditEvent(false)
+        if(validateValues()){
+            const transaction = await editEventOnBlockchain(params.id, titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, getTimeStampFromString(fechaInicioVenta), getTimeStampFromString(fechaInicioEvento), getTimeStampFromString(fechaFinalEvento))
+        
+            if(transaction == null){
+                //Le decimos que cierre el loader
+                setIsLoadingEditEvent(false)
+                //Enseñamos un toast de error
+                toast({
+                    title: 'Error al modificar evento',
+                    description: "No se ha podido modificar el evento debido a un error.",
+                    status: 'error',
+                    duration: 4000,
+                    isClosable: true,
+                })
+                //Volvemos a habilitar el botón
+                setActiveButton(true)
+            } else {
+                //Enseñamos un toast de éxito
+                toast({
+                    title: 'Evento modificado correctamente',
+                    description: "Se ha modificado el evento " + titulo + ".",
+                    status: 'success',
+                    duration: 4000,
+                    isClosable: true,
+                })
+                //Volvemos a habilitar el botón
+                setActiveButton(true)
+                //Le decimos que cierre el loader
+                setIsLoadingEditEvent(false)
+            }
+        } else {
             //Enseñamos un toast de error
             toast({
                 title: 'Error al modificar evento',
-                description: "No se ha podido modificar el evento debido a un error.",
+                description: "Revisa los datos rellenados",
                 status: 'error',
                 duration: 4000,
                 isClosable: true,
             })
             //Volvemos a habilitar el botón
             setActiveButton(true)
-        } else {
-            //Le decimos que cierre el loader
-            setIsLoadingEditEvent(false)
-            //Enseñamos un toast de éxito
-            toast({
-                title: 'Evento modificado correctamente',
-                description: "Se ha modificado el evento " + titulo + ".",
-                status: 'success',
-                duration: 4000,
-                isClosable: true,
-            })
-            //Volvemos a habilitar el botón
-            setActiveButton(true)
+
+            setTimeout(() => {
+                //Le decimos que cierre el loader
+                setIsLoadingEditEvent(false)
+            }, 10);
         }
     }
 
@@ -241,6 +260,22 @@ export default function CreateOrUpdateEventTab({...props}) {
         })
     }
 
+    function validateValues(){
+        if(!titulo) return false;
+        if(!ciudad) return false;
+        if(!categoria) return false;
+        if(!urlImage) return false;
+        if(!recinto) return false;
+        if(!artista) return false;
+        if(!aforo) return false;
+        if(!precio) return false;
+        if(!dateValidation(fechaInicioVenta)) return false;
+        if(!dateValidation(fechaInicioEvento)) return false;
+        if(!dateValidation(fechaFinalEvento)) return false;
+
+        return true;
+    }
+
     useEffect(() => {
         if(params.id != null){
             getEvent(params.id);
@@ -252,9 +287,9 @@ export default function CreateOrUpdateEventTab({...props}) {
             //Reseteamos los valores por defecto
             setOwner("");
             setTitulo("");
-            setCiudad();
-            setCategoria();
-            setRecinto();
+            setCiudad("");
+            setCategoria("");
+            setRecinto("");
             setArtista("");
             setAforo(0);
             setPrecio(0);
@@ -344,7 +379,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                         }
                                         isLoaded={isLoaded}
                                         item={ciudad}
-                                        setItem={(value) => setCiudad(value)}
+                                        setItem={(value) => {setCiudad(value); setRecinto("")}}
                                     />
                                     <CustomSelector
                                         required
@@ -409,6 +444,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                         <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-end'} spacing={"16px"}>
                             <CustomInput
                                 required
+                                date={true}
                                 icon={<TbCalendarEvent/>}
                                 text={"Fecha de inicio de puesta venta"}
                                 placeholder={"dd/mm/aaaa"}
@@ -418,6 +454,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                             />
                             <CustomInput
                                 required
+                                date={true}
                                 icon={<TbCalendarTime/>}
                                 text={"Fecha de inicio del evento"}
                                 placeholder={"dd/mm/aaaa"}
@@ -427,6 +464,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                             />
                             <CustomInput
                                 required
+                                date={true}
                                 icon={<TbCalendarOff/>}
                                 text={"Fecha final del evento"}
                                 placeholder={"dd/mm/aaaa"}
@@ -511,21 +549,59 @@ export default function CreateOrUpdateEventTab({...props}) {
 };
 
 export function CustomInput({...props}) {
+    const [validStatus, setValidStatus] = useState(null);
+
+    const handleBlur = () => {
+        if(props.date){
+            setValidStatus(dateValidation(props.item));
+        } else{
+            if (!props.item) setValidStatus(false);
+            else setValidStatus(true);
+        }
+    }; 
+
+    useEffect(() => {
+        setValidStatus(null)
+    }, [props.item]);
+
     return(
         <Stack flex={1} w={'100%'} direction={"column"}>
             <HStack alignItems={"center"}>
                 {props.icon}
-                <Text>{props.text}</Text>
-                {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}
+                <Text noOfLines={1}>{props.text}</Text>
+                {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}  
+                <Spacer/>
+                { validStatus == true ?
+                    <Center minW={'20px'} w={'20px'} h={'20px'} borderRadius={'full'} bg={"#ade4ed"} style={{marginBottom: '-78px', marginRight: '10px'}}>
+                        <Icon
+                            fontSize={"12px"}
+                            strokeWidth={"3px"}
+                            color={'white'}
+                            as={FiCheck}
+                        />
+                    </Center>
+                : validStatus == false?
+                    <Center minW={'20px'} w={'20px'} h={'20px'} borderRadius={'full'} bg={"#ed5c5c"} style={{marginBottom: '-78px', marginRight: '10px'}}>
+                        <Icon
+                            fontSize={"12px"}
+                            strokeWidth={"3px"}
+                            color={'white'}
+                            as={FiX}
+                        />
+                    </Center>
+                :
+                    null
+                }              
             </HStack>
             <Skeleton flex={1} isLoaded={props.isLoaded} borderRadius={"10px"}>
                 <Input
                     w={'100%'}
-                    defaultValue={props.item}
+                    onBlur={handleBlur}
                     noOfLines={1}
+                    pr={"40px"}
                     value={props.item}
                     placeholder={props.placeholder}
-                    onChange={(event) => props.setItem(event.target.value)}
+                    onChange={(event) => {props.setItem(event.target.value); setValidStatus(null)}}
                 />
             </Skeleton>
         </Stack>
@@ -533,24 +609,63 @@ export function CustomInput({...props}) {
 }
 
 export function CustomSelector({...props}) {
+    const [validStatus, setValidStatus] = useState(null);
+    const location = useLocation();
+
+    const handleBlur = () => {
+        if (!props.item) setValidStatus(false);
+        else setValidStatus(true);
+    };
+
+    useEffect(() => {
+        setValidStatus(null)
+    }, [props.item]);
+    
+    useEffect(() => {
+        setValidStatus(null)
+    }, [location.pathname]);
+
     return(
         <Stack flex={1} w={'100%'} direction={"column"}>
             <HStack alignItems={"center"}>
                 {props.icon}
-                <Text>{props.text}</Text>
+                <Text noOfLines={1}>{props.text}</Text>
                 {props.required ? <Text color={"gray.400"} fontWeight={"600"}>*</Text> : null}
+                <Spacer/>
+                { validStatus == true ?
+                    <Center w={'20px'} minW={'20px'} h={'20px'} borderRadius={'full'} bg={"#ade4ed"} style={{marginBottom: '-78px', marginRight: '40px'}}>
+                        <Icon
+                            fontSize={"12px"}
+                            strokeWidth={"3px"}
+                            color={'white'}
+                            as={FiCheck}
+                        />
+                    </Center>
+                : validStatus == false ?
+                    <Center w={'20px'} minW={'20px'} h={'20px'} borderRadius={'full'} bg={"#ed5c5c"} style={{marginBottom: '-78px', marginRight: '40px'}}>
+                        <Icon
+                            fontSize={"12px"}
+                            strokeWidth={"3px"}
+                            color={'white'}
+                            as={FiX}
+                        />
+                    </Center>
+                :
+                    null
+                }              
             </HStack>
             <Skeleton flex={1} isLoaded={props.isLoaded} borderRadius={"10px"}>
                 <Select
                     w={'100%'}
                     noOfLines={1}
+                    onBlur={handleBlur}
                     value={props.item}
                     color={!props.item ? "gray.300" : null}
                     placeholder={props.placeholder}
                     size='md'
-                    onChange={(event) => {props.setItem(event.target.value); /*props.setIdRecinto(event.target.value);*/}}
+                    onChange={(event) => {props.setItem(event.target.value); setValidStatus(null)/*props.setIdRecinto(event.target.value);*/}}
                     _active={{base: {boxShadow: "0 0 0px 0px " + "gray.400"}, md: {boxShadow: "0 0 0px 0px " + "gray.400"}}} 
-                    _hover={{ bg: "gray.50"}} 
+                    //_hover={{ bg: "gray.50"}} 
                 >
                     {props.options}
                 </Select>
@@ -592,6 +707,7 @@ export function CustomNumberInput({...props}) {
                 <NumberInput
                     w={'100%'}
                     step={10}
+                    onBlur={() => !props.item ? props.setItem("0") : null}
                     placeholder={props.placeholder}
                     color={props.item == "0" ? "gray.300" : null}
                     value={props.item}

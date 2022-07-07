@@ -82,6 +82,23 @@ export function getMonthAndYearAbrebiation(month, year){
     }
 }
 
+export function dateValidation(date){
+    if (!date){
+        return false;
+    } else{
+        if(
+            !isNaN(date[0]) && !isNaN(date[1]) && date[2] == "/" &&
+            !isNaN(date[3]) && !isNaN(date[4]) && date[5] == "/" &&
+            !isNaN(date[6]) && !isNaN(date[7]) && !isNaN(date[8]) && !isNaN(date[9]) &&
+            date.length == 10
+        ){
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
 export function getTimeStampFromString(stringValue){
     const day = stringValue.split("/")[0];
     const month = stringValue.split("/")[1];
