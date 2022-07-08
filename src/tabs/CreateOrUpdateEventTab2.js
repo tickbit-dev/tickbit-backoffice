@@ -12,7 +12,7 @@ import Dimensions from '../constants/Dimensions';
 import imagePlaceholder from '../assets/default-placeholder.webp'
 import { HiOutlineHome, HiOutlineLocationMarker, HiOutlinePencil, HiOutlineUser, HiOutlineUserGroup } from 'react-icons/hi';
 import { createEventOnBlockchain, dateValidation, deleteEventBlockchain, editEventOnBlockchain, getCategories, getCities, getStringFromTimestamp, getTimeStampFromString, getVenueById, getVenuesByIdCity, readEventbyId, restoreEventBlockchain, truncateAddress } from '../utils/funcionesComunes';
-import { BiCategoryAlt, BiText } from 'react-icons/bi';
+import { BiCategoryAlt, BiEuro, BiText } from 'react-icons/bi';
 import { MdAttachMoney, MdOutlineBrokenImage } from 'react-icons/md';
 import { TbCalendarEvent, TbCalendarOff, TbCalendarTime } from 'react-icons/tb';
 import { FiCheck, FiClipboard, FiCopy, FiInfo, FiRotateCcw, FiTrash2, FiX } from 'react-icons/fi';
@@ -433,7 +433,8 @@ export default function CreateOrUpdateEventTab({...props}) {
                             />
                             <CustomNumberInput
                                 required
-                                icon={<MdAttachMoney/>}
+                                formatValue={`€`}
+                                icon={<BiEuro/>}
                                 text={"Precio"}
                                 placeholder={0}
                                 isLoaded={isLoaded}
@@ -694,6 +695,9 @@ export function CustomTextArea({...props}) {
 }
 
 export function CustomNumberInput({...props}) {
+    const format = (val) => val + props.formatValue;
+    const parse = (val) => val.replace(/^\€/, '')
+
     return(
         <Stack flex={1} w={'100%'} direction={"column"}>
             <HStack alignItems={"center"}>
@@ -710,10 +714,10 @@ export function CustomNumberInput({...props}) {
                     onBlur={() => !props.item ? props.setItem("0") : null}
                     placeholder={props.placeholder}
                     color={props.item == "0" ? "gray.300" : null}
-                    value={props.item}
+                    value={props.formatValue ? format(props.item) : props.item}
                     min={0}
                     max={props.max}
-                    onChange={(valueString) => props.setItem(valueString)}
+                    onChange={(valueString) => props.setItem(parse(valueString))}
                 >
                     <NumberInputField />
                     <NumberInputStepper color={'black'}>

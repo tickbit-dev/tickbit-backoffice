@@ -10,6 +10,8 @@ export default function TicketingTable({...props}) {
     const [items, setItems] = useState(props.items ?? getTicketsListFromTest());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
+    const [eurToMatic, setEurToMatic] = useState(0);
+
     const toast = useToast()
     // Avoid a layout jump when reaching the last page with empty items.
     const emptyItems = currentPage > 0 ? Math.max(0, (1 + currentPage) * itemsPerPage - items.length) : 0;
@@ -39,12 +41,28 @@ export default function TicketingTable({...props}) {
         })
     }
 
+    function getEurToMaticConversion(){
+        fetch('https://api.binance.com/api/v3/ticker/price?symbol=MATICEUR')
+            .then(response => response.text())
+            .then(data => {
+                console.log(JSON.parse(data).price)
+                setEurToMatic(JSON.parse(data).price)
+            })
+            .catch(error => {
+                // handle the error
+                console.log(error)
+            });
+    }
+
     useEffect(() => {
         //console.log("table")
         //console.log(props.items)
         setItems(props.items)
-        
     }, [props.items]);
+
+    useEffect(() => {
+        getEurToMaticConversion()
+    }, []);
 
     return (
         <Flex flex={1} direction={'column'} maxW={'full'} borderRadius={'10px'} overflow={'hidden'} borderWidth={'1px'} overflowX={'scroll'}>
@@ -136,8 +154,11 @@ export default function TicketingTable({...props}) {
                             <Td
                                 borderRightWidth={0}
                                 minW={'130px'}
+                                direction={'row'}
                             >
-                                <Text noOfLines={1}>{row.price + " ETH"}</Text>
+                                <Flex>
+                                    <Text noOfLines={1}>{row.price + "€"}</Text>
+                                </Flex>
                             </Td>
                         </Tr>
                     ))}

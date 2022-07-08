@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, HStack, Input, Select } from '@chakra-ui/react';
+import { Flex, Box, Text, HStack, Input, Select, Skeleton } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
 import { setYear } from 'date-fns';
 import moment from 'moment';
 import { getEventsListFromBlockchain, getMonthAndYearAbrebiation } from '../utils/funcionesComunes';
+import Colors from '../constants/Colors';
 
 export default function CampaingsTab({...props}) {
 
-    const [state, setState] = useState();
+    const [isPriceLoaded, setIsPriceLoaded] = useState(false);
     const [intervalos, setIntervalos] = useState([]);
     const [currentAddress, setCurrentAddress] = useState("");
     const [items, setItems] = useState([]);
     const [fechaPorDefecto, setFechaPorDefecto] = useState("");
+
+    const [eurToMatic, setEurToMatic] = useState(0);
 
     const [textoIntervalo, setTextoIntervalo] = useState();
     const [evento, setEvento] = useState();
@@ -68,10 +71,24 @@ export default function CampaingsTab({...props}) {
         
     }
 
-        useEffect(() => {
+    function getEurToMaticConversion(){
+        fetch('https://api.binance.com/api/v3/ticker/price?symbol=MATICEUR')
+            .then(response => response.text())
+            .then(data => {
+                console.log(JSON.parse(data).price)
+                setEurToMatic(JSON.parse(data).price)
+                setIsPriceLoaded(true)
+            })
+            .catch(error => {
+                // handle the error
+                console.log(error)
+            });
+    }
+
+    useEffect(() => {
         setIntervalos(getWeeksIntervals());
         getData();
-        
+        getEurToMaticConversion()
     }, []);
 
     // 3 desplehables - numero de dias - 
@@ -105,8 +122,8 @@ export default function CampaingsTab({...props}) {
                 </Flex>*/}
 
                 <Flex direction={{base: "column", lg: "row"}}>
-                    <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}}/>
-                    <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}}/>
+                    <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToMatic} isLoaded={isPriceLoaded}/>
+                    <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToMatic} isLoaded={isPriceLoaded}/>
                 </Flex>
 
             </Flex>
@@ -115,6 +132,12 @@ export default function CampaingsTab({...props}) {
 };
 
 export function FrontPageCampaingCard({...props}){
+    const eur_price = 700;
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
     return(
         <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={{base: "16px", lg: "0px"}} {...props}>
             <Flex flex={1} direction={'column'} borderRadius={'10px'} mt={"16px"} borderWidth={'1px'} bg={'white'} overflow={"hidden"}>
@@ -124,24 +147,28 @@ export function FrontPageCampaingCard({...props}){
                             PORTADA
                         </Text>
                     </Flex>
-                    <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'}>
+                    <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
                         {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
                             Máxima puja actual
                         </Text>*/}
                         <HStack justifyContent={"center"}>
                             <Text fontSize="5xl" fontWeight="900">
-                                1.3
+                                {eur_price}
                             </Text>
                             <Text fontSize="xl">
-                                eth
+                                €
                             </Text>
-                            <Text fontSize="xl" color="gray.500" textAlign={"center"}>
-                                ≈ 1.300$
-                            </Text>
+                            <Skeleton isLoaded={props.isLoaded}>
+                                <Text fontSize="xl" color="gray.500" textAlign={"center"}>
+                                    {"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"}
+                                </Text>
+                            </Skeleton>
                         </HStack>
-                        <Text fontSize="xl" color="gray.300" textAlign={"center"}>
-                                1 disponible
-                        </Text>
+                        <Flex w={'fit-content'} bg={'#dcf7fc'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
+                            <Text fontSize="sm" color={Colors.primary.lightblue}>
+                                Queda 1 disponible
+                            </Text>
+                        </Flex>
                     </Flex>
                     <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
                         {/*<Flex flex={1} w={"100%"} alignItems="center">
@@ -164,6 +191,12 @@ export function FrontPageCampaingCard({...props}){
 
 
 export function OutstandingCampaingCard({...props}){
+    const eur_price = 300;
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
     return(
         <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} {...props}>
             <Flex flex={1} direction={'column'} borderRadius={'10px'} mt={"16px"} borderWidth={'1px'} bg={'white'} overflow={"hidden"}>
@@ -173,24 +206,28 @@ export function OutstandingCampaingCard({...props}){
                             DESTACADO
                         </Text>
                     </Flex>
-                    <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'}>
+                    <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
                         {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
                             Máxima puja actual
                         </Text>*/}
                         <HStack justifyContent={"center"}>
                             <Text fontSize="5xl" fontWeight="900">
-                                0.4
+                                {eur_price}
                             </Text>
                             <Text fontSize="xl">
-                                eth
+                                €
                             </Text>
-                            <Text fontSize="xl" color="gray.500" textAlign={"center"}>
-                                ≈ 400$
-                            </Text>
+                            <Skeleton isLoaded={props.isLoaded}>
+                                <Text fontSize="xl" color="gray.500" textAlign={"center"}>
+                                    {"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"}
+                                </Text>
+                            </Skeleton>
                         </HStack>
-                        <Text fontSize="xl" color="gray.300" textAlign={"center"}>
-                                15 disponible
-                        </Text>
+                        <Flex w={'fit-content'} bg={'gray.50'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
+                            <Text fontSize="sm" color={'gray.600'}>
+                                Quedan 15 disponibles
+                            </Text>
+                        </Flex>
                     </Flex>
                     <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
                         {/*<Flex flex={1} w={"100%"} alignItems="center">
