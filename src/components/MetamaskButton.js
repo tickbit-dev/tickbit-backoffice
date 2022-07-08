@@ -136,7 +136,7 @@ export default function MetamaskButton({...props}) {
             >
                 <Box d="flex" alignItems={"center"} justifyContent={"center"}>
                     <Image h="24px" w={"24px"} mr={{base: "0px", md: "12px"}} src={MetamaskLogo}/>
-                    <Text display={{base: "none", md: "flex"}} fontWeight={500}>Conectar Metamask</Text>
+                    <Text display={{base: "none", md: "flex"}} fontWeight={500} color={'black'}>Conectar Metamask</Text>
                 </Box>
             </Button>
     )

@@ -20,9 +20,14 @@ export default function App({...props}) {
 	const [isConnected, setIsConnected] = useState(null);
 	const [currentAccount, setCurrentAccount] = useState('');
 
+	function checkIsMetamaskInstalled() {
+        return typeof window.ethereum !== 'undefined'
+    }
 
 	function checkConnection() {
-		window.ethereum.request({ method: 'eth_accounts' }).then(handleAccountsChanged).catch(console.error);
+		if(checkIsMetamaskInstalled()){
+			window.ethereum.request({ method: 'eth_accounts' }).then(handleAccountsChanged).catch(console.error);
+		}
   	}
   
 	function handleAccountsChanged(accounts) {
@@ -30,6 +35,7 @@ export default function App({...props}) {
 			setIsConnected(false)
 			setCurrentAccount('')
 		} else {
+			console.log("Conectado")
 			setIsConnected(true)
 			setCurrentAccount(accounts[0])
 		}
@@ -41,24 +47,24 @@ export default function App({...props}) {
 
 	return (
 		<ChakraProvider theme={theme} resetCSS>
-			{isConnected == true ?
 				<BrowserRouter>
-					<HomePage activetab={activeTab} changeactivetab={(tab) => setActiveTab(tab)}>
-						<Routes>
-							<Route path="/" element={<EventsTab/>} />
-							<Route path="/events" element={<EventsTab/>} />
-							<Route path="/events/:id" element={<CreateOrUpdateEventTab/>} />
-							<Route path="/ticketing" element={<Ticketing/>} />
-							<Route path="/incomes" element={<IncomesTab/>} />
-							<Route path="/campaigns" element={<CampaingsTab/>} />
-							<Route path="/help" element={<HelpTab/>} />
-							<Route path="/create" element={<CreateOrUpdateEventTab/>} />
-						</Routes>
-					</HomePage>
+					{isConnected == true ?
+						<HomePage activetab={activeTab} changeactivetab={(tab) => setActiveTab(tab)}>
+							<Routes>
+								<Route path="/" element={<EventsTab/>} />
+								<Route path="/events" element={<EventsTab/>} />
+								<Route path="/events/:id" element={<CreateOrUpdateEventTab/>} />
+								<Route path="/ticketing" element={<Ticketing/>} />
+								<Route path="/incomes" element={<IncomesTab/>} />
+								<Route path="/campaigns" element={<CampaingsTab/>} />
+								<Route path="/help" element={<HelpTab/>} />
+								<Route path="/create" element={<CreateOrUpdateEventTab/>} />
+							</Routes>
+						</HomePage>
+					:
+						<LoginScreen isConnected={isConnected}/>
+					}
 				</BrowserRouter>
-			:
-				<LoginScreen isConnected={isConnected}/>
-			}
 		</ChakraProvider>
 	);
 };

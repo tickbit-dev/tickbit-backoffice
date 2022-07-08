@@ -67,7 +67,7 @@ export default function HomePage({...props}) {
   const { isOpen: isOpenForm, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure();
 
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box minH="100vh" bg={'gray.100'}>
       <CreateEventModal isOpen={isOpenForm} onOpen={onOpenForm} onClose={onCloseForm}/>
       <SidebarContent
         onClose={() => onClose}
@@ -102,9 +102,9 @@ const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
   return (
     <Box
       transition="3s ease"
-      bg={useColorModeValue('white', 'gray.900')}
+      bg={'white'}
       borderRight="1px"
-      borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+      borderRightColor={'gray.200'}
       w={{ base: 'full', md: SIDE_MENU_WIDTH }}
       pos="fixed"
       h="full"
@@ -180,9 +180,9 @@ const MobileNav = ({ onOpen, ...rest }) => {
       w={{base: 'unset', md: "100%"}}
       height={TOP_MENU_HEIGHT}
       alignItems="center"
-      bg={useColorModeValue('white', 'gray.900')}
+      bg={'white'}
       borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
+      borderBottomColor={'gray.200'}
       justifyContent={{ base: 'space-between', md: 'space-between' }}
       zIndex={2}
       {...rest}>
@@ -236,8 +236,8 @@ const MobileNav = ({ onOpen, ...rest }) => {
               </HStack>
             </MenuButton>
             <MenuList
-              bg={useColorModeValue('white', 'gray.900')}
-              borderColor={useColorModeValue('gray.200', 'gray.700')}>
+              bg={'white'}
+              borderColor={'gray.200'}>
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
