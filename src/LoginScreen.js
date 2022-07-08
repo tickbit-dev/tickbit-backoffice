@@ -85,6 +85,12 @@ export default function LoginScreen({...props}) {
 			console.log("metamask installed", true)
 			console.log("setIsConnected", props.isConnected)
 		}
+
+		if(checkIsMetamaskInstalled()){
+			window.ethereum.on('chainChanged', () => {
+				window.location.reload();
+			})
+		}
 	}, []);
 
 	return (
