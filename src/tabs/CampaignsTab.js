@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, HStack, Input, Select, Skeleton } from '@chakra-ui/react';
+import { Flex, Box, Text, HStack, Input, Select, Skeleton, Stack } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
@@ -151,19 +151,21 @@ export function FrontPageCampaingCard({...props}){
                         {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
                             Máxima puja actual
                         </Text>*/}
-                        <HStack justifyContent={"center"}>
-                            <Text fontSize="5xl" fontWeight="900">
-                                {eur_price}
-                            </Text>
-                            <Text fontSize="xl">
-                                €
-                            </Text>
-                            <Skeleton isLoaded={props.isLoaded}>
+                        <Flex direction={'column'} alignItems={"center"}>
+                            <Flex alignItems={'center'}>
+                                <Text fontSize="5xl" fontWeight="900">
+                                    {eur_price}
+                                </Text>
+                                <Text fontSize="xl" ml={"4px"}>
+                                    €
+                                </Text>
+                            </Flex>
+                            <Skeleton isLoaded={props.isLoaded} mt={'-10px'}>
                                 <Text fontSize="xl" color="gray.500" textAlign={"center"}>
                                     {"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"}
                                 </Text>
                             </Skeleton>
-                        </HStack>
+                        </Flex>
                         <Flex w={'fit-content'} bg={'#dcf7fc'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
                             <Text fontSize="sm" color={Colors.primary.lightblue}>
                                 Queda 1 disponible
@@ -191,7 +193,7 @@ export function FrontPageCampaingCard({...props}){
 
 
 export function OutstandingCampaingCard({...props}){
-    const eur_price = 300;
+    const eur_price = 200;
 
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -210,19 +212,21 @@ export function OutstandingCampaingCard({...props}){
                         {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
                             Máxima puja actual
                         </Text>*/}
-                        <HStack justifyContent={"center"}>
-                            <Text fontSize="5xl" fontWeight="900">
-                                {eur_price}
-                            </Text>
-                            <Text fontSize="xl">
-                                €
-                            </Text>
-                            <Skeleton isLoaded={props.isLoaded}>
+                        <Flex direction={'column'} alignItems={"center"}>
+                            <Flex alignItems={'center'}>
+                                <Text fontSize="5xl" fontWeight="900">
+                                    {eur_price}
+                                </Text>
+                                <Text fontSize="xl" ml={"4px"}>
+                                    €
+                                </Text>
+                            </Flex>
+                            <Skeleton isLoaded={props.isLoaded} mt={'-10px'}>
                                 <Text fontSize="xl" color="gray.500" textAlign={"center"}>
                                     {"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"}
                                 </Text>
                             </Skeleton>
-                        </HStack>
+                        </Flex>
                         <Flex w={'fit-content'} bg={'gray.50'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
                             <Text fontSize="sm" color={'gray.600'}>
                                 Quedan 15 disponibles
