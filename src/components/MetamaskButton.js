@@ -25,6 +25,7 @@ export default function MetamaskButton({...props}) {
 
         getCurrentUserAddress();
         startUserAddressChangedListener();
+        startNetworkChangedListener();
     }, []);
 
     useEffect(() => {
@@ -58,12 +59,22 @@ export default function MetamaskButton({...props}) {
         }
     }
 
+    
+
     function getCurrentUserAddress() {
         if(isMetamaskInstalled()){
             window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
                 //console.log("current account: " + accounts[0])
                 setUserAddress(accounts[0]);
             });
+        }
+    }
+
+    function startNetworkChangedListener() {
+        if(isMetamaskInstalled()){
+            window.ethereum.on('chainChanged', () => {
+				window.location.reload();
+			})
         }
     }
 
