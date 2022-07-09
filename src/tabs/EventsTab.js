@@ -6,7 +6,7 @@ import EventsTable from '../components/EventsTable';
 import InputSelector from '../components/InputSelector';
 
 //Funciones comunes
-import { getCurrentAddress, getEventsListFromBlockchain, getEventsListFromTest, getMyEventsListFromBlockchain, setCurrentAddress } from '../utils/funcionesComunes';
+import { getCurrentAddress, getEventsListFromBlockchain, getEventsListFromTest, getMyEventsListFromBlockchain, getSearchBarPlaceholder, setCurrentAddress } from '../utils/funcionesComunes';
 import Dimensions from '../constants/Dimensions';
 import { useLocation, useParams } from 'react-router-dom';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
@@ -110,7 +110,19 @@ export default function EventsTab({...props}) {
             />
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>  
                 <Skeleton isLoaded={isLoaded} maxH={"50px"}> 
-                    <SlideFade in={isLoaded}>  
+                    <SlideFade in={isLoaded}> 
+                        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"} display={{base: 'flex', md: 'none'}}>
+                            <Input
+                                flex={1}
+                                //mt={"-10px"}
+                                value={searchValue.replaceAll("+", " ") ?? ""}
+                                minH={'48px'}
+                                w={'100%'}
+                                placeholder={getSearchBarPlaceholder(location.pathname.split('/')[1])}
+                                onChange={(event) => applySearchFilter(event.target.value)}
+                                noOfLines={1}
+                            />
+                        </Flex> 
                         <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>        
                             {items.length == 0 ?
                                 searchValue.length > 0 ?

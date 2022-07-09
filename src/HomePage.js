@@ -112,7 +112,7 @@ const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Box d="flex" alignItems={"center"} as="button" onClick={() => window.open("/","_self")} style={{WebkitTapHighlightColor: "transparent"}}>
-            <Image w={{base: "32px", md: "34px"}} ml={{base: "16px", md: "0px"}} src={Logo}/>
+            <Image w={{base: "32px", md: "34px"}} ml={{base: "-10px", md: "-10px"}} src={Logo}/>
             <Text fontWeight={800} fontSize={'18px'} ml="10px">Tickbit</Text>
         </Box>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
@@ -122,13 +122,13 @@ const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
       </Flex>*/}
 
       <Flex px={'16px'} mb={'16px'} mt={'16px'}>
-        <Link to={'create'} style={{width: '100%'}}>
+        <Link to={'create'} onClick={onClose} style={{width: '100%'}}>
           <Button bg={"#69c5d6"} bghover={"#82d8e8"} text={'Crear evento'} w={'100%'} icon={<IoIosAdd color={'white'} size={'24px'}/>} color={"white"}/>
         </Link>
       </Flex>
 
       {LinkItems.map((link) => (
-        <NavItem onClick={() => {setActiveTab(link.to);}} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to || link.to == location.pathname.split('/')[1] || (link.default == true && (location.pathname.split('/')[1] == "")) ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
+        <NavItem onClick={() => {setActiveTab(link.to); onClose()}} key={link.name} icon={link.icon} to={link.to} bg={activeTab == link.to || link.to == location.pathname.split('/')[1] || (link.default == true && (location.pathname.split('/')[1] == "")) ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
           <Text>{link.name}</Text>
         </NavItem>
       ))}
@@ -183,7 +183,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       bg={'white'}
       borderBottomWidth="1px"
       borderBottomColor={'gray.200'}
-      justifyContent={{ base: 'space-between', md: 'space-between' }}
+      justifyContent={{ base: undefined, md: 'space-between' }}
       zIndex={2}
       {...rest}>
 
@@ -195,10 +195,12 @@ const MobileNav = ({ onOpen, ...rest }) => {
         icon={<FiMenu />}
       />
 
-      <Box d="flex" display={{ base: 'flex', md: 'none' }} alignItems={"center"} as="button" onClick={() => window.open("/","_self")} style={{WebkitTapHighlightColor: "transparent"}}>
+      <Flex d="flex" display={{ base: 'flex', md: 'none' }} alignItems={'flex-start'} as="button" onClick={() => window.open("/","_self")} style={{WebkitTapHighlightColor: "transparent"}}>
         <Image w={{base: "28px", md: "30px"}} ml={{base: "16px", md: "0px"}} src={Logo}/>
         <Text fontWeight={800} ml="10px" display={{ base: 'none', md: 'flex' }}>Tickbit</Text>
-      </Box>
+      </Flex>
+
+      <Spacer/>
 
       <HStack spacing={{ base: '0', md: '6' }}>
         {/*<IconButton

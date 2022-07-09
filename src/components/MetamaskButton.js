@@ -1,6 +1,6 @@
 //Libraries
 import { useState, useEffect, useRef } from 'react';
-import { Box, Image, Text, Button, useToast, Flex, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Link, Spacer, Icon } from '@chakra-ui/react';
+import { Box, Image, Text, Button, useToast, Flex, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Link, Spacer, Icon, Skeleton } from '@chakra-ui/react';
 //import Cookies from 'js-cookie';
 
 //Images & Icons
@@ -17,6 +17,7 @@ import Colors from '../constants/Colors';
 
 export default function MetamaskButton({...props}) {
     const [userAddress, setUserAddress] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
     const prevUserAddress = usePrevious({userAddress});
     const toast = useToast()
 
@@ -66,6 +67,7 @@ export default function MetamaskButton({...props}) {
             window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
                 //console.log("current account: " + accounts[0])
                 setUserAddress(accounts[0]);
+                setIsLoaded(true);
             });
         }
     }
@@ -130,26 +132,28 @@ export default function MetamaskButton({...props}) {
                 <Text color={"black"} fontWeight={500} ml={"16px"}>{shortAddress(userAddress)}</Text>
             </Flex>
         :
-            <Button
-                as="button"
-                pl={"20px"}
-                pr={"20px"}
-                h={"50px"}
-                w={'100%'}
-                borderRadius={"10px"}
-                transition="all .6s ease"
-                _hover={{ bg: "gray.200"}}
-                bg={"gray.100"}
-                _focus={{boxShadow:'0 0 0px 0px rgba(0, 0, 0, 0)'}}
-                style={{WebkitTapHighlightColor: "transparent"}}
-                onClick={() => userAddress == null ? connectMetamaskWallet() : null}
-                overflow={"hidden"}
-            >
-                <Box d="flex" alignItems={"center"} justifyContent={"center"}>
-                    <Image h="24px" w={"24px"} mr={{base: "0px", md: "12px"}} src={MetamaskLogo}/>
-                    <Text display={{base: "none", md: "flex"}} fontWeight={500} color={'black'}>Conectar Metamask</Text>
-                </Box>
-            </Button>
+            <Skeleton w={'full'} isLoaded={isLoaded}>
+                <Button
+                    as="button"
+                    pl={"20px"}
+                    pr={"20px"}
+                    h={"50px"}
+                    w={'100%'}
+                    borderRadius={"10px"}
+                    transition="all .6s ease"
+                    _hover={{ bg: "gray.200"}}
+                    bg={"gray.100"}
+                    _focus={{boxShadow:'0 0 0px 0px rgba(0, 0, 0, 0)'}}
+                    style={{WebkitTapHighlightColor: "transparent"}}
+                    onClick={() => userAddress == null ? connectMetamaskWallet() : null}
+                    overflow={"hidden"}
+                >
+                    <Box d="flex" alignItems={"center"} justifyContent={"center"}>
+                        <Image h="24px" w={"24px"} mr={{base: "12px", md: "12px"}} src={MetamaskLogo}/>
+                        <Text /*display={{base: "none", md: "flex"}}*/ fontWeight={500} color={'black'}>Conectar con Metamask</Text>
+                    </Box>
+                </Button>
+            </Skeleton>
     )
 }
 

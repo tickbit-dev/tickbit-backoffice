@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, SlideFade, Stack, Skeleton } from '@chakra-ui/react';
-import { getCityById, getEstado, getEventsListFromBlockchain, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
+import { getCityById, getEstado, getEventsListFromBlockchain, getEventsListFromTest, getSearchBarPlaceholder, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo, FiSearch } from 'react-icons/fi';
 import TicketingTable from '../components/TicketingTable';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import { useLocation } from 'react-router-dom';
+import Input from '../components/Input';
 
 // True: BLOCKCHAIN
 // False: LOCAL
@@ -79,6 +80,18 @@ export default function Ticketing({...props}) {
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
                 <Skeleton isLoaded={isLoaded} maxH={"50px"}> 
                     <SlideFade in={isLoaded}>  
+                        <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mb={"16px"} display={{base: 'flex', md: 'none'}}>
+                            <Input
+                                flex={1}
+                                //mt={"-10px"}
+                                value={searchValue.replaceAll("+", " ") ?? ""}
+                                minH={'48px'}
+                                w={'100%'}
+                                placeholder={getSearchBarPlaceholder(location.pathname.split('/')[1])}
+                                onChange={(event) => applySearchFilter(event.target.value)}
+                                noOfLines={1}
+                            />
+                        </Flex> 
                         <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>    
                             {items.length == 0 && isLoaded ?
                                 searchValue.length > 0 ?

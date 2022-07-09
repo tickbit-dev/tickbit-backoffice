@@ -94,48 +94,11 @@ export default function LoginScreen({...props}) {
 	}, []);
 
 	return (
-		<Flex flex={1} w={'100vw'} minH={'100vh'} alignItems={"center"} justifyContent={"center"} bg={"gray.100"}>
-			{/*!props.isConnected ? 
-				<Flex w={"500px"} h={"250px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} alignItems={'center'} justifyContent={'center'}>
-					<Spacer/>
-					<Flex alignItems={'center'}>
-						<Image h={'45px'} ml={{base: "16px", md: "0px"}} src={Logo} mr={"16px"}/>
-						<Heading fontSize={'5xl'} fontWeight={900}>Tickbit</Heading>
-					</Flex>
-					<Text fontSize="xl" color="gray.500" ml={"120px"}>
-						for business
-					</Text>
-					<Spacer/>
-					{ isMetamaskInstalled ?
-						<MetamaskButton/>
-					:
-						<Button
-							as="button"
-							pl={"20px"}
-							pr={"20px"}
-							h={"50px"}
-							w={'100%'}
-							borderRadius={"10px"}
-							transition="all .6s ease"
-							_hover={{ bg: "gray.200"}}
-							bg={"gray.100"}
-							_focus={{boxShadow:'0 0 0px 0px rgba(0, 0, 0, 0)'}}
-							style={{WebkitTapHighlightColor: "transparent"}}
-							onClick={() => window.open("https://metamask.app.link/dapp/tickb.it", "_self")}
-							overflow={"hidden"}
-						>
-							<Box d="flex" alignItems={"center"} justifyContent={"center"}>
-								<Image h="24px" w={"24px"} mr={{base: "0px", md: "12px"}} src={MetamaskLogo}/>
-								<Text display={{base: "none", md: "flex"}} fontWeight={500}>Descargar Metamask</Text>
-							</Box>
-						</Button>
-					}
-				</Flex>
-			: null*/}
+		<Flex flex={1} w={'100vw'} minH={'100vh'} alignItems={"center"} justifyContent={"center"} bg={"gray.100"} p={"16px"}>
 			{ !checkIsMetamaskInstalled() ?
-				<Flex w={"500px"} h={"300px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} alignItems={'center'} justifyContent={'center'}>
+				<Flex w={"500px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} alignItems={'center'} justifyContent={'center'}>
 					<Spacer/>
-					<Flex alignItems={'center'}>
+					<Flex alignItems={'center'} mt={"30px"}>
 						<Image h={'45px'} ml={{base: "16px", md: "0px"}} src={Logo} mr={"16px"}/>
 						<Heading fontSize={'5xl'} fontWeight={900} color={'black'}>Tickbit</Heading>
 					</Flex>
@@ -143,8 +106,8 @@ export default function LoginScreen({...props}) {
 						for business
 					</Text>
 					<Spacer/>
-					<Alert status='warning' bg={'rgb(254, 235, 200)'} mb={'16px'} color={"gray.700"}>
-						<AlertIcon color={'orange.500'}/>
+					<Alert flexDirection={{base: 'column', md: 'row'}} textAlign={{base: 'center', md: 'flex-start'}} status='warning' bg={'rgb(254, 235, 200)'} mb={'16px'} color={"gray.700"} mt={"46px"}>
+						<AlertIcon color={'orange.500'} mb={{base: "10px", md: "0px"}}/>
 						Para usar Tickbit Business necesitas la extensión de navegador de Metamask
 					</Alert>
 					<Button
@@ -163,30 +126,30 @@ export default function LoginScreen({...props}) {
 						overflow={"hidden"}
 					>
 						<Box d="flex" alignItems={"center"} justifyContent={"center"}>
-							<Image h="24px" w={"24px"} mr={{base: "0px", md: "12px"}} src={MetamaskLogo}/>
-							<Text display={{base: "none", md: "flex"}} color={'black'} fontWeight={500}>Descargar Metamask</Text>
+							<Image h="24px" w={"24px"} mr={{base: "12px", md: "12px"}} src={MetamaskLogo}/>
+							<Text /*display={{base: "none", md: "flex"}}*/ color={'black'} fontWeight={500}>Descargar Metamask</Text>
 						</Box>
 					</Button>
 				</Flex>
 			: checkIsMetamaskInstalled() ? 
 				props.isConnected == false ? 
 					checkIsInCorrectNetwork() ?  //Está conectado a la red correcta, con Metamaskt instalado y no conectado
-						<Flex w={"500px"} h={"250px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} alignItems={'center'} justifyContent={'center'}>
+						<Flex w={"500px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} alignItems={'center'} justifyContent={'center'}>
 							<Spacer/>
-							<Flex alignItems={'center'}>
+							<Flex alignItems={'center'} mt={"30px"}>
 								<Image h={'45px'} ml={{base: "16px", md: "0px"}} src={Logo} mr={"16px"}/>
 								<Heading fontSize={'5xl'} fontWeight={900} color={'black'}>Tickbit</Heading>
 							</Flex>
 							<Text fontSize="xl" color="gray.500" ml={"120px"}>
 								for business
 							</Text>
-							<Spacer/>
+							<Spacer mt={"46px"}/>
 							<MetamaskButton/>
 						</Flex>
 					: //Está conectado a la red INCORRECTA, con Metamaskt instalado y no conectado
-						<Flex w={"500px"} h={"300px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} alignItems={'center'} justifyContent={'center'}>
+						<Flex w={"500px"} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} alignItems={'center'} justifyContent={'center'}>
 							<Spacer/>
-							<Flex alignItems={'center'}>
+							<Flex alignItems={'center'} mt={"30px"}>
 								<Image h={'45px'} ml={{base: "16px", md: "0px"}} src={Logo} mr={"16px"}/>
 								<Heading fontSize={'5xl'} fontWeight={900} color={'black'}>Tickbit</Heading>
 							</Flex>
@@ -194,9 +157,9 @@ export default function LoginScreen({...props}) {
 								for business
 							</Text>
 							<Spacer/>
-							<Alert status='warning' bg={'rgb(254, 235, 200)'} mb={'16px'} color={"gray.700"}>
-								<AlertIcon color={'orange.500'}/>
-								Es necesario importar la red Mumbai Testnet de Polygon para usar Tickbit Business
+							<Alert flexDirection={{base: 'column', md: 'row'}} textAlign={{base: 'center', md: 'flex-start'}} status='warning' bg={'rgb(254, 235, 200)'} mb={'16px'} color={"gray.700"} mt={"46px"}>
+								<AlertIcon color={'orange.500'} mb={{base: "10px", md: "0px"}}/>
+								Es necesario usar la red Mumbai Testnet de Polygon para usar Tickbit Business
 							</Alert>
 							<Button
 								as="button"
@@ -214,8 +177,8 @@ export default function LoginScreen({...props}) {
 								overflow={"hidden"}
 							>
 								<Box d="flex" alignItems={"center"} justifyContent={"center"}>
-									<Image h="24px" w={"24px"} mr={{base: "0px", md: "12px"}} src={PolygonLogo}/>
-									<Text display={{base: "none", md: "flex"}} color={'black'} fontWeight={500}>Importar la red Mumbai Testnet</Text>
+									<Image h="24px" w={"24px"} mr={{base: "12px", md: "12px"}} src={PolygonLogo}/>
+									<Text /*display={{base: "none", md: "flex"}}*/ color={'black'} fontWeight={500}>Usar Mumbai Testnet</Text>
 								</Box>
 							</Button>
 						</Flex>
