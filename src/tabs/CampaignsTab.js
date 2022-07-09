@@ -5,7 +5,7 @@ import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
 import { setYear } from 'date-fns';
 import moment from 'moment';
-import { createCampaignOnBlockchain, getCampaignListFromBlockchain, getEventsListFromBlockchain, getMonthAndYearAbrebiation } from '../utils/funcionesComunes';
+import { createCampaignOnBlockchain, getCampaignListFromBlockchain, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getValueFromMonthAbreviation } from '../utils/funcionesComunes';
 import Colors from '../constants/Colors';
 
 export default function CampaingsTab({...props}) {
@@ -21,6 +21,10 @@ export default function CampaingsTab({...props}) {
 
     const [textoIntervalo, setTextoIntervalo] = useState();
     const [evento, setEvento] = useState();
+    const [initialDate, setInitialDate] = useState();
+    const [finalDate, setFinalDate] = useState();
+
+    const [loading, setLoading] = useState(false);
     
     
 
@@ -46,9 +50,10 @@ export default function CampaingsTab({...props}) {
             fechafinal = moment(fechainicial).add(6, 'days');    
             intervalos.push({"fechainicial" : fechainicial.format('YYYY-MM-DD') , "fechafinal" :fechafinal.format('YYYY-MM-DD')});
         }
-        setFechaPorDefecto(cutDate(intervalos[0].fechainicial )+ ' ' + cutDate(intervalos[0].fechafinal));
-
-        return intervalos
+        setTextoIntervalo(cutDate(intervalos[0].fechainicial )+ '-' + cutDate(intervalos[0].fechafinal));
+        setLoading(true);
+        
+        return intervalos;
         
         
     }
@@ -76,7 +81,7 @@ export default function CampaingsTab({...props}) {
         fetch('https://api.binance.com/api/v3/ticker/price?symbol=MATICEUR')
             .then(response => response.text())
             .then(data => {
-                console.log(JSON.parse(data).price)
+               
                 setEurToMatic(JSON.parse(data).price)
                 setIsPriceLoaded(true)
             })
@@ -90,7 +95,7 @@ export default function CampaingsTab({...props}) {
         fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHEUR')
             .then(response => response.text())
             .then(data => {
-                console.log(JSON.parse(data).price)
+               
                 setEurToEth(JSON.parse(data).price)
                 setIsPriceLoaded(true)
             })
@@ -100,13 +105,37 @@ export default function CampaingsTab({...props}) {
             });
     }
 
+    function textoIntervaloToTimestamps(value){
+        if(loading == false){
+            return
+        }
+        else{
+            var day = value.slice(0,2);
+            var month = getValueFromMonthAbreviation(value.slice(3,6))
+            var year = 20+""+value.slice(7,9);
+            var fechaInicialTimestamp = moment([year, month, day]).unix();
+          
+            var day2 = value.slice(10,12);
+            var month2 = getValueFromMonthAbreviation(value.slice(13,16))
+            var year2 = 20+""+value.slice(17,19);
+            var fechaFinalTimestamp = moment([year2, month2, day2]).unix();
+ 
+            setInitialDate(fechaInicialTimestamp);
+            setFinalDate(fechaFinalTimestamp);
+        }
+    }
 
     useEffect(() => {
         setIntervalos(getWeeksIntervals());
         getData();
         //getEurToMaticConversion()
         getEurToEthConversion()
+       
     }, []);
+
+    useEffect(() => {
+        textoIntervaloToTimestamps(textoIntervalo);
+    }, [textoIntervalo]);
 
     // 3 desplehables - numero de dias - 
 
@@ -117,7 +146,7 @@ export default function CampaingsTab({...props}) {
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
 
                 <Flex flex={1} alignItems={{base:'center',lg:'none'}} direction={{base:'column',lg:'row'}} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
-                    <Text fontSize="xl" fontWeight="700">{textoIntervalo == null ? fechaPorDefecto : textoIntervalo}</Text>
+                    <Text fontSize="xl" fontWeight="700">{textoIntervalo}</Text>
                     <Select ml={{base:'none', lg:'auto'}}  mt={{base:'2', lg:'none'}} w={250} onChange = {(e) => setTextoIntervalo(e.target.value)}>
                         {intervalos.length > 0 ? 
                                             intervalos.map((intervalo) => ( 
@@ -139,8 +168,8 @@ export default function CampaingsTab({...props}) {
                 </Flex>*/}
 
                 <Flex direction={{base: "column", lg: "row"}}>
-                    <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded}/>
-                    <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded}/>
+                    <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate}/>
+                    <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate}/>
                 </Flex>
 
             </Flex>
@@ -201,7 +230,7 @@ export function FrontPageCampaingCard({...props}){
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
-                        <Button mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() =>createCampaignOnBlockchain(1,1,123,321,1)}/>
+                        <Button  mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() =>createCampaignOnBlockchain(1,props.evento,props.initialDate,props.finalDate,parseFloat((1/props.eurToMatic) * eur_price))}/>
                     </Flex>
                 </Flex>
             </Flex>
@@ -212,6 +241,9 @@ export function FrontPageCampaingCard({...props}){
 
 export function OutstandingCampaingCard({...props}){
     const eur_price = 200;
+    const event = props.evento;
+    const initialDate = props.initialDate;
+    const finalDate = props.finalDate;
 
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -263,7 +295,9 @@ export function OutstandingCampaingCard({...props}){
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
-                        <Button mt={"16px"} text={"Comprar"} bg={"black"} onClick={async () => console.log(await getCampaignListFromBlockchain())}/>
+                        <Button mt={"16px"} text={"Comprar"} bg={"black"} onClick={() =>createCampaignOnBlockchain(2,event,initialDate,finalDate,parseFloat((1/props.eurToMatic) * eur_price))}/>
+                        {/*<Button onClick={async ()=> console.log(await getCampaignListFromBlockchain())}>Consulta</Button>*/}
+                        <Button onClick={()=> console.log(event)}>Consulta</Button>
                     </Flex>
                 </Flex>
             </Flex>

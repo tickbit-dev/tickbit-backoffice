@@ -82,6 +82,21 @@ export function getMonthAndYearAbrebiation(month, year){
     }
 }
 
+export function getValueFromMonthAbreviation(month){
+    if(month == 'Ene') return 0;
+    else if(month == 'Feb') return 1;
+    else if(month == 'Mar') return 2;
+    else if(month == 'Abr') return 3;
+    else if(month == 'May') return 4;
+    else if(month == 'Jun') return 5;
+    else if(month == 'Jul') return 6;
+    else if(month == 'Ago') return 7;
+    else if(month == 'Sep') return 8;
+    else if(month == 'Oct') return 9;
+    else if(month == 'Nov') return 10;
+    else if(month == 'Dic') return 11;
+}
+
 export function dateValidation(date){
     if (!date){
         return false;
@@ -672,7 +687,7 @@ export async function createCampaignOnBlockchain(idType, eventId,  initialDate, 
     /* user will be prompted to pay the asking proces to complete the transaction */
     try{
         const finalprice = ethers.utils.parseUnits(price.toString(), 'ether')
-        const transaction = await contract.createCampaign(idType,  eventId,  initialDate,  finalDate, {value: finalprice});
+        const transaction = await contract.createCampaign(idType,  eventId,  initialDate,  finalDate, finalprice, {value: finalprice});
         await transaction.wait()
 
         return transaction;
