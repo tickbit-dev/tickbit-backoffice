@@ -5,7 +5,8 @@ import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from '
 import '../table.css'
 import { useNavigate, useParams } from 'react-router-dom';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 4;
+const FILLING_SIZE = 72;
 
 export default function EventsTable({...props}) {
     const [items, setItems] = useState(props.items ?? getEventsListFromTest());
@@ -100,7 +101,7 @@ export default function EventsTable({...props}) {
                         </Tr>
                     ))}
                     {emptyItems > 0 && (
-                        <Tr style={{ height: 71 * emptyItems }}>
+                        <Tr style={{ height: FILLING_SIZE * emptyItems }}>
                             <Td colSpan={6}/>
                         </Tr>
                     )}

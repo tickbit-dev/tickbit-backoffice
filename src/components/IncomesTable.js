@@ -5,6 +5,7 @@ import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from '
 import '../table.css'
 
 const ITEMS_PER_PAGE = 6;
+const FILLING_SIZE = 53;
 
 export default function IncomesTable({...props}) {
     const [items, setItems] = useState(props.items ?? getEventsListFromTest());
@@ -68,7 +69,7 @@ export default function IncomesTable({...props}) {
                         </Tr>
                     ))}
                     {emptyItems > 0 && (
-                        <Tr style={{ height: 71 * emptyItems }}>
+                        <Tr style={{ height: FILLING_SIZE * emptyItems }}>
                             <Td colSpan={6}/>
                         </Tr>
                     )}

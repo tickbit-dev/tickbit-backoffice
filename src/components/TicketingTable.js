@@ -5,6 +5,7 @@ import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipb
 import '../table.css'
 
 const ITEMS_PER_PAGE = 6;
+const FILLING_SIZE = 59;
 
 export default function TicketingTable({...props}) {
     const [items, setItems] = useState(props.items ?? getTicketsListFromTest());
@@ -163,7 +164,7 @@ export default function TicketingTable({...props}) {
                         </Tr>
                     ))}
                     {emptyItems > 0 && (
-                        <Tr style={{ height: 71 * emptyItems }}>
+                        <Tr style={{ height: FILLING_SIZE * emptyItems }}>
                             <Td colSpan={6}/>
                         </Tr>
                     )}
