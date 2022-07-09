@@ -795,7 +795,7 @@ export function DeleteButton({...props}) {
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
-                    <Text>Los cambios están siendo registrados en la blockchain.</Text>
+                    <Text>Los cambios están siendo registrados en la blockchain. Esta acción puede tardar un poco...</Text>
                 </ModalBody>
 
                 {/*<ModalFooter>
@@ -873,7 +873,7 @@ export function RestoreButton({...props}) {
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
-                    <Text>Los cambios están siendo registrados en la blockchain.</Text>
+                    <Text>Los cambios están siendo registrados en la blockchain. Esta acción puede tardar un poco...</Text>
                 </ModalBody>
 
                 {/*<ModalFooter>
@@ -920,7 +920,7 @@ export function ModifyButton({...props}) {
                 </ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
-                    <Text>Los cambios están siendo registrados en la blockchain.</Text>
+                    <Text>Los cambios están siendo registrados en la blockchain. Esta acción puede tardar un poco...</Text>
                 </ModalBody>
 
                 {/*<ModalFooter>
