@@ -7,6 +7,7 @@ import { setYear } from 'date-fns';
 import moment from 'moment';
 import { createCampaignOnBlockchain, getCampaignListFromBlockchain, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getValueFromMonthAbreviation } from '../utils/funcionesComunes';
 import Colors from '../constants/Colors';
+import CampaignsTable from '../components/CampaignsTable';
 
 export default function CampaingsTab({...props}) {
 
@@ -14,6 +15,7 @@ export default function CampaingsTab({...props}) {
     const [intervalos, setIntervalos] = useState([]);
     const [currentAddress, setCurrentAddress] = useState("");
     const [items, setItems] = useState([]);
+    const [campaigns, setCampaigns] = useState([]);
     const [fechaPorDefecto, setFechaPorDefecto] = useState("");
 
     const [eurToMatic, setEurToMatic] = useState(0);
@@ -25,6 +27,7 @@ export default function CampaingsTab({...props}) {
     const [finalDate, setFinalDate] = useState();
 
     const [loading, setLoading] = useState(false);
+    
     
     
 
@@ -69,10 +72,12 @@ export default function CampaingsTab({...props}) {
     
     async function getData(){
         var items_list = [];
+        var campaigns_list = [];
 
         items_list = await getEventsListFromBlockchain();
-
+        campaigns_list = await getCampaignListFromBlockchain();
         setItems(items_list)
+        setCampaigns(campaigns_list);
         
         
     }
@@ -130,7 +135,7 @@ export default function CampaingsTab({...props}) {
         getData();
         //getEurToMaticConversion()
         getEurToEthConversion()
-       
+          
     }, []);
 
     useEffect(() => {
@@ -171,14 +176,20 @@ export default function CampaingsTab({...props}) {
                     <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate}/>
                     <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate}/>
                 </Flex>
-
+                <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}> 
+                       <CampaignsTable items={campaigns}/>
+                </Flex>
             </Flex>
+      
         </Flex>
     );
 };
 
 export function FrontPageCampaingCard({...props}){
-    const eur_price = 700;
+    const eur_price = 0.02;
+    const event = props.evento;
+    const initialDate = props.initialDate;
+    const finalDate = props.finalDate;
 
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -230,7 +241,7 @@ export function FrontPageCampaingCard({...props}){
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
-                        <Button  mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() =>createCampaignOnBlockchain(1,props.evento,props.initialDate,props.finalDate,parseFloat((1/props.eurToMatic) * eur_price))}/>
+                        <Button  mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() =>createCampaignOnBlockchain(1,event,initialDate,finalDate,parseFloat((1/props.eurToMatic) * eur_price))}/>
                     </Flex>
                 </Flex>
             </Flex>
@@ -240,7 +251,7 @@ export function FrontPageCampaingCard({...props}){
 
 
 export function OutstandingCampaingCard({...props}){
-    const eur_price = 200;
+    const eur_price = 0.01;
     const event = props.evento;
     const initialDate = props.initialDate;
     const finalDate = props.finalDate;
@@ -296,8 +307,7 @@ export function OutstandingCampaingCard({...props}){
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
                         <Button mt={"16px"} text={"Comprar"} bg={"black"} onClick={() =>createCampaignOnBlockchain(2,event,initialDate,finalDate,parseFloat((1/props.eurToMatic) * eur_price))}/>
-                        {/*<Button onClick={async ()=> console.log(await getCampaignListFromBlockchain())}>Consulta</Button>*/}
-                        <Button onClick={()=> console.log(event)}>Consulta</Button>
+                    
                     </Flex>
                 </Flex>
             </Flex>

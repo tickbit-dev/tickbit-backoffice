@@ -674,6 +674,11 @@ export async function createTicketOnBlockchain(){
     await transaction.wait()
 }
 
+////// CAMPAIGNS
+
+function newCampaign(_owner, _id, idType, eventId,  initialDate,  finalDate,  price) {
+    return { _owner, _id, idType, eventId, initialDate, finalDate, price };
+}
 
 export async function createCampaignOnBlockchain(idType, eventId,  initialDate,  finalDate,  price){
     const web3Modal = new Web3Modal()
@@ -720,7 +725,7 @@ export async function getCampaignListFromBlockchain(){
 
      for(let item of item_data){
         itemsArray.push(
-            newTicket(
+            newCampaign(
                 item[0], item[1].toNumber(), item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(),BigNumber.from(item[6]), 
             )
         );
