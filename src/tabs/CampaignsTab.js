@@ -5,7 +5,7 @@ import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
 import { setYear } from 'date-fns';
 import moment from 'moment';
-import { getEventsListFromBlockchain, getMonthAndYearAbrebiation } from '../utils/funcionesComunes';
+import { createCampaignOnBlockchain, getCampaignListFromBlockchain, getEventsListFromBlockchain, getMonthAndYearAbrebiation } from '../utils/funcionesComunes';
 import Colors from '../constants/Colors';
 
 export default function CampaingsTab({...props}) {
@@ -17,6 +17,7 @@ export default function CampaingsTab({...props}) {
     const [fechaPorDefecto, setFechaPorDefecto] = useState("");
 
     const [eurToMatic, setEurToMatic] = useState(0);
+    const [eurToEth, setEurToEth] = useState(0);
 
     const [textoIntervalo, setTextoIntervalo] = useState();
     const [evento, setEvento] = useState();
@@ -85,10 +86,26 @@ export default function CampaingsTab({...props}) {
             });
     }
 
+    function getEurToEthConversion(){
+        fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHEUR')
+            .then(response => response.text())
+            .then(data => {
+                console.log(JSON.parse(data).price)
+                setEurToEth(JSON.parse(data).price)
+                setIsPriceLoaded(true)
+            })
+            .catch(error => {
+                // handle the error
+                console.log(error)
+            });
+    }
+
+
     useEffect(() => {
         setIntervalos(getWeeksIntervals());
         getData();
-        getEurToMaticConversion()
+        //getEurToMaticConversion()
+        getEurToEthConversion()
     }, []);
 
     // 3 desplehables - numero de dias - 
@@ -122,8 +139,8 @@ export default function CampaingsTab({...props}) {
                 </Flex>*/}
 
                 <Flex direction={{base: "column", lg: "row"}}>
-                    <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToMatic} isLoaded={isPriceLoaded}/>
-                    <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToMatic} isLoaded={isPriceLoaded}/>
+                    <FrontPageCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded}/>
+                    <OutstandingCampaingCard mr={{base: "0px", lg: "8px"}} eurToMatic={eurToEth} isLoaded={isPriceLoaded}/>
                 </Flex>
 
             </Flex>
@@ -162,7 +179,8 @@ export function FrontPageCampaingCard({...props}){
                             </Flex>
                             <Skeleton isLoaded={props.isLoaded} mt={'-10px'}>
                                 <Text fontSize="xl" color="gray.500" textAlign={"center"}>
-                                    {"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"}
+                                    {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                    {"≈ " + String(parseFloat((1/props.eurToMatic) * eur_price)).replace('.', ',') + " ETH"}
                                 </Text>
                             </Skeleton>
                         </Flex>
@@ -183,7 +201,7 @@ export function FrontPageCampaingCard({...props}){
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
-                        <Button mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"}/>
+                        <Button mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() =>createCampaignOnBlockchain(1,1,123,321,1)}/>
                     </Flex>
                 </Flex>
             </Flex>
@@ -223,7 +241,8 @@ export function OutstandingCampaingCard({...props}){
                             </Flex>
                             <Skeleton isLoaded={props.isLoaded} mt={'-10px'}>
                                 <Text fontSize="xl" color="gray.500" textAlign={"center"}>
-                                    {"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"}
+                                     {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                     {"≈ " + String(parseFloat((1/props.eurToMatic) * eur_price)).replace('.', ',') + " ETH"}
                                 </Text>
                             </Skeleton>
                         </Flex>
@@ -244,7 +263,7 @@ export function OutstandingCampaingCard({...props}){
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
-                        <Button mt={"16px"} text={"Comprar"} bg={"black"}/>
+                        <Button mt={"16px"} text={"Comprar"} bg={"black"} onClick={async () => console.log(await getCampaignListFromBlockchain())}/>
                     </Flex>
                 </Flex>
             </Flex>

@@ -658,3 +658,58 @@ export async function createTicketOnBlockchain(){
 
     await transaction.wait()
 }
+
+
+export async function createCampaignOnBlockchain(idType, eventId,  initialDate,  finalDate,  price){
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+    /* global BigInt */
+    //var finalprice = BigInt(price * 1000000000000000000);
+    
+    /* user will be prompted to pay the asking proces to complete the transaction */
+    try{
+        const finalprice = ethers.utils.parseUnits(price.toString(), 'ether')
+        const transaction = await contract.createCampaign(idType,  eventId,  initialDate,  finalDate, {value: finalprice});
+        await transaction.wait()
+
+        return transaction;
+    } catch(error){
+        console.log(error);
+    }
+}
+
+export async function getCampaignListFromBlockchain(){
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+  
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
+    const data = await contract.readCampaigns();
+    const item_data = await Promise.all(data);
+
+    let itemsArray = [];
+
+    /*
+    [0] address _owner;
+    [1] uint _id;
+    [2] uint idType;
+    [3] uint256 eventId;
+    [4] uint256 initialDate;
+    [5] uint256 finalDate;
+    [6] uint price;
+    */
+
+     for(let item of item_data){
+        itemsArray.push(
+            newTicket(
+                item[0], item[1].toNumber(), item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(),BigNumber.from(item[6]), 
+            )
+        );
+    }
+
+    return itemsArray.reverse();
+}
