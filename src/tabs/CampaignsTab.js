@@ -127,6 +127,11 @@ export default function CampaingsTab({ ...props }) {
 
             setInitialDate(fechaInicialTimestamp);
             setFinalDate(fechaFinalTimestamp);
+            if (campaigns.length != 0) {
+                setAvailabilityPortada(fechaInicialTimestamp);
+                setAvailabilityDestacado(fechaInicialTimestamp);
+            }
+
 
 
         }
@@ -164,16 +169,16 @@ export default function CampaingsTab({ ...props }) {
 
     }, []);
 
+
+
     useEffect(() => {
         if (campaigns.length != 0) {
             setAvailabilityPortada(initialDate);
             setAvailabilityDestacado(initialDate);
         }
-    }, [campaigns]);
-
-    useEffect(() => {
         textoIntervaloToTimestamps(textoIntervalo);
-    }, [textoIntervalo]);
+
+    }, [textoIntervalo, campaigns]);
 
 
 
@@ -259,7 +264,7 @@ export function FrontPageCampaingCard({ ...props }) {
                         </Flex>
                         <Flex w={'fit-content'} bg={'#dcf7fc'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
                             <Text fontSize="sm" color={Colors.primary.lightblue}>
-                                {'Quedan' + ' ' + props.availability + ' ' + 'disponibles'}
+                                {props.availability == 1 ? 'Queda' + ' ' + props.availability + ' ' + 'disponible' : 'Quedan' + ' ' + props.availability + ' ' + 'disponibles'}
                             </Text>
                         </Flex>
                     </Flex>
@@ -274,7 +279,7 @@ export function FrontPageCampaingCard({ ...props }) {
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
-                        <Button mt={"16px"} text={"Comprar"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
+                        <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} mt={"16px"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
                     </Flex>
                 </Flex>
             </Flex>
@@ -324,7 +329,7 @@ export function OutstandingCampaingCard({ ...props }) {
                         </Flex>
                         <Flex w={'fit-content'} bg={'gray.50'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
                             <Text fontSize="sm" color={'gray.600'}>
-                                Quedan 15 disponibles
+                                {props.availability == 1 ? 'Queda' + ' ' + props.availability + ' ' + 'disponible' : 'Quedan' + ' ' + props.availability + ' ' + 'disponibles'}
                             </Text>
                         </Flex>
                     </Flex>
@@ -339,7 +344,7 @@ export function OutstandingCampaingCard({ ...props }) {
                             </Text>
                         </Flex>*/}
                         <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
-                        <Button mt={"16px"} text={"Comprar"} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
+                        <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} mt={"16px"} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
 
                     </Flex>
                 </Flex>
