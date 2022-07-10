@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Flex, Box, Text, HStack, Input, Select, Skeleton, Stack, SlideFade } from '@chakra-ui/react';
+import { useState, useEffect, useRef } from 'react';
+import { Flex, Box, Text, HStack, Input, Select, Skeleton, Stack, SlideFade, Modal, ModalOverlay, ModalContent, ModalHeader, Spinner, ModalCloseButton, ModalBody, useDisclosure, useToast } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
@@ -9,6 +9,7 @@ import { createCampaignOnBlockchain, getCampaignById, getCampaignListFromBlockch
 import Colors from '../constants/Colors';
 import CampaignsTable from '../components/CampaignsTable';
 import { FiInfo } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 export default function CampaingsTab({ ...props }) {
 
@@ -33,6 +34,10 @@ export default function CampaingsTab({ ...props }) {
     const [availableDestacadosCount, setAvailableDestacadosCount] = useState(0);
 
     const [isDataLoaded, setIsDataLoaded] = useState(null);
+    const [isLoadingCreateCampaign, setIsLoadingCreateCampaign] = useState(false);
+
+    const toast = useToast();
+    const navigate = useNavigate();
 
     function getWeeksIntervals() {
         var fechaactual = new Date();
@@ -170,6 +175,40 @@ export default function CampaingsTab({ ...props }) {
 
     }, []);
 
+    async function createCampaign(idTypeAux, eventIdAux,  initialDateAux,  finalDateAux, priceAux){
+        //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+
+        const transaction = await createCampaignOnBlockchain(idTypeAux, eventIdAux,  initialDateAux,  finalDateAux, priceAux);
+    
+        if(transaction == null){
+            //Le decimos que cierre el loader
+            setIsLoadingCreateCampaign(false)
+            //Enseñamos un toast de error
+            toast({
+                title: 'Error al crear la campaña',
+                description: "No se ha podido crear la campaña debido a un error.",
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+        } else {
+            //Le decimos que cierre el loader
+            setIsLoadingCreateCampaign(false)
+            //Enseñamos un toast de éxito
+            toast({
+                title: 'Campaña creada correctamente',
+                description: "Se ha creado la campaña de " + getCampaignById(idTypeAux).name + ".",
+                status: 'success',
+                duration: 4000,
+                isClosable: true,
+            })
+            //Redirigimos al home
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+    }
+
     useEffect(() => {
         if (campaigns.length != 0) {
             setAvailabilityPortada(initialDate);
@@ -207,8 +246,32 @@ export default function CampaingsTab({ ...props }) {
                 </Flex>
 
                 <Flex direction={{ base: "column", lg: "row" }}>
-                    <FrontPageCampaingCard pr={{ base: "0px", lg: "8px" }} eurToMatic={eurToEth} isLoaded={isPriceLoaded} isDataLoaded={isDataLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate} availability={availablePortadaCount} />
-                    <OutstandingCampaingCard pl={{ base: "0px", lg: "8px" }} eurToMatic={eurToEth} isLoaded={isPriceLoaded} isDataLoaded={isDataLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate} availability={availableDestacadosCount} />
+                    <FrontPageCampaingCard
+                        pr={{ base: "0px", lg: "8px" }}
+                        isLoadingCreateCampaign={isLoadingCreateCampaign}
+                        createCampaignOnBlockchain={(idType, eventId,  initialDate,  finalDate,  price) => createCampaign(idType, eventId,  initialDate,  finalDate, price)}
+                        setIsLoadingCreateCampaign={(value) => setIsLoadingCreateCampaign(value)}
+                        eurConversion={eurToEth}
+                        isLoaded={isPriceLoaded}
+                        isDataLoaded={isDataLoaded}
+                        evento={evento}
+                        initialDate={initialDate}
+                        finalDate={finalDate}
+                        availability={availablePortadaCount} 
+                    />
+                    <OutstandingCampaingCard
+                        pl={{ base: "0px", lg: "8px" }}
+                        isLoadingCreateCampaign={isLoadingCreateCampaign}
+                        createCampaignOnBlockchain={(idType, eventId,  initialDate,  finalDate,  price) => createCampaign(idType, eventId,  initialDate,  finalDate, price)}
+                        setIsLoadingCreateCampaign={(value) => setIsLoadingCreateCampaign(value)}
+                        isLoaded={isPriceLoaded}
+                        isDataLoaded={isDataLoaded}
+                        evento={evento}
+                        initialDate={initialDate}
+                        finalDate={finalDate}
+                        eurConversion={eurToEth}
+                        availability={availableDestacadosCount}
+                    />
                 </Flex>
 
                 {!isDataLoaded ?
@@ -225,7 +288,7 @@ export default function CampaingsTab({ ...props }) {
                 :
                     <SlideFade in={isDataLoaded}> 
                         <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                            <CampaignsTable items={campaigns} />
+                            <CampaignsTable items={campaigns}/>
                         </Flex>
                     </SlideFade> 
                 }
@@ -270,8 +333,8 @@ export function FrontPageCampaingCard({ ...props }) {
                                 </Flex>
                                 <Skeleton isLoaded={props.isDataLoaded && props.isLoaded} mt={'-10px'}>
                                     <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
-                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                        {"≈ " + String(parseFloat((1 / props.eurToMatic) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
+                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurConversion) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
                                     </Text>
                                 </Skeleton>
                             </Flex>
@@ -295,7 +358,15 @@ export function FrontPageCampaingCard({ ...props }) {
                             </Flex>*/}
                             <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
                             <Skeleton w={'full'} isLoaded={props.isDataLoaded && props.isLoaded} mt={"16px"}>
-                                <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
+                                {/*<Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))} />*/}
+                                <CreateButton
+                                    type={1}
+                                    evento={event}
+                                    availability={props.availability}
+                                    onClick={() => props.createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))}
+                                    isLoading={props.isLoadingCreateCampaign}
+                                    setIsLoading={(value) => props.setIsLoadingCreateCampaign(value)}
+                                />
                             </Skeleton>
                         </Flex>
                     </Flex>
@@ -341,8 +412,8 @@ export function OutstandingCampaingCard({ ...props }) {
                                 </Flex>
                                 <Skeleton isLoaded={props.isDataLoaded && props.isLoaded} mt={'-10px'}>
                                     <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
-                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                        {"≈ " + String(parseFloat((1 / props.eurToMatic) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
+                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurConversion) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
                                     </Text>
                                 </Skeleton>
                             </Flex>
@@ -367,7 +438,15 @@ export function OutstandingCampaingCard({ ...props }) {
                             <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
                             
                             <Skeleton w={'full'} isLoaded={props.isDataLoaded && props.isLoaded} mt={"16px"}>
-                                <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
+                                {/*<Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))} />*/}
+                                <CreateButton
+                                    type={2}
+                                    evento={event}
+                                    availability={props.availability}
+                                    onClick={() => props.createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))}
+                                    isLoading={props.isLoadingCreateCampaign}
+                                    setIsLoading={(value) => props.setIsLoadingCreateCampaign(value)}
+                                />
                             </Skeleton>
 
                         </Flex>
@@ -375,5 +454,59 @@ export function OutstandingCampaingCard({ ...props }) {
                 </Flex>
             </Flex>
         </Flex>
+    )
+}
+
+export function CreateButton({...props}) {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+    const cancelRef = useRef()
+    const toast = useToast();
+
+    useEffect(() => {
+        if(props.isLoading == false){
+            onClose()
+        }
+    }, [props.isLoading]);
+
+    function showToast(){
+        toast({
+            title: 'Selecciona un evento al que promocionar',
+            description: "Si aún no has creado ningún evento crea uno antes.",
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        })
+    }
+
+    return (
+        <>
+            <Button
+                disabled={props.availability == 0 ? true : false}
+                text={props.availability == 0 ? 'Agotado' : 'Comprar'}
+                bg={props.type == 1 ? "#69c5d6" : "black"}
+                bghover={props.type == 1 ? "#76d3e3" : undefined}
+                onClick={props.availability != 0 ? props.evento == null ? () => {showToast()} : () => {onOpen(); props.onClick(); props.setIsLoading(true)} : () => null}
+            />
+
+            <Modal motionPreset='slideInBottom' closeOnEsc={false} closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                <ModalHeader>
+                    <Flex alignItems={"center"}>
+                        <Spinner size='xs' mr={'16px'}/>
+                        <Text>Espera un momento, por favor...</Text>
+                    </Flex>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                    <Text>El evento se está registrando en la blockchain. Esto puede tardar varios minutos...</Text>
+                </ModalBody>
+
+                {/*<ModalFooter>
+                    
+                </ModalFooter>*/}
+                </ModalContent>
+            </Modal>
+        </>
     )
 }
