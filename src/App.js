@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from './HomePage';
 import EventsTab from './tabs/EventsTab';
 import Ticketing from './tabs/TicketingTab';
-import IncomesTab from './tabs/IncomesTab';
+import IncomesTab from './tabs/IncomesTabOwner';
 import CampaingsTab from './tabs/CampaignsTab';
 import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab2';
 import HelpTab from './tabs/HelpTab';
