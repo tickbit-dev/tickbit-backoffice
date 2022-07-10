@@ -9,7 +9,7 @@ import EventsTab from './tabs/EventsTab';
 import Ticketing from './tabs/TicketingTab';
 import IncomesTab from './tabs/IncomesTabOwner';
 import CampaingsTab from './tabs/CampaignsTab';
-import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab2';
+import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab';
 import HelpTab from './tabs/HelpTab';
 import LoginScreen from './LoginScreen';
 
@@ -45,13 +45,13 @@ export default function App({...props}) {
 
 	useEffect(() => {
 		checkConnection();
-		setTimeout(() => {
+		/*setTimeout(() => {
 			if(!window.ethereum._state.initialized){
 				window.location.reload();
 			} else{
 				setIsCheckedMetamask(true)
 			}
-		}, 100);
+		}, 100);*/
 	}, []);
 
 	return (
