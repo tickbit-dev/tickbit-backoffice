@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, HStack, Input, Select, Skeleton, Stack } from '@chakra-ui/react';
+import { Flex, Box, Text, HStack, Input, Select, Skeleton, Stack, SlideFade } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
 import { setYear } from 'date-fns';
 import moment from 'moment';
-import { createCampaignOnBlockchain, getCampaignListFromBlockchain, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getValueFromMonthAbreviation } from '../utils/funcionesComunes';
+import { createCampaignOnBlockchain, getCampaignById, getCampaignListFromBlockchain, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getValueFromMonthAbreviation } from '../utils/funcionesComunes';
 import Colors from '../constants/Colors';
 import CampaignsTable from '../components/CampaignsTable';
+import { FiInfo } from 'react-icons/fi';
 
 export default function CampaingsTab({ ...props }) {
 
@@ -31,7 +32,7 @@ export default function CampaingsTab({ ...props }) {
     const [availablePortadaCount, setAvailablePortadaCount] = useState(0);
     const [availableDestacadosCount, setAvailableDestacadosCount] = useState(0);
 
-
+    const [isDataLoaded, setIsDataLoaded] = useState(null);
 
     function getWeeksIntervals() {
         var fechaactual = new Date();
@@ -59,8 +60,6 @@ export default function CampaingsTab({ ...props }) {
         setLoading(true);
 
         return intervalos;
-
-
     }
 
     function cutDate(date) {
@@ -78,8 +77,10 @@ export default function CampaingsTab({ ...props }) {
 
         items_list = await getEventsListFromBlockchain();
         campaigns_list = await getCampaignListFromBlockchain();
+
         setItems(items_list)
         setCampaigns(campaigns_list);
+        setIsDataLoaded(true);
     }
 
     function getEurToMaticConversion() {
@@ -169,19 +170,18 @@ export default function CampaingsTab({ ...props }) {
 
     }, []);
 
-
-
     useEffect(() => {
         if (campaigns.length != 0) {
             setAvailabilityPortada(initialDate);
             setAvailabilityDestacado(initialDate);
         }
+    }, [campaigns]);
+
+    useEffect(() => {
         textoIntervaloToTimestamps(textoIntervalo);
-
-    }, [textoIntervalo, campaigns]);
-
-
-
+        setAvailabilityPortada(initialDate);
+        setAvailabilityDestacado(initialDate);
+    }, [textoIntervalo]);
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>
@@ -206,17 +206,29 @@ export default function CampaingsTab({ ...props }) {
                     </Select>
                 </Flex>
 
-                {/*<Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
-                    <Text fontSize="xl" fontWeight="700">El Nano Tour</Text>
-                </Flex>*/}
-
                 <Flex direction={{ base: "column", lg: "row" }}>
-                    <FrontPageCampaingCard mr={{ base: "0px", lg: "8px" }} eurToMatic={eurToEth} isLoaded={isPriceLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate} availability={availablePortadaCount} />
-                    <OutstandingCampaingCard mr={{ base: "0px", lg: "8px" }} eurToMatic={eurToEth} isLoaded={isPriceLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate} availability={availableDestacadosCount} />
+                    <FrontPageCampaingCard pr={{ base: "0px", lg: "8px" }} eurToMatic={eurToEth} isLoaded={isPriceLoaded} isDataLoaded={isDataLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate} availability={availablePortadaCount} />
+                    <OutstandingCampaingCard pl={{ base: "0px", lg: "8px" }} eurToMatic={eurToEth} isLoaded={isPriceLoaded} isDataLoaded={isDataLoaded} evento={evento} initialDate={initialDate} finalDate={finalDate} availability={availableDestacadosCount} />
                 </Flex>
-                <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                    <CampaignsTable items={campaigns} />
-                </Flex>
+
+                {!isDataLoaded ?
+                    <Skeleton isLoaded={isDataLoaded} mt={'16px'}>
+                        <Flex minW={'full'} minH={'60px'}/>
+                    </Skeleton>
+                : campaigns.length == 0 ?
+                    <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={"16px"}>    
+                        <Flex p={4} alignItems={"center"}>
+                            <FiInfo/>
+                            <Text ml={"10px"}>Todavía no se ha creado ninguna campaña.</Text>
+                        </Flex>
+                    </Flex>
+                :
+                    <SlideFade in={isDataLoaded}> 
+                        <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
+                            <CampaignsTable items={campaigns} />
+                        </Flex>
+                    </SlideFade> 
+                }
             </Flex>
 
         </Flex>
@@ -224,7 +236,7 @@ export default function CampaingsTab({ ...props }) {
 };
 
 export function FrontPageCampaingCard({ ...props }) {
-    const eur_price = 700;
+    const eur_price = getCampaignById(1).price;
     const event = props.evento;
     const initialDate = props.initialDate;
     const finalDate = props.finalDate;
@@ -234,52 +246,58 @@ export function FrontPageCampaingCard({ ...props }) {
     }
 
     return (
-        <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={{ base: "16px", lg: "0px" }} {...props}>
-            <Flex flex={1} direction={'column'} borderRadius={'10px'} mt={"16px"} borderWidth={'1px'} bg={'white'} overflow={"hidden"}>
-                <Flex flex={1} direction={"column"} alignItems={"center"}>
-                    <Flex bg={'#dcf7fc'} px={"16px"} h={"35px"} alignItems={"center"} justifyContent={"center"} position={'absolute'} mt={"-17.5px"} borderRadius={"10px"}>
-                        <Text fontSize="md" fontWeight={800} color={"#69c5d6"}>
-                            PORTADA
-                        </Text>
-                    </Flex>
-                    <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
-                        {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
-                            Máxima puja actual
-                        </Text>*/}
-                        <Flex direction={'column'} alignItems={"center"}>
-                            <Flex alignItems={'center'}>
-                                <Text fontSize="5xl" fontWeight="900">
-                                    {eur_price}
-                                </Text>
-                                <Text fontSize="xl" ml={"4px"}>
-                                    €
-                                </Text>
+        <Flex flex={1} pr={props.pr}>
+            <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={{ base: "16px", lg: "0px" }}>
+                <Flex flex={1} direction={'column'} borderRadius={'10px'} mt={"16px"} borderWidth={'1px'} bg={'white'} overflow={"hidden"}>
+                    <Flex flex={1} direction={"column"} alignItems={"center"}>
+                        <Flex bg={'#dcf7fc'} px={"16px"} h={"35px"} alignItems={"center"} justifyContent={"center"} position={'absolute'} mt={"-17.5px"} borderRadius={"10px"}>
+                            <Text fontSize="md" fontWeight={800} color={"#69c5d6"}>
+                                {getCampaignById(1).name}
+                            </Text>
+                        </Flex>
+                        <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
+                            {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
+                                Máxima puja actual
+                            </Text>*/}
+                            <Flex direction={'column'} alignItems={"center"}>
+                                <Flex alignItems={'center'}>
+                                    <Text fontSize="5xl" fontWeight="900">
+                                        {eur_price}
+                                    </Text>
+                                    <Text fontSize="xl" ml={"4px"}>
+                                        €
+                                    </Text>
+                                </Flex>
+                                <Skeleton isLoaded={props.isDataLoaded && props.isLoaded} mt={'-10px'}>
+                                    <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
+                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                        {"≈ " + String(parseFloat((1 / props.eurToMatic) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
+                                    </Text>
+                                </Skeleton>
                             </Flex>
-                            <Skeleton isLoaded={props.isLoaded} mt={'-10px'}>
-                                <Text fontSize="xl" color="gray.500" textAlign={"center"}>
-                                    {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                    {"≈ " + String(parseFloat((1 / props.eurToMatic) * eur_price)).replace('.', ',') + " ETH"}
-                                </Text>
+                            <Skeleton isLoaded={props.isDataLoaded && props.isLoaded} mt={'16px'} mb={'16px'}>
+                                <Flex w={'fit-content'} bg={'#dcf7fc'} borderRadius={"10px"} px={'16px'} py={'4px'}>
+                                    <Text fontSize="sm" color={Colors.primary.lightblue}>
+                                        {props.availability == 1 ? 'Queda' + ' ' + props.availability + ' ' + 'disponible' : 'Quedan' + ' ' + props.availability + ' ' + 'disponibles'}
+                                    </Text>
+                                </Flex>
                             </Skeleton>
                         </Flex>
-                        <Flex w={'fit-content'} bg={'#dcf7fc'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
-                            <Text fontSize="sm" color={Colors.primary.lightblue}>
-                                {props.availability == 1 ? 'Queda' + ' ' + props.availability + ' ' + 'disponible' : 'Quedan' + ' ' + props.availability + ' ' + 'disponibles'}
-                            </Text>
+                        <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
+                            {/*<Flex flex={1} w={"100%"} alignItems="center">
+                                <Input bg={'white'} placeholder={"1.3eth"} textAlign={'center'}/>
+                                <Text fontSize="xl" color="gray.500" ml={"16px"}>
+                                    ≈
+                                </Text>
+                                <Text fontSize="xl" color="gray.500" ml={"6px"} mr={"16px"}>
+                                    1.300$
+                                </Text>
+                            </Flex>*/}
+                            <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
+                            <Skeleton w={'full'} isLoaded={props.isDataLoaded && props.isLoaded} mt={"16px"}>
+                                <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
+                            </Skeleton>
                         </Flex>
-                    </Flex>
-                    <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
-                        {/*<Flex flex={1} w={"100%"} alignItems="center">
-                            <Input bg={'white'} placeholder={"1.3eth"} textAlign={'center'}/>
-                            <Text fontSize="xl" color="gray.500" ml={"16px"}>
-                                ≈
-                            </Text>
-                            <Text fontSize="xl" color="gray.500" ml={"6px"} mr={"16px"}>
-                                1.300$
-                            </Text>
-                        </Flex>*/}
-                        <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
-                        <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} mt={"16px"} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
                     </Flex>
                 </Flex>
             </Flex>
@@ -289,7 +307,7 @@ export function FrontPageCampaingCard({ ...props }) {
 
 
 export function OutstandingCampaingCard({ ...props }) {
-    const eur_price = 200;
+    const eur_price = getCampaignById(2).price;
     const event = props.evento;
     const initialDate = props.initialDate;
     const finalDate = props.finalDate;
@@ -299,53 +317,60 @@ export function OutstandingCampaingCard({ ...props }) {
     }
 
     return (
-        <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} {...props}>
-            <Flex flex={1} direction={'column'} borderRadius={'10px'} mt={"16px"} borderWidth={'1px'} bg={'white'} overflow={"hidden"}>
-                <Flex flex={1} direction={"column"} alignItems={"center"}>
-                    <Flex bg={"gray.100"} px={"16px"} h={"35px"} alignItems={"center"} justifyContent={"center"} position={'absolute'} mt={"-17.5px"} borderRadius={"10px"}>
-                        <Text fontSize="md" fontWeight={800} color={"gray.600"}>
-                            DESTACADO
-                        </Text>
-                    </Flex>
-                    <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
-                        {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
-                            Máxima puja actual
-                        </Text>*/}
-                        <Flex direction={'column'} alignItems={"center"}>
-                            <Flex alignItems={'center'}>
-                                <Text fontSize="5xl" fontWeight="900">
-                                    {eur_price}
-                                </Text>
-                                <Text fontSize="xl" ml={"4px"}>
-                                    €
-                                </Text>
+        <Flex flex={1} pr={props.pr}>
+            <Flex flex={1} direction={'column'} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'}>
+                <Flex flex={1} direction={'column'} borderRadius={'10px'} mt={"16px"} borderWidth={'1px'} bg={'white'} overflow={"hidden"}>
+                    <Flex flex={1} direction={"column"} alignItems={"center"}>
+                        <Flex bg={"gray.100"} px={"16px"} h={"35px"} alignItems={"center"} justifyContent={"center"} position={'absolute'} mt={"-17.5px"} borderRadius={"10px"}>
+                            <Text fontSize="md" fontWeight={800} color={"gray.600"}>
+                                {getCampaignById(2).name}
+                            </Text>
+                        </Flex>
+                        <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
+                            {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
+                                Máxima puja actual
+                            </Text>*/}
+                            <Flex direction={'column'} alignItems={"center"}>
+                                <Flex alignItems={'center'}>
+                                    <Text fontSize="5xl" fontWeight="900">
+                                        {eur_price}
+                                    </Text>
+                                    <Text fontSize="xl" ml={"4px"}>
+                                        €
+                                    </Text>
+                                </Flex>
+                                <Skeleton isLoaded={props.isDataLoaded && props.isLoaded} mt={'-10px'}>
+                                    <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
+                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                        {"≈ " + String(parseFloat((1 / props.eurToMatic) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
+                                    </Text>
+                                </Skeleton>
                             </Flex>
-                            <Skeleton isLoaded={props.isLoaded} mt={'-10px'}>
-                                <Text fontSize="xl" color="gray.500" textAlign={"center"}>
-                                    {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurToMatic) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                    {"≈ " + String(parseFloat((1 / props.eurToMatic) * eur_price)).replace('.', ',') + " ETH"}
-                                </Text>
+                            <Skeleton isLoaded={props.isDataLoaded && props.isLoaded} mt={'16px'} mb={'16px'}>
+                                <Flex w={'fit-content'} bg={'gray.50'} borderRadius={"10px"} px={'16px'} py={'4px'}>
+                                    <Text fontSize="sm" color={'gray.600'}>
+                                        {props.availability == 1 ? 'Queda' + ' ' + props.availability + ' ' + 'disponible' : 'Quedan' + ' ' + props.availability + ' ' + 'disponibles'}
+                                    </Text>
+                                </Flex>
                             </Skeleton>
                         </Flex>
-                        <Flex w={'fit-content'} bg={'gray.50'} borderRadius={"10px"} px={'16px'} py={'4px'} mt={'16px'} mb={'16px'}>
-                            <Text fontSize="sm" color={'gray.600'}>
-                                {props.availability == 1 ? 'Queda' + ' ' + props.availability + ' ' + 'disponible' : 'Quedan' + ' ' + props.availability + ' ' + 'disponibles'}
-                            </Text>
-                        </Flex>
-                    </Flex>
-                    <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
-                        {/*<Flex flex={1} w={"100%"} alignItems="center">
-                            <Input bg={'white'} placeholder={"1.3eth"} textAlign={'center'}/>
-                            <Text fontSize="xl" color="gray.500" ml={"16px"}>
-                                ≈
-                            </Text>
-                            <Text fontSize="xl" color="gray.500" ml={"6px"} mr={"16px"}>
-                                1.300$
-                            </Text>
-                        </Flex>*/}
-                        <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
-                        <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} mt={"16px"} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
+                        <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
+                            {/*<Flex flex={1} w={"100%"} alignItems="center">
+                                <Input bg={'white'} placeholder={"1.3eth"} textAlign={'center'}/>
+                                <Text fontSize="xl" color="gray.500" ml={"16px"}>
+                                    ≈
+                                </Text>
+                                <Text fontSize="xl" color="gray.500" ml={"6px"} mr={"16px"}>
+                                    1.300$
+                                </Text>
+                            </Flex>*/}
+                            <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
+                            
+                            <Skeleton w={'full'} isLoaded={props.isDataLoaded && props.isLoaded} mt={"16px"}>
+                                <Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurToMatic) * eur_price))} />
+                            </Skeleton>
 
+                        </Flex>
                     </Flex>
                 </Flex>
             </Flex>

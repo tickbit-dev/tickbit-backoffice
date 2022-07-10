@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, useToast, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, openScan, timestampToDate, truncateAddress } from '../utils/funcionesComunes';
+import { changeNumberforNameMonth, getCampaignById, getCityById, getEstado, getEventsListFromTest, openScan, timestampToDate, truncateAddress } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
 import { FaEthereum } from "react-icons/fa";
 import '../table.css'
@@ -42,9 +42,8 @@ export default function IncomesTable({ ...props }) {
         })
     }
 
-    function campaignCategory(value) {
-        if (value == 1) return 'Portada';
-        if (value == 2) return 'Destacado';
+    function getCampaign(idCampaign) {
+        return getCampaignById(idCampaign);
     }
 
     useEffect(() => {
@@ -107,7 +106,7 @@ export default function IncomesTable({ ...props }) {
                                 borderRightWidth={0}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{campaignCategory(row.idType)}</Text>
+                                <Text noOfLines={1}>{getCampaign(row.idType).name}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={0}

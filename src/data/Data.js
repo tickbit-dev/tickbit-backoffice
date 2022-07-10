@@ -70,5 +70,17 @@ export default {
             "id": 0,
             "name": "Otros"
         },
+    ],
+    campaigns: [
+        {
+            "id": 1,
+            "name": "Portada",
+            "price": 700 //EUR
+        },
+        {
+            "id": 2,
+            "name": "Destacado",
+            "price": 200 //EUR
+        },
     ]
 };

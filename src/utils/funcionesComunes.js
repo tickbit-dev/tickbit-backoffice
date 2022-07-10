@@ -290,6 +290,24 @@ export function getEstado(row){
     }*/
 }
 
+export function getCampaigns(){
+    return Data.campaigns;
+}
+
+export function getCampaignById(idCampaign){
+    if(idCampaign < 0) idCampaign = 0;
+
+    for(let campaign of Data.campaigns){
+        if(campaign.id == idCampaign) return campaign;
+    }
+    
+    idCampaign = 0;
+
+    for(let campaign of Data.campaigns){
+        if(campaign.id == idCampaign) return campaign;
+    }
+}
+
 ///////// EVENTS /////////
 
 export function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted) {
