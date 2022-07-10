@@ -726,7 +726,7 @@ export async function getCampaignListFromBlockchain(){
      for(let item of item_data){
         itemsArray.push(
             newCampaign(
-                item[0], item[1].toNumber(), item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(),BigNumber.from(item[6]), 
+                item[0], item[1].toNumber(), item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(),item[6].toString()/1000000000000000000, 
             )
         );
     }

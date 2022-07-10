@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td,useToast, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, openScan, truncateAddress } from '../utils/funcionesComunes';
+import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, useToast, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
+import { changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, openScan, timestampToDate, truncateAddress } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
+import { FaEthereum } from "react-icons/fa";
 import '../table.css'
 
 const ITEMS_PER_PAGE = 6;
 const FILLING_SIZE = 53;
 
-export default function IncomesTable({...props}) {
+export default function IncomesTable({ ...props }) {
     const [items, setItems] = useState(props.items ?? getEventsListFromTest());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
@@ -27,18 +28,23 @@ export default function IncomesTable({...props}) {
         setCurrentPage(0);
     };
 
-    function copyText(value){
+    function copyText(value) {
         navigator.clipboard.writeText(value);
         toast({
             position: 'bottom',
             duration: 4000,
             render: () => (
-              <Flex color='black' p={3} bg='white' rounded={5} textAlign={'center'} borderWidth={1} alignItems={'center'} justifyContent={'center'}>
-                <FiClipboard/>
-                <Text ml={"16px"}>Dirección copiada correctamente</Text>
-              </Flex>
+                <Flex color='black' p={3} bg='white' rounded={5} textAlign={'center'} borderWidth={1} alignItems={'center'} justifyContent={'center'}>
+                    <FiClipboard />
+                    <Text ml={"16px"}>Dirección copiada correctamente</Text>
+                </Flex>
             ),
         })
+    }
+
+    function campaignCategory(value) {
+        if (value == 1) return 'Portada';
+        if (value == 2) return 'Destacado';
     }
 
     useEffect(() => {
@@ -49,7 +55,7 @@ export default function IncomesTable({...props}) {
 
     return (
         <Flex flex={1} direction={'column'} maxW={'full'} borderRadius={'10px'} overflow={'hidden'} borderWidth={'1px'} overflowX={'scroll'}>
-            <Table sx={{minWidth: 650}} /*variant='striped'*/ colorScheme='gray' size='md'>
+            <Table sx={{ minWidth: 650 }} /*variant='striped'*/ colorScheme='gray' size='md'>
                 <Thead backgroundColor={'gray.100'}>
                     <Tr>
                         <Th color={'black'} minW={'200px'}>Owner</Th>
@@ -65,27 +71,27 @@ export default function IncomesTable({...props}) {
                 </Thead>
                 <Tbody>
                     {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row) => (
-                        <Tr style={{cursor: 'pointer'}} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
+                        <Tr style={{ cursor: 'pointer' }} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
                             <Td
                                 borderRightWidth={1}
                                 minW={'300px'}
-                            >   
+                            >
                                 <Popover trigger={'hover'}>
                                     <Box d={'flex'} alignItems={'center'}>
                                         <PopoverTrigger>
                                             <Text noOfLines={1} pr={5}>{truncateAddress(row._owner)}</Text>
                                         </PopoverTrigger>
-                                        <Flex onClick={() => copyText(row._owner)} _hover={{bg: 'gray.200'}} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} transition="all .3s ease">
-                                            <FiCopy size={"14px"}/>
+                                        <Flex onClick={() => copyText(row._owner)} _hover={{ bg: 'gray.200' }} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} transition="all .3s ease">
+                                            <FiCopy size={"14px"} />
                                         </Flex>
                                     </Box>
-                                   
-                                    <PopoverContent _focus={{outline:'none'}} >
+
+                                    <PopoverContent _focus={{ outline: 'none' }} >
                                         <PopoverArrow />
                                         <PopoverBody p={4}>
                                             <Box onClick={() => openScan(row._owner)}>
-                                                <FiExternalLink/>
-                                                <Link _focus={{outline:'none'}} noOfLines={2} ml={"26px"} mt={"-18px"}>{row._owner}</Link>
+                                                <FiExternalLink />
+                                                <Link _focus={{ outline: 'none' }} noOfLines={2} ml={"26px"} mt={"-18px"}>{row._owner}</Link>
                                             </Box>
                                         </PopoverBody>
                                     </PopoverContent>
@@ -101,7 +107,7 @@ export default function IncomesTable({...props}) {
                                 borderRightWidth={0}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.idType}</Text>
+                                <Text noOfLines={1}>{campaignCategory(row.idType)}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={0}
@@ -113,25 +119,25 @@ export default function IncomesTable({...props}) {
                                 borderRightWidth={0}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.initialDate}</Text>
+                                <Text noOfLines={1}>{timestampToDate(row.initialDate)}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={0}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.finalDate}</Text>
+                                <Text noOfLines={1}>{timestampToDate(row.finalDate)}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={0}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{}</Text>
+                                <Text noOfLines={1}>{row.price.toFixed(8)} ETH</Text>
                             </Td>
                         </Tr>
                     ))}
                     {emptyItems > 0 && (
                         <Tr style={{ height: FILLING_SIZE * emptyItems }}>
-                            <Td colSpan={6}/>
+                            <Td colSpan={6} />
                         </Tr>
                     )}
                 </Tbody>
@@ -140,9 +146,9 @@ export default function IncomesTable({...props}) {
 
 
             {/* PAGER */}
-            <Flex padding={"10px"} alignItems={'center'} justifyContent={{base: 'start', xl: 'end'}}>
-                <Flex 
-                    style={{cursor: currentPage != 0 ? 'pointer' : 'default', userSelect: "none"}}
+            <Flex padding={"10px"} alignItems={'center'} justifyContent={{ base: 'start', xl: 'end' }}>
+                <Flex
+                    style={{ cursor: currentPage != 0 ? 'pointer' : 'default', userSelect: "none" }}
                     transition="0.3s ease"
                     alignItems={'center'}
                     justifyContent={'center'}
@@ -152,7 +158,7 @@ export default function IncomesTable({...props}) {
                     borderLeftRadius={'6px'}
                     borderWidth={1}
                     borderRightWidth={0}
-                    _hover={currentPage != 0 && {bg: "gray.50"}}
+                    _hover={currentPage != 0 && { bg: "gray.50" }}
                     onClick={() => currentPage > 0 ? handleChangePage(0) : null}
                 >
                     {/*<Text color={currentPage == 0 && "gray.400"} transition="0.3s ease">Previo</Text>*/}
@@ -163,8 +169,8 @@ export default function IncomesTable({...props}) {
                         as={FiChevronsLeft}
                     />
                 </Flex>
-                <Flex 
-                    style={{cursor: currentPage != 0 ? 'pointer' : 'default', userSelect: "none"}}
+                <Flex
+                    style={{ cursor: currentPage != 0 ? 'pointer' : 'default', userSelect: "none" }}
                     transition="0.3s ease"
                     alignItems={'center'}
                     justifyContent={'center'}
@@ -173,7 +179,7 @@ export default function IncomesTable({...props}) {
                     paddingLeft={'10px'}
                     borderWidth={1}
                     borderRightWidth={0}
-                    _hover={currentPage != 0 && {bg: "gray.50"}}
+                    _hover={currentPage != 0 && { bg: "gray.50" }}
                     onClick={() => currentPage > 0 ? handleChangePage(currentPage - 1) : null}
                 >
                     <Text color={currentPage == 0 && "gray.400"} transition="0.3s ease">Anterior</Text>
@@ -194,7 +200,7 @@ export default function IncomesTable({...props}) {
                         w={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? '40px' : '0px'}
                         minW={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? '40px' : '0px'}
                         backgroundColor={value == currentPage ? 'gray.100' : 'none'}
-                        _hover={{bg: "gray.50"}}
+                        _hover={{ bg: "gray.50" }}
                         borderTopWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
                         borderBottomWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
                         borderLeftWidth={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 1 : 0}
@@ -203,8 +209,8 @@ export default function IncomesTable({...props}) {
                         <Text color={'black'} visibility={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 'visible' : 'hidden'}>{value + 1}</Text>
                     </Center>
                 ))}
-                <Flex 
-                    style={{cursor: !(currentPage == (pagesCount - 1) || items.length == 0) ? 'pointer' : 'default', userSelect: "none"}}
+                <Flex
+                    style={{ cursor: !(currentPage == (pagesCount - 1) || items.length == 0) ? 'pointer' : 'default', userSelect: "none" }}
                     transition="0.3s ease"
                     alignItems={'center'}
                     justifyContent={'center'}
@@ -213,7 +219,7 @@ export default function IncomesTable({...props}) {
                     paddingLeft={'10px'}
                     borderWidth={1}
                     borderRightWidth={0}
-                    _hover={!(currentPage == (pagesCount - 1) || items.length == 0) && {bg: "gray.50"}}
+                    _hover={!(currentPage == (pagesCount - 1) || items.length == 0) && { bg: "gray.50" }}
                     onClick={() => !(currentPage == (pagesCount - 1) || items.length == 0) && handleChangePage(currentPage + 1)}
                 >
                     <Text color={currentPage == (pagesCount - 1) || items.length == 0 ? "gray.400" : null} transition="0.3s ease">Siguiente</Text>
@@ -225,8 +231,8 @@ export default function IncomesTable({...props}) {
                         as={FiChevronRight}
                     />*/}
                 </Flex>
-                <Flex 
-                    style={{cursor: !(currentPage == (pagesCount - 1) || items.length == 0) ? 'pointer' : 'default', userSelect: "none"}}
+                <Flex
+                    style={{ cursor: !(currentPage == (pagesCount - 1) || items.length == 0) ? 'pointer' : 'default', userSelect: "none" }}
                     transition="0.3s ease"
                     alignItems={'center'}
                     justifyContent={'center'}
@@ -235,7 +241,7 @@ export default function IncomesTable({...props}) {
                     paddingLeft={'10px'}
                     borderRightRadius={'6px'}
                     borderWidth={1}
-                    _hover={!(currentPage == (pagesCount - 1) || items.length == 0) && {bg: "gray.50"}}
+                    _hover={!(currentPage == (pagesCount - 1) || items.length == 0) && { bg: "gray.50" }}
                     onClick={() => !(currentPage == (pagesCount - 1) || items.length == 0) && handleChangePage(pagesCount - 1)}
                 >
                     {/*<Text color={currentPage == (pagesCount - 1) && "gray.400"} transition="0.3s ease">Siguiente</Text>*/}
