@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer } from '@chakra-ui/react';
+import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer, Skeleton, SlideFade, useBreakpoint, useBreakpointValue } from '@chakra-ui/react';
 import { createTicketOnBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
-import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesTable from '../components/IncomesTable';
 import moment from 'moment';
@@ -21,10 +21,12 @@ const IS_ONLINE = true;
 export default function IncomesTab({...props}) {
     const [tickets, setTickets] = useState([]);
     const [data, setData] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(null);
 
     //Informaciónd e los gráficos
     const [chartTicketsNumber, setChartTicketsNumber] = useState([]);
     const [chartIncome, setChartIncome] = useState([]);
+    const numberOfColumns = useBreakpointValue({base: -6, lg: -12})
 
     const ref = useRef();
     const [hidden, setHidden] = useState(false);
@@ -84,6 +86,7 @@ export default function IncomesTab({...props}) {
         const items_list = online == false ? getTicketsListFromTest() : await getTicketsListFromBlockchain();
 
         setTickets(await items_list);
+        setIsLoaded(true);
     }
 
     useEffect(() => {
@@ -99,10 +102,11 @@ export default function IncomesTab({...props}) {
     }, []);
 
     useEffect(() => {
-        window.addEventListener("resize", updateDimensions);
+        //ACTIVAR SI SE PONEN LOS DOS GRAFICOS
+        /*window.addEventListener("resize", updateDimensions);
         return () => {
             window.removeEventListener("resize", updateDimensions);
-        };
+        };*/
     }, []);
 
     const updateDimensions = () => {
@@ -117,58 +121,101 @@ export default function IncomesTab({...props}) {
     }
 
     return (
-        <Flex direction={"column"} flex={1} w={'100%'}>
+        <Flex direction={"column"} flex={1} w={'100%'} bg={'gray.100'}>
             <NavBarWithSearchBar searchBar={false} applySearchFilter={(value) => null/*applySearchFilter(value)*/}/>
             <Flex direction={"column"} mt={Dimensions.navBar.TOP_MENU_HEIGHT} p={4}>
                 <Flex direction={'column'}>
-                    <Flex ref={ref} minH={{base: '800px', lg: '400px'}} transition="all 1.3s ease" flex={1} direction={'column'} p={'16px'} mb={"16px"} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>                 
-                        <Flex direction={{base: "column", lg: "row"}} hidden={hidden} h={{base: '700px', lg: '300px'}} mt={10} d={'flex'}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                    width={100}
-                                    data={chartTicketsNumber.slice(-6)}
-                                    margin={{
-                                        top: 5,
-                                        right: 30,
-                                        left: 0,
-                                        bottom: 5,
-                                    }}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="Date" />
-                                    <YAxis />
-                                    <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
-                                    <Legend />
-                                    <Bar dataKey="Número de tickets" fill="#8884d8"/>
-                                </BarChart>
-                            </ResponsiveContainer>
-                            <Flex h={'50px'}/>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                    width={500}
-                                    height={300}
-                                    data={chartIncome.slice(-6)}
-                                    margin={{
-                                        top: 5,
-                                        right: 30,
-                                        left: 0,
-                                        bottom: 5,
-                                    }}
-                                >
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="Date" />
-                                    <YAxis />
-                            
-                                    <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
-                                    <Legend />
-                                    <Bar dataKey="Ingresos en €" fill="#69c5d6"/*"#40c6de"*/ />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </Flex>
-                    </Flex>
-                    <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}> 
-                        <IncomesTable items={data}/>
-                    </Flex>
+                    { !isLoaded ?
+                        <Skeleton isLoaded={isLoaded}>
+                            <Flex minW={'full'} minH={'60px'}/>
+                        </Skeleton>
+                    : tickets.length == 0 ?
+                        <SlideFade in={isLoaded}> 
+                            <Flex p={4} alignItems={"center"}>
+                                <FiInfo/>
+                                <Text ml={"10px"}>Todavía no se han comprado tickets.</Text>
+                            </Flex>
+                        </SlideFade>
+                    :
+                        <SlideFade in={isLoaded}> 
+                            <Flex direction={'column'}>
+                                {/*<Flex ref={ref} minH={{base: '800px', lg: '400px'}} transition="all 1.3s ease" flex={1} direction={'column'} p={'16px'} mb={"16px"} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>                 
+                                    <Flex direction={{base: "column", lg: "row"}} hidden={hidden} h={{base: '700px', lg: '300px'}} mt={10} d={'flex'}>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                width={100}
+                                                data={chartTicketsNumber.slice(-6)}
+                                                margin={{
+                                                    top: 5,
+                                                    right: 30,
+                                                    left: 0,
+                                                    bottom: 5,
+                                                }}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="Date" />
+                                                <YAxis />
+                                                <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
+                                                <Legend />
+                                                <Bar dataKey="Número de tickets" fill="#8884d8"/>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                        <Flex h={'50px'}/>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                width={500}
+                                                height={300}
+                                                data={chartIncome.slice(-6)}
+                                                margin={{
+                                                    top: 5,
+                                                    right: 30,
+                                                    left: 0,
+                                                    bottom: 5,
+                                                }}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="Date" />
+                                                <YAxis />
+                                        
+                                                <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
+                                                <Legend />
+                                                <Bar dataKey="Ingresos en €" fill="#69c5d6" />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </Flex>
+                                </Flex>*/}
+                                <Flex ref={ref} minH={{base: '400px', lg: '400px'}} transition="all 1.3s ease" flex={1} direction={'column'} p={'16px'} mb={"16px"} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>                 
+                                    <Flex direction={{base: "column", lg: "row"}} hidden={hidden} h={{base: '300px', lg: '300px'}} mt={10} d={'flex'}>
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                width={500}
+                                                height={300}
+                                                data={chartIncome.slice(numberOfColumns)}
+                                                margin={{
+                                                    top: 5,
+                                                    right: 30,
+                                                    left: 0,
+                                                    bottom: 5,
+                                                }}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="Date" />
+                                                <YAxis />
+                                        
+                                                <Tooltip cursor={{ fill:'rgba(105, 109, 125, 0.07)'}} />
+                                                <Legend />
+                                                <Bar dataKey="Ingresos en €" fill="#69c5d6" />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </Flex>
+                                </Flex>
+                                
+                                <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}> 
+                                    <IncomesTable items={data}/>
+                                </Flex>
+                            </Flex>
+                        </SlideFade> 
+                    }
                 </Flex>
             </Flex>
         </Flex>
