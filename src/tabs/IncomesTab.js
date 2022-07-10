@@ -131,9 +131,11 @@ export default function IncomesTab({...props}) {
                         </Skeleton>
                     : tickets.length == 0 ?
                         <SlideFade in={isLoaded}> 
-                            <Flex p={4} alignItems={"center"}>
-                                <FiInfo/>
-                                <Text ml={"10px"}>Todavía no se han comprado tickets.</Text>
+                            <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
+                                <Flex p={4} alignItems={"center"}>
+                                    <FiInfo/>
+                                    <Text ml={"10px"}>Todavía no se han comprado tickets.</Text>
+                                </Flex>
                             </Flex>
                         </SlideFade>
                     :

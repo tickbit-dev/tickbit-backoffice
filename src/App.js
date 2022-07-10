@@ -20,6 +20,8 @@ export default function App({...props}) {
 	const [isConnected, setIsConnected] = useState(null);
 	const [currentAccount, setCurrentAccount] = useState('');
 
+	const [isCheckedMetamask, setIsCheckedMetamask] = useState(false);
+
 	function checkIsMetamaskInstalled() {
         return typeof window.ethereum !== 'undefined'
     }
@@ -41,6 +43,17 @@ export default function App({...props}) {
 		}
 	}
 
+	useEffect(() => {
+		checkConnection();
+		setTimeout(() => {
+			if(!window.ethereum._state.initialized){
+				window.location.reload();
+			} else{
+				setIsCheckedMetamask(true)
+			}
+		}, 100);
+	}, []);
+
 	return (
 		<ChakraProvider theme={theme} resetCSS>
 				<BrowserRouter>
@@ -58,7 +71,7 @@ export default function App({...props}) {
 							</Routes>
 						</HomePage>
 					:
-						<LoginScreen isConnected={isConnected}/>
+						<LoginScreen isConnected={isConnected} isCheckedMetamask={isCheckedMetamask}/>
 					}
 				</BrowserRouter>
 		</ChakraProvider>
