@@ -10,6 +10,8 @@ import PolygonLogo from "./assets/matic-token-icon.webp"
 
 export default function LoginScreen({...props}) {
 
+	const [fakeLoadingData, isFakeLoadingData] = useState('');
+
 	function isMobileDevice() {
         return 'ontouchstart' in window || 'onmsgesturechange' in window;
     }
@@ -92,6 +94,12 @@ export default function LoginScreen({...props}) {
 			})
 		}
 	}, []);
+
+	/*useEffect(() => {
+		setTimeout(() => {
+			
+		}, 3000);
+	}, []);*/
 
 	return (
 		<Flex flex={1} w={'100vw'} minH={'100vh'} alignItems={"center"} justifyContent={"center"} bg={"gray.100"} p={"16px"}>

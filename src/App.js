@@ -41,10 +41,6 @@ export default function App({...props}) {
 		}
 	}
 
-	useEffect(() => {
-		checkConnection();
-	}, []);
-
 	return (
 		<ChakraProvider theme={theme} resetCSS>
 				<BrowserRouter>
