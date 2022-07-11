@@ -255,9 +255,6 @@ export function FrontPageCampaingCard({ ...props }) {
                             </Text>
                         </Flex>
                         <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
-                            {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
-                                Máxima puja actual
-                            </Text>*/}
                             <Flex direction={'column'} alignItems={"center"}>
                                 <Flex alignItems={'center'}>
                                     <Text fontSize="5xl" fontWeight="900">
@@ -283,19 +280,9 @@ export function FrontPageCampaingCard({ ...props }) {
                             </Skeleton>
                         </Flex>
                         <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
-                            {/*<Flex flex={1} w={"100%"} alignItems="center">
-                                <Input bg={'white'} placeholder={"1.3eth"} textAlign={'center'}/>
-                                <Text fontSize="xl" color="gray.500" ml={"16px"}>
-                                    ≈
-                                </Text>
-                                <Text fontSize="xl" color="gray.500" ml={"6px"} mr={"16px"}>
-                                    1.300$
-                                </Text>
-                            </Flex>*/}
                             <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
                             <Spacer/>
                             <Skeleton w={'full'} isLoaded={props.isPriceLoaded && props.isLoaded} mt={"16px"}>
-                                {/*<Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))} />*/}
                                 <CreateButton
                                     type={1}
                                     evento={event}
@@ -335,9 +322,6 @@ export function OutstandingCampaingCard({ ...props }) {
                             </Text>
                         </Flex>
                         <Flex flex={1} mt={"16px"} direction={"column"} p={'16px'} alignItems={'center'}>
-                            {/*<Text fontSize="lg" color="gray.500" textAlign={"center"}>
-                                Máxima puja actual
-                            </Text>*/}
                             <Flex direction={'column'} alignItems={"center"}>
                                 <Flex alignItems={'center'}>
                                     <Text fontSize="5xl" fontWeight="900">
@@ -363,19 +347,9 @@ export function OutstandingCampaingCard({ ...props }) {
                             </Skeleton>
                         </Flex>
                         <Flex flex={1} w={"100%"} direction={"column"} alignItems={"center"} bg={"gray.100"} p={'16px'}>
-                            {/*<Flex flex={1} w={"100%"} alignItems="center">
-                                <Input bg={'white'} placeholder={"1.3eth"} textAlign={'center'}/>
-                                <Text fontSize="xl" color="gray.500" ml={"16px"}>
-                                    ≈
-                                </Text>
-                                <Text fontSize="xl" color="gray.500" ml={"6px"} mr={"16px"}>
-                                    1.300$
-                                </Text>
-                            </Flex>*/}
                             <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
                             <Spacer/>
                             <Skeleton w={'full'} isLoaded={props.isPriceLoaded && props.isLoaded} mt={"16px"}>
-                                {/*<Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))} />*/}
                                 <CreateButton
                                     type={2}
                                     evento={event}
