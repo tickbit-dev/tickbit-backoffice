@@ -69,8 +69,8 @@ export default function IncomesTable({ ...props }) {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row) => (
-                        <Tr style={{ cursor: 'pointer' }} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
+                    {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row, index) => (
+                        <Tr key={"tr_campaign_table_" + index} style={{ cursor: 'pointer' }} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
                             <Td
                                 borderRightWidth={1}
                                 minW={'300px'}
@@ -191,6 +191,7 @@ export default function IncomesTable({ ...props }) {
                 </Flex>
                 {new Array(pagesCount).fill().map((index, value) => (
                     <Center
+                        key={"campaign_table_page_" + index}
                         visibility={currentPage == value || value == currentPage - 1 || value == currentPage + 1 || (currentPage == 0 && value == currentPage + 2) || (currentPage == (pagesCount - 1) && value == currentPage - 2) ? 'visible' : 'hidden'}
                         as={"button"}
                         style={{ userSelect: "none" }}

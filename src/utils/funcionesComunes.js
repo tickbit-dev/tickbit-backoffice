@@ -308,6 +308,50 @@ export function getCampaignById(idCampaign){
     }
 }
 
+export function getCampaignsWeeksIntervals() {
+    var fechaactual = new Date();
+
+    while (fechaactual.getDay() - 1 !== 0) {
+        fechaactual.setDate(fechaactual.getDate() - 1);
+    }
+
+    //Le pasamos esto para que coja hora las 00:00
+    fechaactual = moment(fechaactual).format('YYYY-MM-DD');
+
+    var fechainicial = moment(fechaactual);
+    var fechafinal = moment(fechainicial).add(6, 'days');
+    
+    var intervalos = [];
+    intervalos.push({"id": 0, "fechainicial": fechainicial.unix(), "fechafinal": fechafinal.unix()});
+
+    var mes = fechainicial.month();
+    var año = fechainicial.year() + 1;
+
+    var i = 1;
+
+    while (fechafinal.month() != mes || fechafinal.year() != año) {
+        const fecha_aux = moment(fechainicial);
+        fechainicial = moment(fecha_aux).add(7, 'days');
+        fechafinal = moment(fechainicial).add(6, 'days');
+        intervalos.push({"id": i, "fechainicial": fechainicial.unix(), "fechafinal": fechafinal.unix()});
+        ++i;
+    }
+
+    //setTextoIntervalo(cutDate(intervalos[0].fechainicial) + '-' + cutDate(intervalos[0].fechafinal));
+    //setLoading(true);
+
+    return intervalos;
+}
+
+export function cutIntervalDate(date) {
+    var year = timestampToDate(date).slice(6, 10);
+    var month = timestampToDate(date).slice(3, 5);
+    var day = timestampToDate(date).slice(0, 2);
+    var fechaEscrita = day + ' ' + getMonthAndYearAbrebiation(month, year);
+
+    return fechaEscrita;
+}
+
 ///////// EVENTS /////////
 
 export function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted) {
