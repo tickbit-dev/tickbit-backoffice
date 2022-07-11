@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, useToast, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { changeNumberforNameMonth, getCampaignById, getCityById, getEstado, getEventsListFromTest, openScan, timestampToDate, truncateAddress } from '../utils/funcionesComunes';
+import { changeNumberforNameMonth, cutIntervalDate, getCampaignById, getCityById, getEstado, getEventsListFromTest, openScan, timestampToDate, truncateAddress } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
 import { FaEthereum } from "react-icons/fa";
 import '../table.css'
@@ -46,6 +46,15 @@ export default function IncomesTable({ ...props }) {
         return getCampaignById(idCampaign);
     }
 
+    function getEventNameById(idEvent) {
+        for(let i = 0; i < props.eventsList.length; i++){
+            if(props.eventsList[i]._id == idEvent){
+                return props.eventsList[i].title;
+            }
+        }
+        return "No registrado";
+    }
+
     useEffect(() => {
         //console.log("table")
         //console.log(props.items)
@@ -57,15 +66,12 @@ export default function IncomesTable({ ...props }) {
             <Table sx={{ minWidth: 650 }} /*variant='striped'*/ colorScheme='gray' size='md'>
                 <Thead backgroundColor={'gray.100'}>
                     <Tr>
-                        <Th color={'black'} minW={'200px'}>Owner</Th>
-                        <Th color={'black'} minW={'200px'}>Id</Th>
-                        <Th color={'black'} minW={'200px'}>Tipo</Th>
-                        <Th color={'black'} minW={'200px'}>IdEvento</Th>
-                        <Th color={'black'} minW={'200px'}>Fecha Inicio</Th>
-                        <Th color={'black'} minW={'200px'}>Fecha Fin</Th>
+                        <Th color={'black'} textAlign={'center'} minW={'62px'} w={0}>Id</Th>
+                        <Th color={'black'} minW={'160px'} w={0}>Owner</Th>
+                        <Th color={'black'} minW={'130px'} w={0}>Tipo</Th>
+                        <Th color={'black'} minW={'200px'}>Evento</Th>
+                        <Th color={'black'} minW={'200px'}>Periodo</Th>
                         <Th color={'black'} minW={'200px'}>Precio</Th>
-
-
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -73,7 +79,16 @@ export default function IncomesTable({ ...props }) {
                         <Tr key={"tr_campaign_table_" + index} style={{ cursor: 'pointer' }} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
                             <Td
                                 borderRightWidth={1}
-                                minW={'300px'}
+                                bg={'gray.50'}
+                                minW={'66px'}
+                                textAlign={'center'}
+                                width={'66px'}
+                            >
+                                <Text noOfLines={1}>{row._id}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'160px'}
                             >
                                 <Popover trigger={'hover'}>
                                     <Box d={'flex'} alignItems={'center'}>
@@ -98,33 +113,21 @@ export default function IncomesTable({ ...props }) {
                             </Td>
                             <Td
                                 borderRightWidth={1}
-                                minW={'200px'}
-                            >
-                                <Text noOfLines={1}>{row._id}</Text>
-                            </Td>
-                            <Td
-                                borderRightWidth={0}
                                 minW={'130px'}
                             >
                                 <Text noOfLines={1}>{getCampaign(row.idType).name}</Text>
                             </Td>
                             <Td
-                                borderRightWidth={0}
+                                borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.eventId}</Text>
+                                <Text noOfLines={1}>{getEventNameById(row.eventId)}</Text>
                             </Td>
                             <Td
-                                borderRightWidth={0}
+                                borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{timestampToDate(row.initialDate)}</Text>
-                            </Td>
-                            <Td
-                                borderRightWidth={0}
-                                minW={'130px'}
-                            >
-                                <Text noOfLines={1}>{timestampToDate(row.finalDate)}</Text>
+                                <Text noOfLines={1}>{cutIntervalDate(row.initialDate) + " - " + cutIntervalDate(row.finalDate)}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={0}

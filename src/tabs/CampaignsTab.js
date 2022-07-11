@@ -12,13 +12,14 @@ import { FiInfo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const NOW_DATE = moment(new Date()).format('YYYY-MM-DD');
-const DEFAULT_INTERVAL = {"id": 0, "fechainicial": moment(NOW_DATE).unix(), "fechafinal": moment(NOW_DATE).unix()};
+const FINAL_DATE = moment(NOW_DATE).add(6, 'days');
+const DEFAULT_INTERVAL = {"id": 0, "fechainicial": moment(NOW_DATE).unix(), "fechafinal": moment(FINAL_DATE).unix()};
 
 export default function CampaingsTab({ ...props }) {
     const toast = useToast();
 
     const [intervalos, setIntervalos] = useState([DEFAULT_INTERVAL]);
-    const [items, setItems] = useState([]);
+    const [events, setEvents] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
 
     const [eurConversion, setEurConversion] = useState(0);
@@ -28,21 +29,19 @@ export default function CampaingsTab({ ...props }) {
     const [isLoadingCreateCampaign, setIsLoadingCreateCampaign] = useState(false);
 
     const [selectedEvent, setSelectedEvent] = useState();
-    const [initialDateSelected, setInitialDateSelected] = useState();
-    const [finalDateSelected, setFinalDateSelected] = useState();
     const [selectedInterval, setSelectedInterval] = useState(intervalos[0]);
     
     const [availablePortadaCount, setAvailablePortadaCount] = useState(0);
     const [availableDestacadosCount, setAvailableDestacadosCount] = useState(0);
 
     async function getData() {
-        var items_list = [];
+        var events_list = [];
         var campaigns_list = [];
 
-        items_list = await getEventsListFromBlockchain();
+        events_list = await getEventsListFromBlockchain();
         campaigns_list = await getCampaignListFromBlockchain();
 
-        setItems(items_list)
+        setEvents(events_list)
         setCampaigns(campaigns_list);
 
         setIsLoaded(true);
@@ -78,7 +77,6 @@ export default function CampaingsTab({ ...props }) {
         var contador = 1;
 
         for (let i = 0; i < campaigns.length; i++) {
-            console.log("fi",campaigns[i].initialDate)
             if (campaigns[i].initialDate == value && campaigns[i].idType == 1) {
                 contador -= 1;
             }
@@ -102,7 +100,8 @@ export default function CampaingsTab({ ...props }) {
 
     async function createCampaign(idTypeAux, eventIdAux, initialDateAux, finalDateAux, priceAux){
         //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
-
+        console.log("fi", initialDateAux);
+        console.log("ff", finalDateAux)
         const transaction = await createCampaignOnBlockchain(idTypeAux, eventIdAux, initialDateAux, finalDateAux, priceAux);
     
         if(transaction == null){
@@ -173,9 +172,9 @@ export default function CampaingsTab({ ...props }) {
                             : null}
                         </Select>
                         <Select placeholder='Selecciona evento' mt={{ base: '2', lg: 'none' }} minW={{base: "flex", md: 250}} ml={{ base: 'none', lg: '2' }} onChange={(e) => setSelectedEvent(e.target.value)}>
-                            {items.length > 0 ?
-                                items.map((items, index) => (
-                                    <option key={'event_' + index} value={items._id}>{items.title}</option>
+                            {events.length > 0 ?
+                                events.map((events, index) => (
+                                    <option key={'event_' + index} value={events._id}>{events.title}</option>
                                 ))
                             : null}
                         </Select>
@@ -186,26 +185,26 @@ export default function CampaingsTab({ ...props }) {
                     <FrontPageCampaingCard
                         pr={{ base: "0px", lg: "8px" }}
                         isLoadingCreateCampaign={isLoadingCreateCampaign}
-                        createCampaignOnBlockchain={(idType, eventId,  initialDate,  finalDate,  price) => createCampaign(idType, eventId, selectedInterval.fechainicial, selectedInterval.fechafinal, price)}
+                        createCampaignOnBlockchain={(idType, eventId, price) => createCampaign(idType, eventId, selectedInterval.fechainicial, selectedInterval.fechafinal, price)}
                         setIsLoadingCreateCampaign={(value) => setIsLoadingCreateCampaign(value)}
                         eurConversion={eurConversion}
                         isPriceLoaded={isPriceLoaded}
                         isLoaded={isLoaded}
                         evento={selectedEvent}
-                        initialDate={initialDateSelected}
-                        finalDate={finalDateSelected}
+                        initialDate={selectedInterval.fechainicial}
+                        finalDate={selectedInterval.fechafinal}
                         availability={availablePortadaCount} 
                     />
                     <OutstandingCampaingCard
                         pl={{ base: "0px", lg: "8px" }}
                         isLoadingCreateCampaign={isLoadingCreateCampaign}
-                        createCampaignOnBlockchain={(idType, eventId,  initialDate,  finalDate,  price) => createCampaign(idType, eventId, selectedInterval.fechainicial, selectedInterval.fechafinal, price)}
+                        createCampaignOnBlockchain={(idType, eventId, price) => createCampaign(idType, eventId, selectedInterval.fechainicial, selectedInterval.fechafinal, price)}
                         setIsLoadingCreateCampaign={(value) => setIsLoadingCreateCampaign(value)}
                         isPriceLoaded={isPriceLoaded}
                         isLoaded={isLoaded}
                         evento={selectedEvent}
-                        initialDate={initialDateSelected}
-                        finalDate={finalDateSelected}
+                        initialDate={selectedInterval.fechainicial}
+                        finalDate={selectedInterval.fechafinal}
                         eurConversion={eurConversion}
                         availability={availableDestacadosCount}
                     />
@@ -225,7 +224,7 @@ export default function CampaingsTab({ ...props }) {
                 :
                     <SlideFade in={isLoaded}> 
                         <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                            <CampaignsTable items={campaigns}/>
+                            <CampaignsTable items={campaigns} eventsList={isLoaded ? events : []}/>
                         </Flex>
                     </SlideFade> 
                 }
@@ -300,7 +299,7 @@ export function FrontPageCampaingCard({ ...props }) {
                                     type={1}
                                     evento={event}
                                     availability={props.availability}
-                                    onClick={() => props.createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))}
+                                    onClick={() => props.createCampaignOnBlockchain(1, event, parseFloat((1 / props.eurConversion) * eur_price))}
                                     isLoading={props.isLoadingCreateCampaign}
                                     setIsLoading={(value) => props.setIsLoadingCreateCampaign(value)}
                                 />
@@ -380,7 +379,7 @@ export function OutstandingCampaingCard({ ...props }) {
                                     type={2}
                                     evento={event}
                                     availability={props.availability}
-                                    onClick={() => props.createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))}
+                                    onClick={() => props.createCampaignOnBlockchain(2, event, parseFloat((1 / props.eurConversion) * eur_price))}
                                     isLoading={props.isLoadingCreateCampaign}
                                     setIsLoading={(value) => props.setIsLoadingCreateCampaign(value)}
                                 />
