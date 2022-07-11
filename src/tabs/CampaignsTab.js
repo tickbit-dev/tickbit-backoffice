@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Flex, Box, Text, HStack, Input, Select, Skeleton, Stack, SlideFade, Modal, ModalOverlay, ModalContent, ModalHeader, Spinner, ModalCloseButton, ModalBody, useDisclosure, useToast } from '@chakra-ui/react';
+import { Flex, Box, Text, HStack, Input, Select, Skeleton, Stack, SlideFade, Modal, ModalOverlay, ModalContent, ModalHeader, Spinner, ModalCloseButton, ModalBody, useDisclosure, useToast, Spacer } from '@chakra-ui/react';
 import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
@@ -163,15 +163,15 @@ export default function CampaingsTab({ ...props }) {
                 <Flex flex={1} alignItems={{ base: 'center', lg: 'none' }} direction={{ base: 'column', lg: 'column' }} borderRadius={'10px'} p={4} borderWidth={'1px'} bg={'white'} mb={"16px"}>
                     {/*<Text fontSize="xl" fontWeight="700">{intervalos.length > 0 ? cutIntervalDate(moment(selectedInterval.fechainicial).format('YYYY-MM-DD')) + " - " + cutIntervalDate(moment(selectedInterval.fechaFinal).format('YYYY-MM-DD')) : cutIntervalDate(moment(new Date()).format('YYYY-MM-DD')) + " - " + cutIntervalDate(moment(new Date()).format('YYYY-MM-DD'))}</Text>*/}
                     {/*<Text fontSize="xl" fontWeight="700">{cutIntervalDate(selectedInterval.fechainicial) + " - " + cutIntervalDate(selectedInterval.fechafinal)}</Text>*/}
-                    <Flex flex={1} minW={'full'}>
-                        <Select ml={{ base: 'none', lg: 'auto' }} mt={{ base: '2', lg: 'none' }} minW={{base: "flex", md: 250}} onChange={(e) => onChangeIntervalValue(e.target.value)}>
+                    <Flex flex={1} minW={'full'} direction={{ base: 'column', lg: 'row' }}>
+                        <Select ml={{ base: 'none', lg: 'auto' }} mt={{ base: 'none', lg: 'none' }} minW={{base: "flex", md: 250}} onChange={(e) => onChangeIntervalValue(e.target.value)}>
                             {intervalos.length > 0 ?
                                 intervalos.map((intervalo, index) => (
                                     <option key={'interval_' + index} value={JSON.stringify(intervalo)}>{cutIntervalDate(intervalo.fechainicial) + " - " + cutIntervalDate(intervalo.fechafinal)}</option>
                                 ))
                             : null}
                         </Select>
-                        <Select placeholder='Selecciona evento' mt={{ base: '2', lg: 'none' }} minW={{base: "flex", md: 250}} ml={{ base: 'none', lg: '2' }} onChange={(e) => setSelectedEvent(e.target.value)}>
+                        <Select placeholder='Selecciona evento' mt={{ base: 'none', lg: 'none' }} minW={{base: "flex", md: 250}} ml={{ base: 'none', lg: '2' }} onChange={(e) => setSelectedEvent(e.target.value)}>
                             {events.length > 0 ?
                                 events.map((events, index) => (
                                     <option key={'event_' + index} value={events._id}>{events.title}</option>
@@ -293,6 +293,7 @@ export function FrontPageCampaingCard({ ...props }) {
                                 </Text>
                             </Flex>*/}
                             <Text color={"gray.500"}>Destaca un evento en la parte más visible de la web, la portada. Durante una semana, el evento que selecciones aparecerá promocionado en la portada.</Text>
+                            <Spacer/>
                             <Skeleton w={'full'} isLoaded={props.isPriceLoaded && props.isLoaded} mt={"16px"}>
                                 {/*<Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"#69c5d6"} bghover={"#76d3e3"} onClick={() => createCampaignOnBlockchain(1, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))} />*/}
                                 <CreateButton
@@ -372,7 +373,7 @@ export function OutstandingCampaingCard({ ...props }) {
                                 </Text>
                             </Flex>*/}
                             <Text color={"gray.500"}>Destaca un evento en los destacados de la web. Durante una semana, el evento que selecciones aparecerá promocionado en los eventos destacados.</Text>
-                            
+                            <Spacer/>
                             <Skeleton w={'full'} isLoaded={props.isPriceLoaded && props.isLoaded} mt={"16px"}>
                                 {/*<Button disabled={props.availability == 0 ? true : false} text={props.availability == 0 ? 'Agotado' : 'Comprar'} bg={"black"} onClick={() => createCampaignOnBlockchain(2, event, initialDate, finalDate, parseFloat((1 / props.eurConversion) * eur_price))} />*/}
                                 <CreateButton

@@ -12,6 +12,7 @@ export default function IncomesTable({ ...props }) {
     const [items, setItems] = useState(props.items ?? getEventsListFromTest());
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
+
     const toast = useToast()
 
     // Avoid a layout jump when reaching the last page with empty items.
@@ -67,10 +68,10 @@ export default function IncomesTable({ ...props }) {
                 <Thead backgroundColor={'gray.100'}>
                     <Tr>
                         <Th color={'black'} textAlign={'center'} minW={'62px'} w={0}>Id</Th>
-                        <Th color={'black'} minW={'160px'} w={0}>Owner</Th>
-                        <Th color={'black'} minW={'130px'} w={0}>Tipo</Th>
+                        <Th color={'black'} minW={"180px"} w={0}>Owner</Th>
                         <Th color={'black'} minW={'200px'}>Evento</Th>
-                        <Th color={'black'} minW={'200px'}>Periodo</Th>
+                        <Th color={'black'} minW={'120px'} w={0}>Tipo</Th>
+                        <Th color={'black'} minW={"220px"}>Periodo</Th>
                         <Th color={'black'} minW={'200px'}>Precio</Th>
                     </Tr>
                 </Thead>
@@ -88,7 +89,8 @@ export default function IncomesTable({ ...props }) {
                             </Td>
                             <Td
                                 borderRightWidth={1}
-                                minW={'160px'}
+                                minW={"180px"}
+                                w={"180px"}
                             >
                                 <Popover trigger={'hover'}>
                                     <Box d={'flex'} alignItems={'center'}>
@@ -113,19 +115,21 @@ export default function IncomesTable({ ...props }) {
                             </Td>
                             <Td
                                 borderRightWidth={1}
-                                minW={'130px'}
-                            >
-                                <Text noOfLines={1}>{getCampaign(row.idType).name}</Text>
-                            </Td>
-                            <Td
-                                borderRightWidth={1}
-                                minW={'130px'}
+                                minW={'200px'}
                             >
                                 <Text noOfLines={1}>{getEventNameById(row.eventId)}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={1}
-                                minW={'130px'}
+                                minW={'120px'}
+                                w={'120px'}
+                            >
+                                <Text noOfLines={1}>{getCampaign(row.idType).name}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={"220px"}
+                                w={"220px"}
                             >
                                 <Text noOfLines={1}>{cutIntervalDate(row.initialDate) + " - " + cutIntervalDate(row.finalDate)}</Text>
                             </Td>
