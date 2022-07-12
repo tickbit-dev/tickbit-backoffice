@@ -139,7 +139,7 @@ export default function IncomesTable({ ...props }) {
                                     borderRightWidth={0}
                                     minW={'130px'}
                                 >
-                                    <Text noOfLines={1}>{row.price.toFixed(8)} ETH</Text>
+                                    <Text noOfLines={1}>{row.price.toFixed(8)} MATIC</Text>
                                 </Td>
                             </Tr>
                         : null

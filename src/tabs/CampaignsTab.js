@@ -145,8 +145,8 @@ export default function CampaingsTab({ ...props }) {
 
         getData();
 
-        //getEurToMaticConversion()
-        getEurToEthConversion()
+        getEurToMaticConversion()
+        //getEurToEthConversion()
     }, []);
 
     useEffect(() => {
@@ -266,7 +266,7 @@ export function FrontPageCampaingCard({ ...props }) {
                                 <Skeleton isLoaded={props.isPriceLoaded && props.isLoaded} mt={'-10px'}>
                                     <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
                                         {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurConversion) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
+                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " MATIC"}
                                     </Text>
                                 </Skeleton>
                             </Flex>
@@ -333,7 +333,7 @@ export function OutstandingCampaingCard({ ...props }) {
                                 <Skeleton isLoaded={props.isPriceLoaded && props.isLoaded} mt={'-10px'}>
                                     <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
                                         {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurConversion) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " ETH"}
+                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " MATIC"}
                                     </Text>
                                 </Skeleton>
                             </Flex>
