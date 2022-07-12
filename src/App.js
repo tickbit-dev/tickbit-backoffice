@@ -7,11 +7,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from './HomePage';
 import EventsTab from './tabs/EventsTab';
 import Ticketing from './tabs/TicketingTab';
-import IncomesTab from './tabs/IncomesTabOwner';
+import IncomesTab from './tabs/IncomesTab';
+import IncomesTabOwner from './tabs/IncomesTabOwner';
 import CampaingsTab from './tabs/CampaignsTab';
 import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab';
 import HelpTab from './tabs/HelpTab';
 import LoginScreen from './LoginScreen';
+import Data from './data/Data';
 
 const theme = extendTheme();
 
@@ -19,6 +21,7 @@ export default function App({...props}) {
 	const [activeTab, setActiveTab] = useState('events');
 	const [isConnected, setIsConnected] = useState(null);
 	const [currentAccount, setCurrentAccount] = useState('');
+	const [isOwner, setIsOwner] = useState('');
 
 	const [isCheckedMetamask, setIsCheckedMetamask] = useState(false);
 
@@ -39,6 +42,11 @@ export default function App({...props}) {
 		} else {
 			console.log("Conectado")
 			setIsConnected(true)
+			console.log("[0]", accounts[0])
+			console.log("Data.ownerAddress", Data.ownerAddress)
+			if(String(accounts[0]).toLowerCase() == String(Data.ownerAddress).toLowerCase()){
+				setIsOwner(true)
+			}
 			setCurrentAccount(accounts[0])
 		}
 	}
@@ -64,8 +72,8 @@ export default function App({...props}) {
 								<Route path="/events" element={<EventsTab/>} />
 								<Route path="/events/:id" element={<CreateOrUpdateEventTab/>} />
 								<Route path="/ticketing" element={<Ticketing/>} />
-								<Route path="/incomes" element={<IncomesTab/>} />
-								<Route path="/campaigns" element={<CampaingsTab/>} />
+								<Route path="/incomes" element={isOwner == true ? <IncomesTabOwner/> : <IncomesTab/>} />
+								<Route path="/campaigns" element={<CampaingsTab isOwner={isOwner} currentAccount={currentAccount}/>} />
 								<Route path="/help" element={<HelpTab/>} />
 								<Route path="/create" element={<CreateOrUpdateEventTab/>} />
 							</Routes>

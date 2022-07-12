@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer, Skeleton, SlideFade, useBreakpoint, useBreakpointValue } from '@chakra-ui/react';
-import { createTicketOnBlockchain, getCampaignListFromBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
+import { createTicketOnBlockchain, getCampaignById, getCampaignListFromBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesOwnerTable from '../components/IncomesOwnerTable';
@@ -71,7 +71,7 @@ export default function IncomesTab({ ...props }) {
             let month2 = d.getMonth() + 1;
             let year2 = d.getFullYear();
             if (month === month2 && year === year2) {
-                income += tickets[i].price;
+                income += 1; //tickets[i].price
             }
         }
 
@@ -82,10 +82,10 @@ export default function IncomesTab({ ...props }) {
             let year2 = d.getFullYear();
             if (month === month2 && year === year2) {
                 if (campaigns[i].idType == 1) {
-                    income += 700;
+                    income += getCampaignById(1).price;
                 }
                 if (campaigns[i].idType == 2) {
-                    income += 200;
+                    income += getCampaignById(2).price;
                 }
 
             }

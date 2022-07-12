@@ -224,7 +224,7 @@ export default function CampaingsTab({ ...props }) {
                 :
                     <SlideFade in={isLoaded}> 
                         <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                            <CampaignsTable items={campaigns} eventsList={isLoaded ? events : []}/>
+                            <CampaignsTable items={campaigns} eventsList={isLoaded ? events : []} isOwner={props.isOwner} currentAccount={props.currentAccount}/>
                         </Flex>
                     </SlideFade> 
                 }
