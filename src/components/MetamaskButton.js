@@ -30,6 +30,7 @@ export default function MetamaskButton({...props}) {
     }, []);
 
     useEffect(() => {
+        console.log("BUTTON: ", props.isHome)
         if(userAddress != null && prevUserAddress.userAddress){
             toast({
                 title: 'Cambio de dirección',
@@ -120,17 +121,33 @@ export default function MetamaskButton({...props}) {
 
     return(
         userAddress != null ?
-            <Flex
-                borderWidth={1}
-                borderRadius={"6px"}
-                h={"50px"}
-                px={"20px"}
-                alignItems={'center'}
-                justifyContent={'center'}
-            >
-                <Image h="24px" w={"24px"} src={MetamaskLogo}/>
-                <Text color={"black"} fontWeight={500} ml={"16px"}>{shortAddress(userAddress)}</Text>
-            </Flex>
+            props.isHome ?
+                <Flex
+                    borderWidth={1}
+                    borderRadius={"6px"}
+                    h={"50px"}
+                    px={"20px"}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                >
+                    <Image h="24px" w={"24px"} src={MetamaskLogo}/>
+                    <Text color={"black"} fontWeight={500} ml={"16px"}>{shortAddress(userAddress)}</Text>
+                </Flex>
+            :
+                <Flex
+                    as={'button'}
+                    flex={1}
+                    borderWidth={1}
+                    borderRadius={"6px"}
+                    minH={"50px"}
+                    minW={"full"}
+                    px={"20px"}
+                    alignItems={'center'}
+                    justifyContent={'center'}
+                    onClick={() => window.open("/","_self")}
+                >
+                    <Text color={"black"} fontWeight={500} ml={"16px"}>Entrar</Text>
+                </Flex>
         :
             <Skeleton w={'full'} isLoaded={isLoaded}>
                 <Button

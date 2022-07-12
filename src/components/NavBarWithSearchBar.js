@@ -59,7 +59,7 @@ export default function NavBarWithSearchBar({...props}) {
             />
           : <Spacer/>}
             <Box ml={4} mr={Dimensions.navBar.SIDE_MENU_WIDTH}>
-                <MetamaskButton/>
+                <MetamaskButton isHome={true}/>
             </Box>
 
         </Flex>

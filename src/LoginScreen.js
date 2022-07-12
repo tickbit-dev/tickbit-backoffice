@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Flex, Box, Text, Heading, Image, Spacer, Button, Alert, AlertIcon } from '@chakra-ui/react';
+import { Flex, Box, Text, Heading, Image, Spacer, Button, Alert, AlertIcon, Spinner, Center } from '@chakra-ui/react';
 
 import {BrowserRouter, Routes, Route } from "react-router-dom";
 import MetamaskButton from './components/MetamaskButton';
@@ -7,10 +7,12 @@ import Logo from "./assets/logo.webp"
 
 import MetamaskLogo from "./assets/metamask_logo.webp"
 import PolygonLogo from "./assets/matic-token-icon.webp"
+import { FiRefreshCw } from 'react-icons/fi';
 
 export default function LoginScreen({...props}) {
 
 	const [isFakeLoadingData, setIsFakeLoadingData] = useState(false);
+	const [errorLoading, setErrorLoading] = useState(false);
 
 	function isMobileDevice() {
         return 'ontouchstart' in window || 'onmsgesturechange' in window;
@@ -93,6 +95,12 @@ export default function LoginScreen({...props}) {
 				window.location.reload();
 			})
 		}
+	}, []);
+
+	useEffect(() => {
+		setTimeout(() => {
+			setErrorLoading(true)
+		}, 4000);
 	}, []);
 
 	return (
@@ -184,7 +192,36 @@ export default function LoginScreen({...props}) {
 								</Box>
 							</Button>
 						</Flex>
-				: null
+				: 
+					<Center>
+						<Flex direction={"column"} alignItems={'center'} justifyContent={'center'}>
+							<Spinner/>
+							{errorLoading == true ?
+								<Flex direction={'column'} mt={"40px"} alignItems={'center'} justifyContent={'center'}>
+									<Text>Puede que sea necesario recargar la página para cargar algunos datos...</Text>
+									<Button
+										as="button"
+										pl={"20px"} mt={'16px'}
+										pr={"20px"}
+										h={"50px"}
+										borderRadius={"10px"}
+										transition="all .6s ease"
+										_hover={{ bg: "gray.400"}}
+										bg={"gray.300"}
+										_focus={{boxShadow:'0 0 0px 0px rgba(0, 0, 0, 0)'}}
+										style={{WebkitTapHighlightColor: "transparent"}}
+										onClick={() => window.open("/","_self")}
+										overflow={"hidden"}
+									>
+										<Box d="flex" alignItems={"center"} justifyContent={"center"}>
+											<FiRefreshCw/>
+											<Text /*display={{base: "none", md: "flex"}}*/ color={'black'} ml={'16px'} fontWeight={500}>Recargar</Text>
+										</Box>
+									</Button>
+								</Flex>
+							: null}
+						</Flex>
+					</Center>
 			: null}
 		</Flex>
 	);

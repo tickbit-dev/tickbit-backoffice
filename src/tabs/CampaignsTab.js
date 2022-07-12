@@ -11,7 +11,8 @@ import CampaignsTable from '../components/CampaignsTable';
 import { FiInfo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
-const NOW_DATE = moment(new Date()).format('YYYY-MM-DD');
+const WEEK_DAY = new Date().getDay() > 0 ? new Date().getDay() - 1 : 6;
+const NOW_DATE = moment(new Date()).subtract(WEEK_DAY, 'days').format('YYYY-MM-DD');
 const FINAL_DATE = moment(NOW_DATE).add(6, 'days');
 const DEFAULT_INTERVAL = {"id": 0, "fechainicial": moment(NOW_DATE).unix(), "fechafinal": moment(FINAL_DATE).unix()};
 
@@ -100,8 +101,6 @@ export default function CampaingsTab({ ...props }) {
 
     async function createCampaign(idTypeAux, eventIdAux, initialDateAux, finalDateAux, priceAux){
         //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
-        console.log("fi", initialDateAux);
-        console.log("ff", finalDateAux)
         const transaction = await createCampaignOnBlockchain(idTypeAux, eventIdAux, initialDateAux, finalDateAux, priceAux);
     
         if(transaction == null){
@@ -164,14 +163,14 @@ export default function CampaingsTab({ ...props }) {
                     {/*<Text fontSize="xl" fontWeight="700">{intervalos.length > 0 ? cutIntervalDate(moment(selectedInterval.fechainicial).format('YYYY-MM-DD')) + " - " + cutIntervalDate(moment(selectedInterval.fechaFinal).format('YYYY-MM-DD')) : cutIntervalDate(moment(new Date()).format('YYYY-MM-DD')) + " - " + cutIntervalDate(moment(new Date()).format('YYYY-MM-DD'))}</Text>*/}
                     {/*<Text fontSize="xl" fontWeight="700">{cutIntervalDate(selectedInterval.fechainicial) + " - " + cutIntervalDate(selectedInterval.fechafinal)}</Text>*/}
                     <Flex flex={1} minW={'full'} direction={{ base: 'column', lg: 'row' }}>
-                        <Select ml={{ base: 'none', lg: 'auto' }} mt={{ base: 'none', lg: 'none' }} minW={{base: "flex", md: 250}} onChange={(e) => onChangeIntervalValue(e.target.value)}>
+                        <Select ml={{ base: 'none', lg: 'auto' }} mt={{ base: '0px', lg: '0px' }} minW={{base: "flex", md: 250}} onChange={(e) => onChangeIntervalValue(e.target.value)}>
                             {intervalos.length > 0 ?
                                 intervalos.map((intervalo, index) => (
                                     <option key={'interval_' + index} value={JSON.stringify(intervalo)}>{cutIntervalDate(intervalo.fechainicial) + " - " + cutIntervalDate(intervalo.fechafinal)}</option>
                                 ))
                             : null}
                         </Select>
-                        <Select placeholder='Selecciona evento' mt={{ base: 'none', lg: 'none' }} minW={{base: "flex", md: 250}} ml={{ base: 'none', lg: '2' }} onChange={(e) => setSelectedEvent(e.target.value)}>
+                        <Select placeholder='Selecciona evento' mt={{ base: '16px', lg: '0px' }} minW={{base: "flex", md: 250}} ml={{ base: 'none', lg: '2' }} onChange={(e) => setSelectedEvent(e.target.value)}>
                             {events.length > 0 ?
                                 events.map((events, index) => (
                                     <option key={'event_' + index} value={events._id}>{events.title}</option>
