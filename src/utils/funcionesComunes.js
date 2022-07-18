@@ -6,7 +6,7 @@ import Data from '../data/Data';
 
 //Solidity
 import { ethers, BigNumber } from 'ethers';
-import { contractAddress } from '../solidity/config';
+import { contractAddress, RPC_URL_PROCIVER } from '../solidity/config';
 import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json';
 import Web3Modal from 'web3modal';
 import moment from 'moment';
@@ -362,14 +362,14 @@ function createEventItem(title, idCity, idVenue, idCategory, description, artist
     return { title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate };
 }
 
-export async function getEventsListFromBlockchain() {
+export async function getEventsListFromBlockchain(isPublicRead) {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
 
     const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
-    const data = await contract.readEvents();
+    const data = await contract.readEvents(isPublicRead);
     const item_data = await Promise.all(data);
 
     let itemsArray = [];
@@ -543,14 +543,22 @@ export async function restoreEventBlockchain(eventId) {
     }
 }
 
-export async function readEventbyId(eventId) {
-    const web3Modal = new Web3Modal()
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+export async function readEventbyId(eventId, isPublicRead) {
+    let contract = null;
 
-    const data = await contract.readEvent(BigNumber.from(String(eventId)));
+    if(isPublicRead == false){
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+        contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+    } else{
+        /* create a generic provider and query for unsold market items */
+        const provider = new ethers.providers.JsonRpcProvider(RPC_URL_PROCIVER)
+        contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
+    }
+
+    const data = await contract.readEvent(BigNumber.from(String(eventId)), isPublicRead);
     const item_data = await Promise.all(data);
     let item = newEvent(item_data[0], item_data[1].toNumber(), item_data[2].toNumber(), item_data[3], item_data[4].toNumber(), item_data[5].toNumber(), item_data[6].toNumber(), item_data[7], item_data[8], item_data[9].toNumber(), item_data[10].toNumber(), item_data[11], item_data[12].toNumber(), item_data[13].toNumber(), item_data[14].toNumber(), item_data[15], item_data[16]);
 

@@ -215,7 +215,7 @@ export default function CreateOrUpdateEventTab({...props}) {
     }
 
     async function getEvent(id){
-        const event = await readEventbyId(id);
+        const event = await readEventbyId(id, false);
 
         //console.log(event.initialSaleDate)
         //console.log(getStringFromTimestamp(event.initialSaleDate))

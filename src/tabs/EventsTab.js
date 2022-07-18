@@ -72,13 +72,13 @@ export default function EventsTab({...props}) {
     async function getData(online){
         var items_list = [];
 
-        items_list = online == true ? await getEventsListFromBlockchain() : getEventsListFromTest();
+        items_list = online == true ? await getEventsListFromBlockchain(false) : getEventsListFromTest();
 
         setItems(items_list)
         setInitialItems(items_list);
         setIsLoaded(true)
         
-        if (performance.navigation.type !== 1) { //If it is not refresh page
+        if (performance.navigation.type !== 1){ //If it is not refresh page
             if(location.search.length > 0){
                 applySearchFilter(location.search.replace("?search=", "").replaceAll("+", " "), items_list)
             }

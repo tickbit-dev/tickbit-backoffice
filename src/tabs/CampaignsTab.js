@@ -39,7 +39,7 @@ export default function CampaingsTab({ ...props }) {
         var events_list = [];
         var campaigns_list = [];
 
-        events_list = await getEventsListFromBlockchain();
+        events_list = await getEventsListFromBlockchain(false);
         campaigns_list = await getCampaignListFromBlockchain();
 
         setEvents(events_list)
