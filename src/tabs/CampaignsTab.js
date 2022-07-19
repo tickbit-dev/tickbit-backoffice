@@ -22,6 +22,7 @@ export default function CampaingsTab({ ...props }) {
     const [intervalos, setIntervalos] = useState([DEFAULT_INTERVAL]);
     const [events, setEvents] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
+    const [myCampaigns, setMyCampaigns] = useState([]);
 
     const [eurConversion, setEurConversion] = useState(0);
 
@@ -38,6 +39,7 @@ export default function CampaingsTab({ ...props }) {
     async function getData() {
         var events_list = [];
         var campaigns_list = [];
+        var my_campaigns_list = [];
 
         events_list = await getEventsListFromBlockchain(false);
         campaigns_list = await getCampaignListFromBlockchain();
@@ -45,6 +47,13 @@ export default function CampaingsTab({ ...props }) {
         setEvents(events_list)
         setCampaigns(campaigns_list);
 
+        for(let item of campaigns_list){
+            if(String(props.currentAccount).toLowerCase() == String(item._owner).toLowerCase() || props.isOwner == true){
+                my_campaigns_list.push(item);
+            }
+        }
+
+        setMyCampaigns(my_campaigns_list);
         setIsLoaded(true);
     }
 
@@ -213,7 +222,7 @@ export default function CampaingsTab({ ...props }) {
                     <Skeleton isLoaded={isLoaded} mt={'16px'}>
                         <Flex minW={'full'} minH={'60px'}/>
                     </Skeleton>
-                : campaigns.length == 0 ?
+                : myCampaigns.length == 0 ?
                     <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={"16px"}>    
                         <Flex p={4} alignItems={"center"}>
                             <FiInfo/>
@@ -223,7 +232,7 @@ export default function CampaingsTab({ ...props }) {
                 :
                     <SlideFade in={isLoaded}> 
                         <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                            <CampaignsTable items={campaigns} eventsList={isLoaded ? events : []} isOwner={props.isOwner} currentAccount={props.currentAccount}/>
+                            <CampaignsTable items={myCampaigns} eventsList={isLoaded ? events : []} isOwner={props.isOwner} currentAccount={props.currentAccount}/>
                         </Flex>
                     </SlideFade> 
                 }
