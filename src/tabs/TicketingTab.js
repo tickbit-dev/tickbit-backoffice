@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, SlideFade, Stack, Skeleton, useBreakpointValue } from '@chakra-ui/react';
-import { getCityById, getEstado, getEventsListFromBlockchain, getEventsListFromTest, getMonthAndYearAbrebiation, getSearchBarPlaceholder, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
+import { getCityById, getEstado, getEventsListFromBlockchain, getEventsListFromTest, getMonthAndYearAbrebiation, getSearchBarPlaceholder, getTicketsListFromBlockchain } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo, FiSearch } from 'react-icons/fi';
 import TicketingTable from '../components/TicketingTable';
 import Dimensions from '../constants/Dimensions';
@@ -21,6 +21,7 @@ const IS_ONLINE = true;
 export default function Ticketing({...props}) {
     const [initialItems, setInitialItems] = useState([]);
     const [items, setItems] = useState([]);
+    const [events, setEvents] = useState([]);
     const [itemsByDate, setItemsByDate] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const [searchValue, setSearchValue] = useState('');
@@ -99,9 +100,11 @@ export default function Ticketing({...props}) {
         setItemsByDate(result.reverse());
     }
 
-    async function getData(online){
-        const items_list = online == true ? await getTicketsListFromBlockchain() : getTicketsListFromTest();
-
+    async function getData(){
+        const events_list = await getEventsListFromBlockchain(false);
+        const items_list = await getTicketsListFromBlockchain();
+        console.log("tickets", items_list)
+        setEvents(await events_list);
         setItems(await items_list);
         setInitialItems(await items_list);
         
@@ -115,7 +118,7 @@ export default function Ticketing({...props}) {
     }
 
     useEffect(() => {
-        getData(IS_ONLINE);
+        getData();
     }, []);
 
     useEffect(() => {
@@ -191,6 +194,7 @@ export default function Ticketing({...props}) {
                         <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>    
                             <TicketingTable
                                 items={items}
+                                eventsList={isLoaded ? events : []}
                             />
                         </Flex>
                     </SlideFade>

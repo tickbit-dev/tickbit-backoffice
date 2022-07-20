@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer, Skeleton, SlideFade, useBreakpoint, useBreakpointValue } from '@chakra-ui/react';
-import { createTicketOnBlockchain, getCampaignById, getCampaignListFromBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
+import { createTicketOnBlockchain, getCampaignById, getCampaignListFromBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesOwnerTable from '../components/IncomesOwnerTable';
@@ -113,7 +113,6 @@ export default function IncomesTab({ ...props }) {
     }
 
     async function getTicketandCampaignItems() {
-        //const items_list = online == false ? getTicketsListFromTest() : await getTicketsListFromBlockchain();
         const items_list = await getTicketsListFromBlockchain();
         const campaigns_list = await getCampaignListFromBlockchain();
         setCampaigns(await campaigns_list);

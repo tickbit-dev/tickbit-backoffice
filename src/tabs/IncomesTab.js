@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer, Skeleton, SlideFade, useBreakpoint, useBreakpointValue } from '@chakra-ui/react';
-import { createTicketOnBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain, getTicketsListFromTest } from '../utils/funcionesComunes';
+import { createTicketOnBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesTable from '../components/IncomesTable';
@@ -82,8 +82,8 @@ export default function IncomesTab({...props}) {
         setData(result.reverse());
     }
 
-    async function getTicketItems(online){
-        const items_list = online == false ? getTicketsListFromTest() : await getTicketsListFromBlockchain();
+    async function getTicketItems(){
+        const items_list = await getTicketsListFromBlockchain();
 
         setTickets(await items_list);
         setIsLoaded(true);
@@ -98,7 +98,7 @@ export default function IncomesTab({...props}) {
     useEffect(() => {
         // True: BLOCKCHAIN
         // False: LOCAL
-        getTicketItems(IS_ONLINE);
+        getTicketItems();
     }, []);
 
     useEffect(() => {

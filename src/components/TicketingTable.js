@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input, useToast } from '@chakra-ui/react';
-import {truncateAddress, changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, getTicketsListFromTest, timestampToDate, openScan, getVenueById, getCityByIdVenue } from '../utils/funcionesComunes';
+import {truncateAddress, changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, timestampToDate, openScan, getVenueById, getCityByIdVenue } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
 import '../table.css'
 
@@ -8,7 +8,7 @@ const ITEMS_PER_PAGE = 6;
 const FILLING_SIZE = 59;
 
 export default function TicketingTable({...props}) {
-    const [items, setItems] = useState(props.items ?? getTicketsListFromTest());
+    const [items, setItems] = useState(props.items ?? []);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
     const [eurToMatic, setEurToMatic] = useState(0);
@@ -125,7 +125,6 @@ export default function TicketingTable({...props}) {
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
-                                
                                 <Text noOfLines={1}>{timestampToDate(row._purchaseDate)}</Text>
                             </Td>
                             <Td
