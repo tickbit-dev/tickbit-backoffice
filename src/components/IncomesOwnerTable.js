@@ -71,7 +71,7 @@ export default function IncomesOwnerTable({ ...props }) {
                                 borderRightWidth={0}
                                 minW={'130px'}
                             >
-                                <Text noOfLines={1}>{row.income}€</Text>
+                                <Text noOfLines={1}>{String(parseFloat(row.income).toFixed(2)).replace('.', ',')}$</Text>
                             </Td>
                         </Tr>
                     ))}

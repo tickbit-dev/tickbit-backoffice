@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input, useToast } from '@chakra-ui/react';
-import {truncateAddress, changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, timestampToDate, openScan, getVenueById, getCityByIdVenue } from '../utils/funcionesComunes';
+import {truncateAddress, changeNumberforNameMonth, getCityById, getEstado, getEventsListFromTest, getTicketsListFromBlockchain, timestampToDate, openScan, getVenueById, getCityByIdVenue, getEventById } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
 import '../table.css'
 
@@ -11,7 +11,6 @@ export default function TicketingTable({...props}) {
     const [items, setItems] = useState(props.items ?? []);
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE);
-    const [eurToMatic, setEurToMatic] = useState(0);
 
     const toast = useToast()
     // Avoid a layout jump when reaching the last page with empty items.
@@ -42,28 +41,11 @@ export default function TicketingTable({...props}) {
         })
     }
 
-    function getEurToMaticConversion(){
-        fetch('https://api.binance.com/api/v3/ticker/price?symbol=MATICEUR')
-            .then(response => response.text())
-            .then(data => {
-                console.log(JSON.parse(data).price)
-                setEurToMatic(JSON.parse(data).price)
-            })
-            .catch(error => {
-                // handle the error
-                console.log(error)
-            });
-    }
-
     useEffect(() => {
         //console.log("table")
         //console.log(props.items)
         setItems(props.items)
     }, [props.items]);
-
-    useEffect(() => {
-        getEurToMaticConversion()
-    }, []);
 
     return (
         <Flex flex={1} direction={'column'} maxW={'full'} borderRadius={'10px'} overflow={'hidden'} borderWidth={'1px'} overflowX={'scroll'}>
@@ -71,13 +53,14 @@ export default function TicketingTable({...props}) {
                 <Thead backgroundColor={'gray.100'}>
                     <Tr>
                         <Th color={'black'} textAlign={'center'} minW={'62px'} w={0}>Id</Th>
+                        <Th color={'black'} minW={'260px'}>Evento</Th>
                         <Th color={'black'} minW={'200px'}>Propietario</Th>
-                        <Th color={'black'} minW={'200px'}>Fecha de compra</Th>
-                        <Th color={'black'} minW={'200px'}>Recinto</Th>
-                        <Th color={'black'} minW={'200px'}>Ciudad</Th>
+                        <Th color={'black'} minW={'110px'} w={0}>Fecha de compra</Th>
+                        {/*<Th color={'black'} minW={'200px'}>Recinto</Th>*/}
+                        <Th color={'black'} minW={'260px'} w={0}>Ciudad y lugar</Th>
                         {/*<Th color={'black'} minW={'200px'}>Id Evento</Th>
                         <Th color={'black'} minW={'200px'}>Id Zona</Th>*/}
-                        <Th color={'black'} minW={'200px'}>Precio</Th>
+                        <Th color={'black'} minW={'170px'} w={0}>Precio</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -94,11 +77,20 @@ export default function TicketingTable({...props}) {
                             </Td>
                             <Td
                                 borderRightWidth={1}
+                                minW={'260px'}
+                            >
+                                <Flex alignItems={'center'}>
+                                    <Text noOfLines={1}>{getEventById(row.idEvent, props.eventsList).title}</Text>
+                                    <Flex onClick={() => window.open('/events/' + row.idEvent, '_self')} _hover={{bg: 'gray.200'}} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} ml={"16px"} transition="all .3s ease">
+                                        <FiExternalLink size={"14px"}/>
+                                    </Flex>
+                                </Flex>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
                                 minW={'200px'}
-                               
+                                w={'200px'}
                             >   
-                            
-                            
                             <Popover trigger={'hover'}>
                                     <Box d={'flex'} alignItems={'center'}>
                                         <PopoverTrigger>
@@ -123,21 +115,23 @@ export default function TicketingTable({...props}) {
                             </Td>
                             <Td
                                 borderRightWidth={1}
-                                minW={'130px'}
+                                minW={'110px'}
+                                w={'110px'}
                             >
                                 <Text noOfLines={1}>{timestampToDate(row._purchaseDate)}</Text>
                             </Td>
-                            <Td
+                            {/*<Td
                                 borderRightWidth={1}
                                 minW={'130px'}
                             >
                                 <Text noOfLines={1}>{getVenueById(row.idVenue).name}</Text>
-                            </Td>
+                            </Td>*/}
                             <Td
                                 borderRightWidth={1}
-                                minW={'130px'}
+                                minW={'260px'}
+                                w={'260px'}
                             >
-                                <Text noOfLines={1}>{getCityByIdVenue(row.idVenue).name}</Text>
+                                <Text noOfLines={1}>{getCityById(getEventById(row.idEvent, props.eventsList).idCity).name + " (" + getVenueById(getEventById(row.idEvent, props.eventsList).idVenue).name + ")"}</Text>
                             </Td>
                             {/*<Td
                                 borderRightWidth={1}
@@ -153,11 +147,12 @@ export default function TicketingTable({...props}) {
                             </Td>*/}
                             <Td
                                 borderRightWidth={0}
-                                minW={'130px'}
+                                minW={'170px'}
+                                width={'170px'}
                                 direction={'row'}
                             >
                                 <Flex>
-                                    <Text noOfLines={1}>{row.price + "€"}</Text>
+                                    <Text noOfLines={1}>{row.price + "$"}</Text>
                                 </Flex>
                             </Td>
                         </Tr>

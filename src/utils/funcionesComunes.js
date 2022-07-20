@@ -132,6 +132,15 @@ export function getStringFromTimestamp(timestampValue) {
     return string;
 }
 
+export function getEventById(idEvent, eventsList) {
+    for(let i = 0; i < eventsList.length; i++){
+        if(eventsList[i]._id == idEvent){
+            return eventsList[i];
+        }
+    }
+    return "No registrado";
+}
+
 export function getCategories() {
     return Data.categories;
 }

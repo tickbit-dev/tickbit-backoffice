@@ -24,7 +24,7 @@ export default function CampaingsTab({ ...props }) {
     const [campaigns, setCampaigns] = useState([]);
     const [myCampaigns, setMyCampaigns] = useState([]);
 
-    const [eurConversion, setEurConversion] = useState(0);
+    const [fiatConversion, setFiatConversion] = useState(0);
 
     const [isLoaded, setIsLoaded] = useState(null);
     const [isPriceLoaded, setIsPriceLoaded] = useState(false);
@@ -37,31 +37,20 @@ export default function CampaingsTab({ ...props }) {
     const [availableDestacadosCount, setAvailableDestacadosCount] = useState(0);
 
     async function getData() {
-        var events_list = [];
-        var campaigns_list = [];
-        var my_campaigns_list = [];
+        const events_list = await getEventsListFromBlockchain(false);
+        const campaigns_list = await getCampaignListFromBlockchain();
 
-        events_list = await getEventsListFromBlockchain(false);
-        campaigns_list = await getCampaignListFromBlockchain();
+        setEvents(await events_list)
+        setCampaigns(await campaigns_list);
 
-        setEvents(events_list)
-        setCampaigns(campaigns_list);
-
-        for(let item of campaigns_list){
-            if(String(props.currentAccount).toLowerCase() == String(item._owner).toLowerCase() || props.isOwner == true){
-                my_campaigns_list.push(item);
-            }
-        }
-
-        setMyCampaigns(my_campaigns_list);
         setIsLoaded(true);
     }
 
-    function getEurToMaticConversion() {
-        fetch('https://api.binance.com/api/v3/ticker/price?symbol=MATICEUR')
+    function getUSDToMaticConversion() {
+        fetch('https://api.binance.com/api/v3/ticker/price?symbol=MATICUSDT')
             .then(response => response.text())
             .then(data => {
-                setEurConversion(JSON.parse(data).price)
+                setFiatConversion(JSON.parse(data).price)
                 setIsPriceLoaded(true)
             })
             .catch(error => {
@@ -74,7 +63,7 @@ export default function CampaingsTab({ ...props }) {
         fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHEUR')
             .then(response => response.text())
             .then(data => {
-                setEurConversion(JSON.parse(data).price)
+                setFiatConversion(JSON.parse(data).price)
                 setIsPriceLoaded(true)
             })
             .catch(error => {
@@ -154,7 +143,7 @@ export default function CampaingsTab({ ...props }) {
 
         getData();
 
-        getEurToMaticConversion()
+        getUSDToMaticConversion()
         //getEurToEthConversion()
     }, []);
 
@@ -195,7 +184,7 @@ export default function CampaingsTab({ ...props }) {
                         isLoadingCreateCampaign={isLoadingCreateCampaign}
                         createCampaignOnBlockchain={(idType, eventId, price) => createCampaign(idType, eventId, selectedInterval.fechainicial, selectedInterval.fechafinal, price)}
                         setIsLoadingCreateCampaign={(value) => setIsLoadingCreateCampaign(value)}
-                        eurConversion={eurConversion}
+                        fiatConversion={fiatConversion}
                         isPriceLoaded={isPriceLoaded}
                         isLoaded={isLoaded}
                         evento={selectedEvent}
@@ -213,7 +202,7 @@ export default function CampaingsTab({ ...props }) {
                         evento={selectedEvent}
                         initialDate={selectedInterval.fechainicial}
                         finalDate={selectedInterval.fechafinal}
-                        eurConversion={eurConversion}
+                        fiatConversion={fiatConversion}
                         availability={availableDestacadosCount}
                     />
                 </Flex>
@@ -222,7 +211,7 @@ export default function CampaingsTab({ ...props }) {
                     <Skeleton isLoaded={isLoaded} mt={'16px'}>
                         <Flex minW={'full'} minH={'60px'}/>
                     </Skeleton>
-                : myCampaigns.length == 0 ?
+                : campaigns.length == 0 ?
                     <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={"16px"}>    
                         <Flex p={4} alignItems={"center"}>
                             <FiInfo/>
@@ -232,7 +221,7 @@ export default function CampaingsTab({ ...props }) {
                 :
                     <SlideFade in={isLoaded}> 
                         <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                            <CampaignsTable items={myCampaigns} eventsList={isLoaded ? events : []} isOwner={props.isOwner} currentAccount={props.currentAccount}/>
+                            <CampaignsTable items={campaigns} eventsList={isLoaded ? events : []} isOwner={props.isOwner} currentAccount={props.currentAccount}/>
                         </Flex>
                     </SlideFade> 
                 }
@@ -243,7 +232,7 @@ export default function CampaingsTab({ ...props }) {
 };
 
 export function FrontPageCampaingCard({ ...props }) {
-    const eur_price = getCampaignById(1).price;
+    const fiat_price = getCampaignById(1).price;
     const event = props.evento;
     const initialDate = props.initialDate;
     const finalDate = props.finalDate;
@@ -266,16 +255,16 @@ export function FrontPageCampaingCard({ ...props }) {
                             <Flex direction={'column'} alignItems={"center"}>
                                 <Flex alignItems={'center'}>
                                     <Text fontSize="5xl" fontWeight="900">
-                                        {eur_price}
+                                        {String(parseFloat(fiat_price).toFixed(2)).replace('.', ',')}
                                     </Text>
                                     <Text fontSize="xl" ml={"4px"}>
-                                        €
+                                        $
                                     </Text>
                                 </Flex>
                                 <Skeleton isLoaded={props.isPriceLoaded && props.isLoaded} mt={'-10px'}>
                                     <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
-                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurConversion) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " MATIC"}
+                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.fiatConversion) * fiat_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                        {"≈ " + String(parseFloat((1 / props.fiatConversion) * fiat_price).toFixed(5)).replace('.', ',') + " MATIC"}
                                     </Text>
                                 </Skeleton>
                             </Flex>
@@ -295,7 +284,7 @@ export function FrontPageCampaingCard({ ...props }) {
                                     type={1}
                                     evento={event}
                                     availability={props.availability}
-                                    onClick={() => props.createCampaignOnBlockchain(1, event, parseFloat((1 / props.eurConversion) * eur_price))}
+                                    onClick={() => props.createCampaignOnBlockchain(1, event, parseFloat((1 / props.fiatConversion) * fiat_price))}
                                     isLoading={props.isLoadingCreateCampaign}
                                     setIsLoading={(value) => props.setIsLoadingCreateCampaign(value)}
                                 />
@@ -310,7 +299,7 @@ export function FrontPageCampaingCard({ ...props }) {
 
 
 export function OutstandingCampaingCard({ ...props }) {
-    const eur_price = getCampaignById(2).price;
+    const fiat_price = getCampaignById(2).price;
     const event = props.evento;
     const initialDate = props.initialDate;
     const finalDate = props.finalDate;
@@ -333,16 +322,16 @@ export function OutstandingCampaingCard({ ...props }) {
                             <Flex direction={'column'} alignItems={"center"}>
                                 <Flex alignItems={'center'}>
                                     <Text fontSize="5xl" fontWeight="900">
-                                        {eur_price}
+                                        {String(parseFloat(fiat_price).toFixed(2)).replace('.', ',')}
                                     </Text>
                                     <Text fontSize="xl" ml={"4px"}>
-                                        €
+                                        $
                                     </Text>
                                 </Flex>
                                 <Skeleton isLoaded={props.isPriceLoaded && props.isLoaded} mt={'-10px'}>
                                     <Text fontSize="xl" color="gray.500" textAlign={"center"} minW={"180px"}>
-                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.eurConversion) * eur_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
-                                        {"≈ " + String(parseFloat((1 / props.eurConversion) * eur_price).toFixed(5)).replace('.', ',') + " MATIC"}
+                                        {/*{"≈ " + numberWithCommas(String(parseFloat((1/props.fiatConversion) * fiat_price).toFixed(0)).replace('.', ',')) + " MATIC"} */}
+                                        {"≈ " + String(parseFloat((1 / props.fiatConversion) * fiat_price).toFixed(5)).replace('.', ',') + " MATIC"}
                                     </Text>
                                 </Skeleton>
                             </Flex>
@@ -362,7 +351,7 @@ export function OutstandingCampaingCard({ ...props }) {
                                     type={2}
                                     evento={event}
                                     availability={props.availability}
-                                    onClick={() => props.createCampaignOnBlockchain(2, event, parseFloat((1 / props.eurConversion) * eur_price))}
+                                    onClick={() => props.createCampaignOnBlockchain(2, event, parseFloat((1 / props.fiatConversion) * fiat_price))}
                                     isLoading={props.isLoadingCreateCampaign}
                                     setIsLoading={(value) => props.setIsLoadingCreateCampaign(value)}
                                 />

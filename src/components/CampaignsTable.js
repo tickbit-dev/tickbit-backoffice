@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Flex, Text, Table, Thead, Tr, Th, Tbody, Td, useToast, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Box, Input } from '@chakra-ui/react';
-import { changeNumberforNameMonth, cutIntervalDate, getCampaignById, getCityById, getEstado, getEventsListFromTest, openScan, timestampToDate, truncateAddress } from '../utils/funcionesComunes';
+import { changeNumberforNameMonth, cutIntervalDate, getCampaignById, getCityById, getEstado, getEventById, getEventsListFromTest, openScan, timestampToDate, truncateAddress } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiClipboard, FiCopy, FiExternalLink } from 'react-icons/fi';
 import { FaEthereum } from "react-icons/fa";
 import '../table.css'
@@ -77,72 +77,75 @@ export default function IncomesTable({ ...props }) {
                 </Thead>
                 <Tbody>
                     {(itemsPerPage > 0 ? items.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage) : items).map((row, index) => (
-                        String(props.currentAccount).toLowerCase() == String(row._owner).toLowerCase() || props.isOwner == true ?
-                            <Tr key={"tr_campaign_table_" + index} style={{ cursor: 'pointer' }} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
-                                <Td
-                                    borderRightWidth={1}
-                                    bg={'gray.50'}
-                                    minW={'66px'}
-                                    textAlign={'center'}
-                                    width={'66px'}
-                                >
-                                    <Text noOfLines={1}>{row._id}</Text>
-                                </Td>
-                                {props.isOwner == true ? <Td
-                                    borderRightWidth={1}
-                                    minW={"180px"}
-                                    w={"180px"}
-                                >
-                                    <Popover trigger={'hover'}>
-                                        <Box d={'flex'} alignItems={'center'}>
-                                            <PopoverTrigger>
-                                                <Text noOfLines={1} pr={5}>{truncateAddress(row._owner)}</Text>
-                                            </PopoverTrigger>
-                                            <Flex onClick={() => copyText(row._owner)} _hover={{ bg: 'gray.200' }} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} transition="all .3s ease">
-                                                <FiCopy size={"14px"} />
-                                            </Flex>
-                                        </Box>
+                        <Tr key={"tr_campaign_table_" + index} style={{ cursor: 'pointer' }} _hover={{ bg: "gray.50" }} transition="0.3s ease" onClick={() => console.log(row.id)} >
+                            <Td
+                                borderRightWidth={1}
+                                bg={'gray.50'}
+                                minW={'66px'}
+                                textAlign={'center'}
+                                width={'66px'}
+                            >
+                                <Text noOfLines={1}>{row._id}</Text>
+                            </Td>
+                            {props.isOwner == true ? <Td
+                                borderRightWidth={1}
+                                minW={"180px"}
+                                w={"180px"}
+                            >
+                                <Popover trigger={'hover'}>
+                                    <Box d={'flex'} alignItems={'center'}>
+                                        <PopoverTrigger>
+                                            <Text noOfLines={1} pr={5}>{truncateAddress(row._owner)}</Text>
+                                        </PopoverTrigger>
+                                        <Flex onClick={() => copyText(row._owner)} _hover={{ bg: 'gray.200' }} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} transition="all .3s ease">
+                                            <FiCopy size={"14px"} />
+                                        </Flex>
+                                    </Box>
 
-                                        <PopoverContent _focus={{ outline: 'none' }} >
-                                            <PopoverArrow />
-                                            <PopoverBody p={4}>
-                                                <Box onClick={() => openScan(row._owner)}>
-                                                    <FiExternalLink />
-                                                    <Link _focus={{ outline: 'none' }} noOfLines={2} ml={"26px"} mt={"-18px"}>{row._owner}</Link>
-                                                </Box>
-                                            </PopoverBody>
-                                        </PopoverContent>
-                                    </Popover>
-                                </Td>
-                                : null}
-                                <Td
-                                    borderRightWidth={1}
-                                    minW={'200px'}
-                                >
-                                    <Text noOfLines={1}>{getEventNameById(row.eventId)}</Text>
-                                </Td>
-                                <Td
-                                    borderRightWidth={1}
-                                    minW={'120px'}
-                                    w={'120px'}
-                                >
-                                    <Text noOfLines={1}>{getCampaign(row.idType).name}</Text>
-                                </Td>
-                                <Td
-                                    borderRightWidth={1}
-                                    minW={"220px"}
-                                    w={"220px"}
-                                >
-                                    <Text noOfLines={1}>{cutIntervalDate(row.initialDate) + " - " + cutIntervalDate(row.finalDate)}</Text>
-                                </Td>
-                                <Td
-                                    borderRightWidth={0}
-                                    minW={'130px'}
-                                >
-                                    <Text noOfLines={1}>{row.price.toFixed(8)} MATIC</Text>
-                                </Td>
-                            </Tr>
-                        : null
+                                    <PopoverContent _focus={{ outline: 'none' }} >
+                                        <PopoverArrow />
+                                        <PopoverBody p={4}>
+                                            <Box onClick={() => openScan(row._owner)}>
+                                                <FiExternalLink />
+                                                <Link _focus={{ outline: 'none' }} noOfLines={2} ml={"26px"} mt={"-18px"}>{row._owner}</Link>
+                                            </Box>
+                                        </PopoverBody>
+                                    </PopoverContent>
+                                </Popover>
+                            </Td>
+                            : null}
+                            <Td
+                                borderRightWidth={1}
+                                minW={'200px'}
+                            >
+                                <Flex alignItems={'center'}>
+                                    <Text noOfLines={1}>{getEventById(row.eventId, props.eventsList).title}</Text>
+                                    <Flex onClick={() => window.open('/events/' + row.eventId, '_self')} _hover={{bg: 'gray.200'}} bg={'gray.100'} borderRadius={'full'} alignItems={'center'} justifyContent={'center'} px={"6px"} py={"6px"} ml={"16px"} transition="all .3s ease">
+                                        <FiExternalLink size={"14px"}/>
+                                    </Flex>
+                                </Flex>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'120px'}
+                                w={'120px'}
+                            >
+                                <Text noOfLines={1}>{getCampaign(row.idType).name}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={"220px"}
+                                w={"220px"}
+                            >
+                                <Text noOfLines={1}>{cutIntervalDate(row.initialDate) + " - " + cutIntervalDate(row.finalDate)}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={0}
+                                minW={'130px'}
+                            >
+                                <Text noOfLines={1}>{String(parseFloat(row.price).toFixed(5)).replace('.', ',')} MATIC</Text>
+                            </Td>
+                        </Tr>
                     ))}
                     {emptyItems > 0 && (
                         <Tr style={{ height: FILLING_SIZE * emptyItems }}>

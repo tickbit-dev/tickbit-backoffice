@@ -433,7 +433,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                             />
                             <CustomNumberInput
                                 required
-                                formatValue={`€`}
+                                formatValue={`$`}
                                 icon={<BiEuro/>}
                                 text={"Precio"}
                                 placeholder={0}
@@ -696,7 +696,7 @@ export function CustomTextArea({...props}) {
 
 export function CustomNumberInput({...props}) {
     const format = (val) => val + props.formatValue;
-    const parse = (val) => val.replace(/^\€/, '')
+    const parse = (val) => val.replace(/^\$/, '')
 
     return(
         <Stack flex={1} w={'100%'} direction={"column"}>
