@@ -373,13 +373,24 @@ function createEventItem(title, idCity, idVenue, idCategory, description, artist
 }
 
 export async function getEventsListFromBlockchain(isPublicRead) {
-    const web3Modal = new Web3Modal();
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
+    let contract = null;
+    console.log("ispublicread:", isPublicRead)
 
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
+    if(isPublicRead == false){
+        const web3Modal = new Web3Modal();
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+        
+        contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
+    } else{
+        console.log("pasa por aqui")
+        const provider = new ethers.providers.JsonRpcProvider(RPC_URL_PROCIVER)
+        contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
+    }
+
     const data = await contract.readEvents(isPublicRead);
+
     const item_data = await Promise.all(data);
 
     let itemsArray = [];
@@ -652,14 +663,22 @@ export async function createCampaignOnBlockchain(idType, eventId, initialDate, f
     }
 }
 
-export async function getCampaignListFromBlockchain() {
-    const web3Modal = new Web3Modal();
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
+export async function getCampaignListFromBlockchain(isPublicRead) {
+    let contract = null;
 
-    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer);
-    const data = await contract.readCampaigns();
+    if(isPublicRead == false){
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+        contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+    } else{
+        /* create a generic provider and query for unsold market items */
+        const provider = new ethers.providers.JsonRpcProvider(RPC_URL_PROCIVER)
+        contract = new ethers.Contract(contractAddress, Tickbit.abi, provider)
+    }
+
+    const data = await contract.readCampaigns(isPublicRead);
     const item_data = await Promise.all(data);
 
     let itemsArray = [];

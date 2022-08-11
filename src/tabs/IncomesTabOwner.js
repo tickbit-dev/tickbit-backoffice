@@ -114,7 +114,7 @@ export default function IncomesTab({ ...props }) {
 
     async function getTicketandCampaignItems() {
         const items_list = await getTicketsListFromBlockchain();
-        const campaigns_list = await getCampaignListFromBlockchain();
+        const campaigns_list = await getCampaignListFromBlockchain(false);
         setCampaigns(await campaigns_list);
         setTickets(await items_list);
         setIsLoaded(true);

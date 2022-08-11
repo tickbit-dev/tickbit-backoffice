@@ -38,7 +38,7 @@ export default function CampaingsTab({ ...props }) {
 
     async function getData() {
         const events_list = await getEventsListFromBlockchain(false);
-        const campaigns_list = await getCampaignListFromBlockchain();
+        const campaigns_list = await getCampaignListFromBlockchain(false);
 
         setEvents(await events_list)
         setCampaigns(await campaigns_list);
