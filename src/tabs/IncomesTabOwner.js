@@ -71,7 +71,7 @@ export default function IncomesTab({ ...props }) {
             let month2 = d.getMonth() + 1;
             let year2 = d.getFullYear();
             if (month === month2 && year === year2) {
-                income += 1; //tickets[i].price
+                income += tickets[i].price * 0.01;
             }
         }
 
