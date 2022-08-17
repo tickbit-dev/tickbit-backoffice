@@ -50,12 +50,14 @@ import { createEventOnBlockchain, getSearchBarPlaceholder } from './utils/funcio
 import MetamaskButton from './components/MetamaskButton';
 import Input from './components/Input';
 import { BsBoxArrowDownRight } from 'react-icons/bs';
+import { AiOutlineScan } from 'react-icons/ai';
 
 const LinkItems = [
     { name: 'Eventos', icon: FiList, to: 'events', default: true },
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
     { name: 'Ingresos', icon: FiDollarSign, to: 'incomes' },
     { name: 'Campañas', icon: FiTrendingUp, to: 'campaigns' },
+    { name: 'Validador', icon: AiOutlineScan, to: 'validator'},
     { name: 'Ayuda', icon: FiHelpCircle, to: 'help'}
 ];
 

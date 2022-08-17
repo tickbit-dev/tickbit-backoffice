@@ -588,8 +588,8 @@ export async function readEventbyId(eventId, isPublicRead) {
 
 ///////// TICKETS /////////
 
-function newTicket(_owner, _eventOwner, _id, _purchaseDate, idEvent, price) {
-    return { _owner, _eventOwner, _id, _purchaseDate, idEvent, price };
+function newTicket(_owner, _eventOwner, _id, _purchaseDate, idEvent, price, validated) {
+    return { _owner, _eventOwner, _id, _purchaseDate, idEvent, price, validated};
 }
 
 export async function getTicketsListFromBlockchain() {
@@ -616,7 +616,7 @@ export async function getTicketsListFromBlockchain() {
     for (let item of item_data) {
         itemsArray.push(
             newTicket(
-                item[0], item[1], item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber()
+                item[0], item[1], item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(), item[6]
             )
         );
     }

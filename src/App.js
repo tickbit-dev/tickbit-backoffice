@@ -14,6 +14,7 @@ import CreateOrUpdateEventTab from './tabs/CreateOrUpdateEventTab';
 import HelpTab from './tabs/HelpTab';
 import LoginScreen from './LoginScreen';
 import Data from './data/Data';
+import ValidatorTab from './tabs/ValidatorTab';
 
 const theme = extendTheme();
 
@@ -76,6 +77,7 @@ export default function App({...props}) {
 								<Route path="/campaigns" element={<CampaingsTab isOwner={isOwner} currentAccount={currentAccount}/>} />
 								<Route path="/help" element={<HelpTab/>} />
 								<Route path="/create" element={<CreateOrUpdateEventTab/>} />
+								<Route path="/validator" element={<ValidatorTab/>} />
 							</Routes>
 						</HomePage>
 					:
