@@ -704,3 +704,20 @@ export async function getCampaignListFromBlockchain(isPublicRead) {
 
     return itemsArray.reverse();
 }
+
+export async function checkTicketValidation(idEvent, validationHash) {
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddressTickets, TickbitTicket.abi, signer)
+
+    try {
+        const transaction = await contract.checkTicketValidation(BigNumber.from(String(idEvent)), BigNumber.from(String(validationHash)));
+        await transaction.wait();
+
+        return transaction;
+    } catch (error) {
+        console.log(error);
+    }
+}

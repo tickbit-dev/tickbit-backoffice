@@ -5,7 +5,7 @@ import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import Button from '../components/Button';
 import { setYear } from 'date-fns';
 import moment from 'moment';
-import { createCampaignOnBlockchain, cutIntervalDate, getCampaignById, getCampaignListFromBlockchain, getCampaignsWeeksIntervals, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getValueFromMonthAbreviation } from '../utils/funcionesComunes';
+import { checkTicketValidation, createCampaignOnBlockchain, cutIntervalDate, getCampaignById, getCampaignListFromBlockchain, getCampaignsWeeksIntervals, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getValueFromMonthAbreviation } from '../utils/funcionesComunes';
 import Colors from '../constants/Colors';
 import CampaignsTable from '../components/CampaignsTable';
 import { FiInfo } from 'react-icons/fi';
@@ -23,7 +23,7 @@ export default function ValidatorTab({ ...props }) {
     const toast = useToast();
 
     const [events, setEvents] = useState([]);
-    const [selectedEvent, setSelectedEvent] = useState(0);
+    const [selectedEvent, setSelectedEvent] = useState(1);
 
     const [data, setData] = useState('No result');
     const [qrValue, setQrValue] = useState(null);
@@ -36,26 +36,44 @@ export default function ValidatorTab({ ...props }) {
         setIsLoaded(true);*/
     }
 
-    function dec2hex(dec) {
-        return dec.toString(16).padStart(2, "0")
-    }
-
     function generateHash(len) {
-        var arr = new Uint8Array((len || 40) / 2)
-        window.crypto.getRandomValues(arr)
-        return Array.from(arr, dec2hex).join('')
+        var text = "";
+        var possible = "123456789";
+
+        for (var i = 0; i < len; i++)
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return text;
     }
 
     function generateQR(){
-        let hash = generateHash() + moment().unix();
+        let hash = generateHash(40) + String(moment().unix());
 
-        let value = {
-            eventId: selectedEvent,
-            hash: generateHash(),
-            timestamp: moment().unix()
+        setQrValue(hash);
+    }
+
+    async function validateComprobation(){
+        const transaction = await checkTicketValidation(selectedEvent, qrValue)
+        
+        if(transaction == null){
+            //Enseñamos un toast de error
+            toast({
+                title: 'Error al verificar el ticket',
+                description: "No se ha podido verificar el ticket debido a un error.",
+                status: 'error',
+                duration: 4000,
+                isClosable: true,
+            })
+        } else {
+            //Enseñamos un toast de éxito
+            toast({
+                title: 'Ticket validado',
+                description: "Se ha validado el ticket.",
+                status: 'success',
+                duration: 4000,
+                isClosable: true,
+            })
         }
-
-        setQrValue(JSON.stringify(value));
     }
 
     useEffect(() => {
@@ -128,7 +146,7 @@ export default function ValidatorTab({ ...props }) {
                                     text={"Comprobar ticket"}
                                     bg={"#69c5d6"}
                                     bghover={"#76d3e3"}
-                                    onClick={() => generateQR()}
+                                    onClick={() => validateComprobation()}
                                 />
                                 <Button
                                     mt={'16px'}
