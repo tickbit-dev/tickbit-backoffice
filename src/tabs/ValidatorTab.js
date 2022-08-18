@@ -23,17 +23,17 @@ export default function ValidatorTab({ ...props }) {
     const toast = useToast();
 
     const [events, setEvents] = useState([]);
-    const [selectedEvent, setSelectedEvent] = useState(1);
+    const [isLoaded, setIsLoaded] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
-    const [data, setData] = useState('No result');
     const [qrValue, setQrValue] = useState(null);
 
     async function getData() {
-        /*const events_list = await getEventsListFromBlockchain(false);
+        const events_list = await getEventsListFromBlockchain(false);
 
-        setEvents(await events_list)
+        setEvents(events_list)
 
-        setIsLoaded(true);*/
+        setIsLoaded(true);
     }
 
     function generateHash(len) {
@@ -47,32 +47,37 @@ export default function ValidatorTab({ ...props }) {
     }
 
     function generateQR(){
-        let hash = generateHash(40) + String(moment().unix());
+        let value = JSON.stringify({
+            validationHash: generateHash(40) + String(moment().unix()),
+            idEvent: selectedEvent
+        });
 
-        setQrValue(hash);
+        setQrValue(value);
     }
 
     async function validateComprobation(){
-        const transaction = await checkTicketValidation(selectedEvent, qrValue)
-        
-        if(transaction == null){
-            //Enseñamos un toast de error
-            toast({
-                title: 'Error al verificar el ticket',
-                description: "No se ha podido verificar el ticket debido a un error.",
-                status: 'error',
-                duration: 4000,
-                isClosable: true,
-            })
-        } else {
-            //Enseñamos un toast de éxito
-            toast({
-                title: 'Ticket validado',
-                description: "Se ha validado el ticket.",
-                status: 'success',
-                duration: 4000,
-                isClosable: true,
-            })
+        if(selectedEvent != null){
+            const transaction = await checkTicketValidation(selectedEvent, JSON.parse(qrValue).validationHash)
+            
+            if(transaction == null){
+                //Enseñamos un toast de error
+                toast({
+                    title: 'Error al verificar el ticket',
+                    description: "No se ha podido verificar el ticket debido a un error.",
+                    status: 'error',
+                    duration: 4000,
+                    isClosable: true,
+                })
+            } else {
+                //Enseñamos un toast de éxito
+                toast({
+                    title: 'Ticket validado',
+                    description: "Se ha validado el ticket.",
+                    status: 'success',
+                    duration: 4000,
+                    isClosable: true,
+                })
+            }
         }
     }
 
@@ -95,8 +100,8 @@ export default function ValidatorTab({ ...props }) {
                                 : null}
                             </Select>
                             <Button
-                                disabled={false}
-                                text={"Nueva validación"}
+                                disabled={selectedEvent != null ? false : true}
+                                text={"Empezar validación"}
                                 bg={"#69c5d6"}
                                 bghover={"#76d3e3"}
                                 onClick={() => generateQR()}
