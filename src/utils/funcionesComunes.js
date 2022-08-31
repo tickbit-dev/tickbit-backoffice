@@ -705,8 +705,35 @@ export async function getCampaignListFromBlockchain(isPublicRead) {
     return itemsArray.reverse();
 }
 
-export async function checkTicketValidation(idEvent, validationHash) {
+export async function checkTicketValidationTest(idEvent, validationHash, secretKey) {
     const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddressTickets, TickbitTicket.abi, signer)
+
+    
+    try {
+        const transaction = await contract.checkTicketValidationTest(BigNumber.from(String(idEvent)), BigNumber.from(String(validationHash)));
+        await transaction.wait();
+
+        return transaction;
+    } catch (error) {
+        console.log(error);
+    }
+
+    try {
+        const data = await contract.checkTicketValidationTest(BigNumber.from(String(idEvent)), BigNumber.from(String(validationHash)));
+        const item_data = await Promise.all(data);
+
+        return true;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function checkTicketValidation(idEvent, validationHash, secretKey) {
+    /*const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
@@ -719,5 +746,34 @@ export async function checkTicketValidation(idEvent, validationHash) {
         return transaction;
     } catch (error) {
         console.log(error);
+    }*/
+    if(secretKey != null && secretKey != ""){
+        const provider = new ethers.providers.JsonRpcProvider(RPC_URL_PROCIVER);
+        const wallet = new ethers.Wallet(secretKey, provider);
+        const contract = new ethers.Contract(contractAddressTickets, TickbitTicket.abi, wallet);
+
+        try {
+            const transaction = await contract.checkTicketValidation(BigNumber.from(String(idEvent)), BigNumber.from(String(validationHash)), {gasLimit: 1000000/*, maxFeePerGas: 6000000000*/});
+            await transaction.wait();
+
+            return transaction;
+        } catch (error) {
+            console.log(error);
+        }
+    } else{
+        const web3Modal = new Web3Modal()
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
+        const contract = new ethers.Contract(contractAddressTickets, TickbitTicket.abi, signer)
+    
+        try {
+            const transaction = await contract.checkTicketValidation(BigNumber.from(String(idEvent)), BigNumber.from(String(validationHash)));
+            await transaction.wait();
+    
+            return transaction;
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
