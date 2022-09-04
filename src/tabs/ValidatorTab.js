@@ -142,7 +142,7 @@ export default function ValidatorTab({ ...props }) {
 
     useInterval(() => {
         validateComprobation()
-    }, isRunning ? 7000 : null);
+    }, isRunning ? secretKey == "" ? 7000 : 2000 : null);
 
     return (
         <Flex direction={"column"} flex={1} w={'100%'}>

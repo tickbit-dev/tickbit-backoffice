@@ -220,7 +220,7 @@ export default function CreateOrUpdateEventTab({...props}) {
         //console.log(event.initialSaleDate)
         //console.log(getStringFromTimestamp(event.initialSaleDate))
 
-        setOwner(event._owner)
+        setOwner(event._owner);
         setTitulo(event.title);
         setCiudad(event.idCity);
         setCategoria(event.idCategory);
