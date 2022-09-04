@@ -15,6 +15,7 @@ import HelpTab from './tabs/HelpTab';
 import LoginScreen from './LoginScreen';
 import Data from './data/Data';
 import ValidatorTab from './tabs/ValidatorTab';
+import AdminTab from './tabs/AdminTab';
 
 const theme = extendTheme();
 
@@ -67,7 +68,7 @@ export default function App({...props}) {
 		<ChakraProvider theme={theme} resetCSS>
 				<BrowserRouter>
 					{isConnected == true ?
-						<HomePage activetab={activeTab} changeactivetab={(tab) => setActiveTab(tab)}>
+						<HomePage activetab={activeTab} isOwner={isOwner} changeactivetab={(tab) => setActiveTab(tab)}>
 							<Routes>
 								<Route path="/" element={<EventsTab/>} />
 								<Route path="/events" element={<EventsTab/>} />
@@ -78,6 +79,7 @@ export default function App({...props}) {
 								<Route path="/help" element={<HelpTab/>} />
 								<Route path="/create" element={<CreateOrUpdateEventTab/>} />
 								<Route path="/validator" element={<ValidatorTab/>} />
+								<Route path="/admin" element={<AdminTab isOwner={isOwner}/>} />
 							</Routes>
 						</HomePage>
 					:

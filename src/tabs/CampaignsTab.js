@@ -10,11 +10,15 @@ import Colors from '../constants/Colors';
 import CampaignsTable from '../components/CampaignsTable';
 import { FiInfo } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import Data from '../data/Data';
 
 const WEEK_DAY = new Date().getDay() > 0 ? new Date().getDay() - 1 : 6;
 const NOW_DATE = moment(new Date()).subtract(WEEK_DAY, 'days').format('YYYY-MM-DD');
 const FINAL_DATE = moment(NOW_DATE).add(6, 'days');
 const DEFAULT_INTERVAL = {"id": 0, "fechainicial": moment(NOW_DATE).unix(), "fechafinal": moment(FINAL_DATE).unix()};
+
+const MAX_PORTADA = Data.campaigns[0].max;
+const MAX_DESCATADO = Data.campaigns[1].max;
 
 export default function CampaingsTab({ ...props }) {
     const toast = useToast();
@@ -39,11 +43,11 @@ export default function CampaingsTab({ ...props }) {
     async function getData() {
         const events_list = await getEventsListFromBlockchain(false);
         const campaigns_list = await getCampaignListFromBlockchain(true);
-
-        console.log(campaigns_list);
+        const my_campaigns_list = await getCampaignListFromBlockchain(false);
 
         setEvents(await events_list)
         setCampaigns(await campaigns_list);
+        setMyCampaigns(await my_campaigns_list);
 
         setIsLoaded(true);
     }
@@ -75,7 +79,7 @@ export default function CampaingsTab({ ...props }) {
     }
 
     function setAvailabilityPortada(value) {
-        var contador = 1;
+        var contador = MAX_PORTADA;
 
         for (let i = 0; i < campaigns.length; i++) {
             if (campaigns[i].initialDate == value && campaigns[i].idType == 1) {
@@ -88,7 +92,7 @@ export default function CampaingsTab({ ...props }) {
 
 
     function setAvailabilityDestacado(value) {
-        var contador = 15;
+        var contador = MAX_DESCATADO;
 
         for (let i = 0; i < campaigns.length; i++) {
             if (campaigns[i].initialDate == value && campaigns[i].idType == 2) {
@@ -213,7 +217,7 @@ export default function CampaingsTab({ ...props }) {
                     <Skeleton isLoaded={isLoaded} mt={'16px'}>
                         <Flex minW={'full'} minH={'60px'}/>
                     </Skeleton>
-                : campaigns.length == 0 ?
+                : myCampaigns.length == 0 ?
                     <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'} mt={"16px"}>    
                         <Flex p={4} alignItems={"center"}>
                             <FiInfo/>
@@ -223,7 +227,7 @@ export default function CampaingsTab({ ...props }) {
                 :
                     <SlideFade in={isLoaded}> 
                         <Flex flex={1} mt={'4'} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                            <CampaignsTable items={campaigns} eventsList={isLoaded ? events : []} isOwner={props.isOwner} currentAccount={props.currentAccount}/>
+                            <CampaignsTable items={myCampaigns} eventsList={isLoaded ? events : []} isOwner={props.isOwner} currentAccount={props.currentAccount}/>
                         </Flex>
                     </SlideFade> 
                 }

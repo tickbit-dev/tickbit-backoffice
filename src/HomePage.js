@@ -75,6 +75,7 @@ export default function HomePage({...props}) {
         onClose={() => onClose}
         onOpenForm={() => onOpenForm()}
         display={{ base: 'none', md: 'block' }}
+        isOwner={props.isOwner}
       />
       <Drawer
         autoFocus={false}
@@ -85,7 +86,7 @@ export default function HomePage({...props}) {
         onOverlayClick={onClose}
         size="full">
         <DrawerContent>
-          <SidebarContent onClose={onClose} onOpenForm={() => onOpenForm()}/>
+          <SidebarContent isOwner={props.isOwner} onClose={onClose} onOpenForm={() => onOpenForm()}/>
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
@@ -97,7 +98,7 @@ export default function HomePage({...props}) {
   );
 }
 
-const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
+const SidebarContent = ({ onClose, searchValue, onOpenForm, isOwner, ...rest}) => {
   const [activeTab, setActiveTab] = useState();
   const location = useLocation();
 
@@ -134,6 +135,12 @@ const SidebarContent = ({ onClose, searchValue, onOpenForm, ...rest}) => {
           <Text>{link.name}</Text>
         </NavItem>
       ))}
+
+      {isOwner == true ?
+        <NavItem onClick={() => {setActiveTab('admin'); onClose()}} key={'admin'} icon={FiSettings} to={'admin'} bg={activeTab == 'admin' || 'admin' == location.pathname.split('/')[1] ? 'gray.100' : 'transparent'} borderRadius={'10px'} mb={'10px'} transition="all .6s ease">
+          <Text>Admin</Text>
+        </NavItem>
+      : null}
     </Box>
   );
 };
