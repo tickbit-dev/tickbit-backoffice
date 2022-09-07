@@ -54,6 +54,7 @@ export default function AdminTab({ ...props }) {
                             <Button 
                                 flex={1}
                                 colorScheme='red'
+                                mt={{base: "16px", lg: '0px'}}
                                 h={"50px"}
                                 //isActive={activeButton}
                                 w={{base: 'full', lg: 'fit-content'}}
