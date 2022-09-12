@@ -39,6 +39,7 @@ export default function IncomesOwnerTable({ ...props }) {
                     <Tr>
                         <Th color={'black'} minW={'200px'}>Fecha</Th>
                         <Th color={'black'} minW={'200px'}>Tickets vendidos</Th>
+                        <Th color={'black'} minW={'200px'}>Reventas</Th>
                         <Th color={'black'} minW={'200px'}>Campañas vendidas</Th>
                         <Th color={'black'} minW={'200px'}>Ingresos</Th>
                     </Tr>
@@ -60,6 +61,12 @@ export default function IncomesOwnerTable({ ...props }) {
                                 minW={'200px'}
                             >
                                 <Text noOfLines={1}>{row.num_tickets}</Text>
+                            </Td>
+                            <Td
+                                borderRightWidth={1}
+                                minW={'200px'}
+                            >
+                                <Text noOfLines={1}>{row.num_resales}</Text>
                             </Td>
                             <Td
                                 borderRightWidth={1}

@@ -587,9 +587,12 @@ export async function readEventbyId(eventId, isPublicRead) {
 }
 
 ///////// TICKETS /////////
+function TicketResale(_id, _resaleDate, idTicket, idEvent, isSold, isCancelled) {
+    return { _id, _resaleDate, idTicket, idEvent, isSold, isCancelled };
+}
 
-function newTicket(_owner, _eventOwner, _id, _purchaseDate, idEvent, price, validated) {
-    return { _owner, _eventOwner, _id, _purchaseDate, idEvent, price, validated};
+function newTicket(_owner, _eventOwner, _id, _purchaseDate, idEvent, price, validated, isOnSale) {
+    return { _owner, _eventOwner, _id, _purchaseDate, idEvent, price, validated, isOnSale};
 }
 
 export async function getTicketsListFromBlockchain() {
@@ -616,7 +619,7 @@ export async function getTicketsListFromBlockchain() {
     for (let item of item_data) {
         itemsArray.push(
             newTicket(
-                item[0], item[1], item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(), item[6]
+                item[0], item[1], item[2].toNumber(), item[3].toNumber(), item[4].toNumber(), item[5].toNumber(), item[6], item[7]
             )
         );
     }
@@ -776,4 +779,38 @@ export async function checkTicketValidation(idEvent, validationHash, secretKey) 
             console.log(error);
         }
     }
+}
+
+export async function getResalesIncomes() {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+
+    const contract = new ethers.Contract(contractAddressTickets, TickbitTicket.abi, signer);
+    const data = await contract.getResalesIncomes();
+    const item_data = await Promise.all(data);
+
+    let itemsArray = [];
+
+    /*
+    [0] address _owner;
+    [1] address _eventOwner;
+    [2] uint _id;
+    [3] uint256 _purchaseDate;
+    [4] uint256 idEvent;
+    [5] uint256 price;
+    */
+
+    for (let item of item_data) {
+        itemsArray.push(
+            TicketResale(
+                item[0].toNumber(), item[1].toNumber(), item[2].toNumber(), item[3].toNumber(), item[4], item[5]
+            )
+        );
+    }
+
+    console.log(itemsArray);
+
+    return itemsArray;
 }

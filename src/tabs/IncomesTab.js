@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer, Skeleton, SlideFade, useBreakpoint, useBreakpointValue } from '@chakra-ui/react';
-import { createTicketOnBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain } from '../utils/funcionesComunes';
+import { createTicketOnBlockchain, getCityById, getEstado, getEventById, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getResalesIncomes, getTicketsListFromBlockchain } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesTable from '../components/IncomesTable';
@@ -21,6 +21,8 @@ const IS_ONLINE = true;
 export default function IncomesTab({...props}) {
     const [tickets, setTickets] = useState([]);
     const [data, setData] = useState([]);
+    const [resaleIncomes, setResaleIncomes] = useState([]);
+    const [events, setEvents] = useState([]);
     const [isLoaded, setIsLoaded] = useState(null);
 
     //Informaciónd e los gráficos
@@ -47,6 +49,20 @@ export default function IncomesTab({...props}) {
         chartTicketsNumber.push({Date: fechaCompleta, "Número de tickets": numtickets});
         return numtickets ;
     }
+
+    function getNumResalesByMonths(month, year) {
+        var numresaleIncomes = 0;
+
+        for (let i = 0; i < resaleIncomes.length; i++) {
+            let d = new Date(resaleIncomes[i]._resaleDate * 1000)
+            let month2 = d.getMonth() + 1;
+            let year2 = d.getFullYear();
+            if (month === month2 && year === year2) {
+                numresaleIncomes++;
+            }
+        }
+        return numresaleIncomes;
+    }
   
     function getIncomeByMonth(month, year){
         var income = 0;
@@ -58,6 +74,15 @@ export default function IncomesTab({...props}) {
             let year2 = d.getFullYear();
             if(month === month2 && year === year2){
                 income += tickets[i].price * 0.99;
+            }
+        }
+
+        for (let i = 0; i < resaleIncomes.length; i++) {
+            let d = new Date(resaleIncomes[i]._resaleDate * 1000)
+            let month2 = d.getMonth() + 1;
+            let year2 = d.getFullYear();
+            if (month === month2 && year === year2) {
+                income += getEventById(resaleIncomes[i].idEvent, events).price * 0.09;
             }
         }
 
@@ -73,9 +98,10 @@ export default function IncomesTab({...props}) {
 
         while (startDate.isBefore(endDate)) {
             var numtickets = getNumTicketsByMonth(startDate.month() + 1,startDate.year());
+            var numresales = getNumResalesByMonths(startDate.month() + 1, startDate.year());
             var incomes = getIncomeByMonth(startDate.month() + 1,startDate.year());
 
-            result.push({month: startDate.month() + 1, year: startDate.year(), num_tickets: numtickets, income: incomes});
+            result.push({month: startDate.month() + 1, year: startDate.year(), num_tickets: numtickets, num_resales: numresales, income: incomes});
             startDate.add(1, 'month');
         }
 
@@ -84,7 +110,11 @@ export default function IncomesTab({...props}) {
 
     async function getTicketItems(){
         const items_list = await getTicketsListFromBlockchain();
+        const resale_income = await getResalesIncomes();
+        const events_list = await getEventsListFromBlockchain(false);
 
+        setEvents(await events_list);
+        setResaleIncomes(await resale_income);
         setTickets(await items_list);
         setIsLoaded(true);
     }

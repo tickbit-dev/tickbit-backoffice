@@ -76,15 +76,15 @@ export default {
     ],
     categories: [
         {
-            "id": 1,
+            "id": 10,
             "name": "Conciertos y festivales"
         },
         {
-            "id": 2,
+            "id": 11,
             "name": "Teatro y arte"
         },
         {
-            "id": 3,
+            "id": 12,
             "name": "Deportes"
         },
         {

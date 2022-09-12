@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Flex, Box, Text, Table, Thead, Tr, Th, Tbody, Td, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverBody, Image, Link, Center, Icon, Button, Spacer, Skeleton, SlideFade, useBreakpoint, useBreakpointValue } from '@chakra-ui/react';
-import { createTicketOnBlockchain, getCampaignById, getCampaignListFromBlockchain, getCityById, getEstado, getMonthAndYearAbrebiation, getTicketsListFromBlockchain } from '../utils/funcionesComunes';
+import { createTicketOnBlockchain, getCampaignById, getCampaignListFromBlockchain, getCityById, getEstado, getEventById, getEventsListFromBlockchain, getMonthAndYearAbrebiation, getResalesIncomes, getTicketsListFromBlockchain } from '../utils/funcionesComunes';
 import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight, FiInfo } from 'react-icons/fi';
 import { getTestTickets } from '../utils/testIncomesData'
 import IncomesOwnerTable from '../components/IncomesOwnerTable';
@@ -20,6 +20,8 @@ const IS_ONLINE = true;
 export default function IncomesTab({ ...props }) {
     const [tickets, setTickets] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
+    const [resaleIncomes, setResaleIncomes] = useState([]);
+    const [events, setEvents] = useState([]);
     const [data, setData] = useState([]);
     const [isLoaded, setIsLoaded] = useState(null);
 
@@ -45,6 +47,20 @@ export default function IncomesTab({ ...props }) {
             }
         }
         return numcampaigns;
+    }
+
+    function getNumResalesByMonths(month, year) {
+        var numresaleIncomes = 0;
+
+        for (let i = 0; i < resaleIncomes.length; i++) {
+            let d = new Date(resaleIncomes[i]._resaleDate * 1000)
+            let month2 = d.getMonth() + 1;
+            let year2 = d.getFullYear();
+            if (month === month2 && year === year2) {
+                numresaleIncomes++;
+            }
+        }
+        return numresaleIncomes;
     }
 
     function getNumTicketsByMonth(month, year) {
@@ -75,6 +91,14 @@ export default function IncomesTab({ ...props }) {
             }
         }
 
+        for (let i = 0; i < resaleIncomes.length; i++) {
+            let d = new Date(resaleIncomes[i]._resaleDate * 1000)
+            let month2 = d.getMonth() + 1;
+            let year2 = d.getFullYear();
+            if (month === month2 && year === year2) {
+                income += getEventById(resaleIncomes[i].idEvent, events).price * 0.01;
+            }
+        }
 
         for (let i = 0; i < campaigns.length; i++) {
             let d = new Date(campaigns[i].purchaseDate * 1000)
@@ -104,8 +128,9 @@ export default function IncomesTab({ ...props }) {
         while (startDate.isBefore(endDate)) {
             var numtickets = getNumTicketsByMonth(startDate.month() + 1, startDate.year());
             var numcampaigns = getNumTCampaignsByMonth(startDate.month() + 1, startDate.year());
+            var numresales = getNumResalesByMonths(startDate.month() + 1, startDate.year());
             var incomes = getIncomeByMonth(startDate.month() + 1, startDate.year());
-            result.push({ month: startDate.month() + 1, year: startDate.year(), num_tickets: numtickets, num_campaigns: numcampaigns, income: incomes });
+            result.push({ month: startDate.month() + 1, year: startDate.year(), num_tickets: numtickets, num_resales: numresales, num_campaigns: numcampaigns, income: incomes });
             startDate.add(1, 'month');
         }
 
@@ -115,6 +140,11 @@ export default function IncomesTab({ ...props }) {
     async function getTicketandCampaignItems() {
         const items_list = await getTicketsListFromBlockchain();
         const campaigns_list = await getCampaignListFromBlockchain(false);
+        const resale_income = await getResalesIncomes();
+        const events_list = await getEventsListFromBlockchain(false);
+
+        setEvents(await events_list);
+        setResaleIncomes(await resale_income);
         setCampaigns(await campaigns_list);
         setTickets(await items_list);
         setIsLoaded(true);
@@ -245,7 +275,7 @@ export default function IncomesTab({ ...props }) {
                                     </Flex>
 
                                     <Flex flex={1} direction={'column'} p={'16px'} borderRadius={'10px'} borderWidth={'1px'} bg={'white'}>
-                                        <IncomesOwnerTable items={data} />
+                                        <IncomesOwnerTable items={data}/>
                                     </Flex>
                                 </Flex>
                             </SlideFade>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, AspectRatio, Box, Button, Center, Flex, HStack, Icon, Image, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Skeleton, Spacer, Spinner, Stack, Text, Textarea, toast, useDisclosure, useToast } from '@chakra-ui/react';
+import getAverageColor from 'get-average-color'
 
 //Components
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
@@ -401,6 +402,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 <Stack flex={1} w={'100%'} direction={{base: 'column', lg: "row"}} alignItems={'flex-end'} spacing={"16px"}>
                                     <CustomInput
                                         required
+                                        confirmImageValid={true}
                                         icon={<MdOutlineBrokenImage/>}
                                         text={"Enlace de la imagen"}
                                         placeholder={"Añade aquí el enlace de la imagen..."}
@@ -556,8 +558,15 @@ export function CustomInput({...props}) {
         if(props.date){
             setValidStatus(dateValidation(props.item));
         } else{
-            if (!props.item) setValidStatus(false);
-            else setValidStatus(true);
+            if(props.confirmImageValid){
+                setValidStatus(false)
+                getAverageColor(props.item).then(rgb => {
+                    setValidStatus(true)
+                })
+            }else {
+                if (!props.item) setValidStatus(false);
+                else setValidStatus(true);
+            }
         }
     }; 
 
