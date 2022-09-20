@@ -11,6 +11,7 @@ import Tickbit from '../solidity/artifacts/contracts/Tickbit.sol/Tickbit.json';
 import TickbitTicket from '../solidity/artifacts/contracts/TickbitTicket.sol/TickbitTicket.json';
 import Web3Modal from 'web3modal';
 import moment from 'moment';
+import { dataTestEvents } from '../data/testData';
 
 export function truncateAddress(address) {
     return address.length > 10 ? address.substring(0, 5) + "..." + address.substring(address.length - 4, address.length) : address
@@ -368,8 +369,8 @@ export function newEvent(_owner, _id, _insertionDate, title, idCity, idVenue, id
     return { _owner, _id, _insertionDate, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate, aproved, deleted };
 }
 
-function createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate) {
-    return { title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate };
+export function createEventItem(_owner, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate) {
+    return { _owner, title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate };
 }
 
 export async function getEventsListFromBlockchain(isPublicRead) {
@@ -498,11 +499,12 @@ export async function createEventOnBlockchain(title, idCity, idVenue, idCategory
 
     /* user will be prompted to pay the asking proces to complete the transaction */
     try {
-        const transaction = await contract.createEvent(createEventItem(title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate));
+        const transaction = await contract.createEvent(createEventItem("0x5234d2a3f8C208F95AaE4D2b332378fF1Cad2503", title, idCity, idVenue, idCategory, description, artist, capacity, price, coverImageUrl, initialSaleDate, initialDate, finalDate));
         await transaction.wait()
 
         return transaction;
     } catch (error) {
+        console.log(error)
         return null;
     }
 }
@@ -813,4 +815,22 @@ export async function getResalesIncomes() {
     console.log(itemsArray);
 
     return itemsArray;
+}
+
+export async function addTestEvents(){
+    const web3Modal = new Web3Modal()
+    const connection = await web3Modal.connect()
+    const provider = new ethers.providers.Web3Provider(connection)
+    const signer = provider.getSigner()
+    const contract = new ethers.Contract(contractAddress, Tickbit.abi, signer)
+
+    /* user will be prompted to pay the asking proces to complete the transaction */
+    try {
+        const transaction = await contract.createEventsTest(dataTestEvents);
+        await transaction.wait()
+
+        return transaction;
+    } catch (error) {
+        return null;
+    }
 }

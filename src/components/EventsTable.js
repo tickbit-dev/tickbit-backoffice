@@ -5,7 +5,7 @@ import { FiChevronLeft, FiChevronRight, FiChevronsLeft, FiChevronsRight } from '
 import '../table.css'
 import { useNavigate, useParams } from 'react-router-dom';
 
-const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_PAGE = 10;
 const FILLING_SIZE = 72;
 
 export default function EventsTable({...props}) {

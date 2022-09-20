@@ -4,6 +4,7 @@ import Dimensions from '../constants/Dimensions';
 import NavBarWithSearchBar from '../components/NavBarWithSearchBar';
 import { FiTrash2 } from 'react-icons/fi';
 import Colors from '../constants/Colors';
+import { addTestEvents } from '../utils/funcionesComunes';
 
 export default function AdminTab({ ...props }) {
     const toast = useToast();
@@ -26,7 +27,7 @@ export default function AdminTab({ ...props }) {
                                 bg={Colors.primary.lightblue}
                                 _hover={{bg: Colors.primary.lightblue_hover}}
                                 color={'white'}
-                                onClick={() => null}
+                                onClick={() => addTestEvents()}
                             >
                                 Añadir eventos de test
                             </Button>

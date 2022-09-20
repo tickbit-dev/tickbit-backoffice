@@ -18,6 +18,8 @@ import { MdAttachMoney, MdOutlineBrokenImage } from 'react-icons/md';
 import { TbCalendarEvent, TbCalendarOff, TbCalendarTime } from 'react-icons/tb';
 import { FiCheck, FiClipboard, FiCopy, FiInfo, FiRotateCcw, FiTrash2, FiX } from 'react-icons/fi';
 import Colors from '../constants/Colors';
+import { CARTERA_CONCIERTO, CARTERA_DEPORTES, CARTERA_TEATRO_Y_ARTE } from '../data/testData';
+import moment from 'moment';
 
 
 export default function CreateOrUpdateEventTab({...props}) {
@@ -52,7 +54,21 @@ export default function CreateOrUpdateEventTab({...props}) {
 
     //functions
     async function createEvent(){
-        //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+        let evnt = "createEventItem(" + "\"" + (categoria == 10 ? CARTERA_CONCIERTO : categoria == 12 ? CARTERA_DEPORTES : categoria == 11 ? CARTERA_TEATRO_Y_ARTE : CARTERA_CONCIERTO) + "\"" + ", " + "\"" + titulo + "\"" + ", " + ciudad + ", " + recinto + ", " + categoria + ", " +  "\"" + descripcion + "\"" + ", " + "\"" + artista + "\"" + ", " + aforo + ", " + precio + ", " + "\"" + urlImage + "\"" + ", " + getTimeStampFromString(fechaInicioVenta) + ", " + getTimeStampFromString(fechaInicioEvento) + ", " + getTimeStampFromString(fechaFinalEvento) + "),"
+        console.log(evnt)
+        navigator.clipboard.writeText(evnt);
+        toast({
+            position: 'bottom',
+            duration: 4000,
+            render: () => (
+                <Flex color='black' p={3} bg='white' rounded={5} textAlign={'center'} borderWidth={1} alignItems={'center'} justifyContent={'center'}>
+                    <FiClipboard />
+                    <Text ml={"16px"}>Evento copiado</Text>
+                </Flex>
+            ),
+        })
+
+        /*//Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
         setActiveButton(false)
         
         const transaction = await createEventOnBlockchain(titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, getTimeStampFromString(fechaInicioVenta), getTimeStampFromString(fechaInicioEvento), getTimeStampFromString(fechaFinalEvento));
@@ -85,7 +101,7 @@ export default function CreateOrUpdateEventTab({...props}) {
             setActiveButton(true)
             //Redirigimos al home
             navigate('/events')
-        }
+        }*/
     }
 
     async function editEvent(){
@@ -451,6 +467,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<TbCalendarEvent/>}
                                 text={"Fecha de inicio de puesta venta"}
                                 placeholder={"dd/mm/aaaa"}
+                                onFocus={() => setFechaInicioVenta(getStringFromTimestamp(moment(new Date()).unix()))}
                                 isLoaded={isLoaded}
                                 item={fechaInicioVenta}
                                 setItem={(value) => setFechaInicioVenta(value)}
@@ -461,6 +478,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<TbCalendarTime/>}
                                 text={"Fecha de inicio del evento"}
                                 placeholder={"dd/mm/aaaa"}
+                                onFocus={() => setFechaInicioEvento(getStringFromTimestamp(moment(new Date()).unix()))}
                                 isLoaded={isLoaded}
                                 item={fechaInicioEvento}
                                 setItem={(value) => setFechaInicioEvento(value)}
@@ -471,6 +489,7 @@ export default function CreateOrUpdateEventTab({...props}) {
                                 icon={<TbCalendarOff/>}
                                 text={"Fecha final del evento"}
                                 placeholder={"dd/mm/aaaa"}
+                                onFocus={() => setFechaFinalEvento(getStringFromTimestamp(moment(new Date()).unix()))}
                                 isLoaded={isLoaded}
                                 item={fechaFinalEvento}
                                 setItem={(value) => setFechaFinalEvento(value)}
@@ -554,6 +573,12 @@ export default function CreateOrUpdateEventTab({...props}) {
 export function CustomInput({...props}) {
     const [validStatus, setValidStatus] = useState(null);
 
+    const handleFocus = () => {
+        if(props.item == ""){
+            props.onFocus()
+        }
+    } 
+
     const handleBlur = () => {
         if(props.date){
             setValidStatus(dateValidation(props.item));
@@ -607,6 +632,7 @@ export function CustomInput({...props}) {
                 <Input
                     w={'100%'}
                     onBlur={handleBlur}
+                    onFocus={handleFocus}
                     noOfLines={1}
                     pr={"40px"}
                     value={props.item}
