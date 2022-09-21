@@ -96,13 +96,13 @@ export default {
         {
             "id": 1,
             "name": "Portada",
-            "price": 0.1, //USD
+            "price": 10, //USD
             "max": 1
         },
         {
             "id": 2,
             "name": "Destacado",
-            "price": 0.05, //USD
+            "price": 2, //USD
             "max": 5
         },
     ]
