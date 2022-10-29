@@ -87,7 +87,7 @@ export default function IncomesTab({ ...props }) {
             let month2 = d.getMonth() + 1;
             let year2 = d.getFullYear();
             if (month === month2 && year === year2) {
-                income += tickets[i].price * 0.01;
+                income += tickets[i].price * 0.05;
             }
         }
 
@@ -96,7 +96,7 @@ export default function IncomesTab({ ...props }) {
             let month2 = d.getMonth() + 1;
             let year2 = d.getFullYear();
             if (month === month2 && year === year2) {
-                income += getEventById(resaleIncomes[i].idEvent, events).price * 0.01;
+                income += getEventById(resaleIncomes[i].idEvent, events).price * 0.05;
             }
         }
 

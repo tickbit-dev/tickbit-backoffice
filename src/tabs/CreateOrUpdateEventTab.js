@@ -68,7 +68,7 @@ export default function CreateOrUpdateEventTab({...props}) {
             ),
         })
 
-        /*//Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
+        //Deshabilitamos el botón para que no se le de dos veces seguidas hasta que confirme la transacción
         setActiveButton(false)
         
         const transaction = await createEventOnBlockchain(titulo, ciudad, recinto, categoria, descripcion, artista, aforo, precio, urlImage, getTimeStampFromString(fechaInicioVenta), getTimeStampFromString(fechaInicioEvento), getTimeStampFromString(fechaFinalEvento));
@@ -101,7 +101,7 @@ export default function CreateOrUpdateEventTab({...props}) {
             setActiveButton(true)
             //Redirigimos al home
             navigate('/events')
-        }*/
+        }
     }
 
     async function editEvent(){

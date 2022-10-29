@@ -57,7 +57,7 @@ export default function ValidatorTab({ ...props }) {
             return () => clearInterval(id);
           }
         }, [delay]);
-      }
+    }
 
     async function getData() {
         const events_list = await getEventsListFromBlockchain(false);
