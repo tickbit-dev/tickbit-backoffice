@@ -57,8 +57,8 @@ const LinkItems = [
     { name: 'Ticketing', icon: HiOutlineTicket, to: 'ticketing' },
     { name: 'Ingresos', icon: FiDollarSign, to: 'incomes' },
     { name: 'Campañas', icon: FiTrendingUp, to: 'campaigns' },
-    { name: 'Validador', icon: AiOutlineScan, to: 'validator'},
-    { name: 'Ayuda', icon: FiHelpCircle, to: 'help'}
+    { name: 'Validador', icon: AiOutlineScan, to: 'validator'}
+    //{ name: 'Ayuda', icon: FiHelpCircle, to: 'help'}
 ];
 
 const SIDE_MENU_WIDTH = '245px';

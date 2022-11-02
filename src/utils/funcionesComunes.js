@@ -261,25 +261,25 @@ export function getEstado(row) {
         )
     } else if (row.initialSaleDate > now) {
         return (
-            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"} colorScheme='purple'>
+            <Badge h={"16px"} maxW={'fit-content'} colorScheme='green' mb={"3px"}>
                 <Flex alignItems={'center'}>
-                    <Text mt={"-2px"} fontSize={10}>PROGRAMADO</Text>
+                    <Text mt={"-2px"} fontSize={10}>EN VENTA</Text>
                 </Flex>
             </Badge>
         )
     } else if (row.finalDate <= now) {
         return (
-            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"} colorScheme='red'>
+            <Badge h={"16px"} maxW={'fit-content'} colorScheme='green' mb={"3px"}>
                 <Flex alignItems={'center'}>
-                    <Text mt={"-2px"} fontSize={10}>FINALIZADO</Text>
+                    <Text mt={"-2px"} fontSize={10}>EN VENTA</Text>
                 </Flex>
             </Badge>
         )
     } else {
         return (
-            <Badge h={"16px"} maxW={'fit-content'} mb={"3px"} colorScheme='red'>
+            <Badge h={"16px"} maxW={'fit-content'} colorScheme='green' mb={"3px"}>
                 <Flex alignItems={'center'}>
-                    <Text mt={"-2px"} fontSize={10}>FINALIZADO</Text>
+                    <Text mt={"-2px"} fontSize={10}>EN VENTA</Text>
                 </Flex>
             </Badge>
         )
